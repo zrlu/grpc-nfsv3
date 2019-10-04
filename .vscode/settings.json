@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "iostream": "c",
+        "watdfs_client.h": "c",
+        "bitset": "c",
+        "fuse.h": "c",
+        "cstring": "c",
+        "stdio.h": "c"
+    }
+}
