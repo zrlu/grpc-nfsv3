@@ -40,12 +40,15 @@ PROTOS_PATH = ./protos
 
 vpath %.proto $(PROTOS_PATH)
 
-all: system-check NFSServer NFSClient.o nfsmount
+all: system-check runserver nfsmount
 
-NFSClient.o: NFSClient.cc nfs.pb.o nfs.grpc.pb.o
+NFSClient.o: NFSClient.cc
 	$(CXX) $^ $(LDFLAGS) -c
 
-NFSServer: nfs.pb.o nfs.grpc.pb.o NFSServer.o
+NFSServer.o: NFSServer.cc
+	$(CXX) $^ $(LDFLAGS) -c
+
+runserver: nfs.pb.o nfs.grpc.pb.o NFSServer.o runserver.cc
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 nfsmount: NFSClient.o nfs.pb.o nfs.grpc.pb.o nfsmount.cc
@@ -58,7 +61,7 @@ nfsmount: NFSClient.o nfs.pb.o nfs.grpc.pb.o nfsmount.cc
 	$(PROTOC) -I $(PROTOS_PATH) --cpp_out=. $<
 
 clean:
-	rm -f *.o *.pb.cc *.pb.h NFSServer nfsmount
+	rm -f *.o *.pb.cc *.pb.h runserver nfsmount
 
 
 # The following is to test your system and ensure a smoother experience.
