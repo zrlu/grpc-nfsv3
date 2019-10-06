@@ -8,10 +8,8 @@ using grpc::ClientWriter;
 using grpc::Status;
 using nfs::NULLargs;
 using nfs::NULLres;
-
 using nfs::MKNODargs;
 using nfs::MKNODres;
-
 using nfs::NFS;
 
 NFSClient::NFSClient(std::shared_ptr<Channel> channel) : stub_(NFS::NewStub(channel)) {}
@@ -32,14 +30,4 @@ void NFSClient::NFSPROC_MKNOD(const char *pathname, mode_t mode, dev_t dev)
   args.set_mode(mode);
   args.set_dev(dev);
   stub_->NFSPROC_MKNOD(&context, args, &res);
-}
-
-NFSClient *client_ptr;
-
-int main(int argc, char **argv)
-{
-  NFSClient *client_ptr = new NFSClient(
-      grpc::CreateChannel("127.0.0.1:50055", grpc::InsecureChannelCredentials()));
-
-  return 0;
 }

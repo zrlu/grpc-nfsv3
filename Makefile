@@ -17,7 +17,9 @@
 HOST_SYSTEM = $(shell uname | cut -f 1 -d_)
 SYSTEM ?= $(HOST_SYSTEM)
 CXX = g++
-CPPFLAGS += `pkg-config --cflags protobuf grpc` -D_FILE_OFFSET_BITS=64 -lfuse
+CPPFLAGS += `pkg-config --cflags protobuf grpc`
+CPPFLAGS += -D_FILE_OFFSET_BITS=64
+CPPFLAGS += -lfuse
 CXXFLAGS += -std=c++11
 ifeq ($(SYSTEM),Darwin)
 LDFLAGS += -L/usr/local/lib `pkg-config --libs protobuf grpc++`\
@@ -38,12 +40,15 @@ PROTOS_PATH = ./protos
 
 vpath %.proto $(PROTOS_PATH)
 
-all: system-check NFSClient NFSServer
+all: system-check NFSServer NFSClient.o nfsmount
 
-NFSClient: nfs.pb.o nfs.grpc.pb.o NFSClient.o
-	$(CXX) $^ $(LDFLAGS) -o $@
+NFSClient.o: NFSClient.cc nfs.pb.o nfs.grpc.pb.o
+	$(CXX) $^ $(LDFLAGS) -c
 
 NFSServer: nfs.pb.o nfs.grpc.pb.o NFSServer.o
+	$(CXX) $^ $(LDFLAGS) -o $@
+
+nfsmount: NFSClient.o nfs.pb.o nfs.grpc.pb.o nfsmount.cc
 	$(CXX) $^ $(LDFLAGS) -o $@
 
 %.grpc.pb.cc: %.proto
@@ -53,7 +58,7 @@ NFSServer: nfs.pb.o nfs.grpc.pb.o NFSServer.o
 	$(PROTOC) -I $(PROTOS_PATH) --cpp_out=. $<
 
 clean:
-	rm -f *.o *.pb.cc *.pb.h NFSClient NFSServer
+	rm -f *.o *.pb.cc *.pb.h NFSServer nfsmount
 
 
 # The following is to test your system and ensure a smoother experience.
