@@ -1,6 +1,6 @@
 #include "NFSServer.h"
 
-void RunServer(const char *path)
+void runServer(const char *path)
 {
   std::string server_address("0.0.0.0:50055");
   NFSImpl service(path);
@@ -20,6 +20,6 @@ void RunServer(const char *path)
 
 int main(int argc, char **argv)
 {
-  RunServer(argv[1]);
+  runServer(argv[1]);
   return 0;
 }

@@ -38,7 +38,7 @@ NFSImpl::NFSImpl(const std::string &path) : m_serverStoragePath(path) {}
 
 Status NFSImpl::NFSPROC_NULL(ServerContext *context, const NULLargs *request, NULLres *response)
 {
-  std::cerr << "NFSPROC3_NULL" << std::endl;
+  std::cerr << "NULL" << std::endl;
   nfs::NULLres res;
   *response = res;
   return Status::OK;
@@ -46,7 +46,7 @@ Status NFSImpl::NFSPROC_NULL(ServerContext *context, const NULLargs *request, NU
 
 Status NFSImpl::NFSPROC_MKNOD(ServerContext *context, const MKNODargs *request, MKNODres *response)
 {
-  std::cerr << "NFSPROC3_MKNOD" << std::endl;
+  std::cerr << "MKNOD" << std::endl;
   nfs::MKNODres res;
   res.set_ret(0);
 
