@@ -4,8 +4,8 @@
             "name": "WSL",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/usr/local/include",
-                "/usr/include"
+                "/usr/local/include/**",
+                "/usr/include/**"
             ],
             "defines": [
                 "_DEBUG",

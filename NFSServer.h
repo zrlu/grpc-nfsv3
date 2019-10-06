@@ -1,9 +1,3 @@
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <errno.h>
-
 #include <grpc/grpc.h>
 #include <grpcpp/server.h>
 #include <grpcpp/server_builder.h>
@@ -35,12 +29,12 @@ class NFSImpl final : public NFS::Service
 {
   std::mutex mu_;
   const std::string m_serverStoragePath;
-  const char *getFullPath(const std::string &suffix);
+  const char *getFullPath(const std::string &);
 protected:
 public:
   NFSImpl(const std::string &path);
-  Status NFSPROC_NULL(ServerContext *context, const NULLargs *request, NULLres *response) override;
-  Status NFSPROC_MKNOD(ServerContext *context, const MKNODargs *request, MKNODres *response) override;
+  Status NFSPROC_NULL(ServerContext *, const NULLargs *, NULLres *) override;
+  Status NFSPROC_MKNOD(ServerContext *, const MKNODargs *, MKNODres *) override;
 };
 
 

@@ -21,7 +21,7 @@ void NFSClient::NFSPROC_NULL()
   stub_->NFSPROC_NULL(&context, nfs::NULLargs(), &res);
 }
 
-void NFSClient::NFSPROC_MKNOD(const char *pathname, mode_t mode, dev_t dev)
+int NFSClient::NFSPROC_MKNOD(const char *pathname, mode_t mode, dev_t dev)
 {
   ClientContext context;
   nfs::MKNODres res;

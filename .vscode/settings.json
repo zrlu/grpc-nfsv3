@@ -6,6 +6,8 @@
         "fuse.h": "c",
         "cstring": "c",
         "stdio.h": "c",
-        "chrono": "cpp"
+        "chrono": "cpp",
+        "*.tcc": "cpp",
+        "fuse_common.h": "c"
     }
 }

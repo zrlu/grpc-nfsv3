@@ -1,5 +1,3 @@
-#pragma once
-
 #include <iostream>
 #include <string>
 
@@ -36,7 +34,7 @@ public:
   NFSClient(std::shared_ptr<Channel> channel);
 
   void NFSPROC_NULL();
-  void NFSPROC_MKNOD(const char *pathname, mode_t mode, dev_t dev);
+  int NFSPROC_MKNOD(const char *, mode_t, dev_t);
 
 private:
   std::unique_ptr<NFS::Stub> stub_;

@@ -18,20 +18,20 @@ HOST_SYSTEM = $(shell uname | cut -f 1 -d_)
 SYSTEM ?= $(HOST_SYSTEM)
 CXX = g++
 CXXFLAGS = `pkg-config --cflags protobuf grpc`
-CXXFLAGS += -D_FILE_OFFSET_BITS=64
-CXXFLAGS += -std=c++11
+CXXFLAGS += `pkg-config fuse --cflags --libs`
+CXXFLAGS += -std=c++17
+
+LDFLAGS = `pkg-config fuse --libs`
 ifeq ($(SYSTEM),Darwin)
 LDFLAGS += -L/usr/local/lib `pkg-config --libs protobuf grpc++`\
 					 -pthread\
            -lgrpc++_reflection\
-           -ldl\
-		   -lfuse
+           -ldl
 else
 LDFLAGS += -L/usr/local/lib `pkg-config --libs protobuf grpc++`\
            -pthread\
            -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed\
-           -ldl\
-		   -lfuse
+           -ldl
 endif
 PROTOC = protoc
 GRPC_CPP_PLUGIN = grpc_cpp_plugin
@@ -44,10 +44,10 @@ vpath %.proto $(PROTOS_PATH)
 all: system-check runserver nfsmount
 
 NFSClient.o: NFSClient.cc
-	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -c
+	$(CXX) $(CXXFLAGS) $^ -c
 
 NFSServer.o: NFSServer.cc
-	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -c
+	$(CXX) $(CXXFLAGS) $^ -c
 
 runserver: nfs.pb.o nfs.grpc.pb.o NFSServer.o runserver.cc
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
