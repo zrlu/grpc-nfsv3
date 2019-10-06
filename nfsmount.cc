@@ -17,7 +17,11 @@ NFSClient *client_ptr;
 
 static int nfs_getattr(const char *pathname, struct stat *statbuf)
 {
-  return 0;
+  int retval = client_ptr->NFSPROC_GETATTR(pathname, statbuf);
+  if (retval > 0) {
+    retval = -EINVAL;
+  }
+  return retval;
 }
 
 static int nfs_mknod(const char *pathname, mode_t mode, dev_t dev)
@@ -89,5 +93,5 @@ int main(int argc, char **argv)
     exit(-1);
   }
   std::cerr << "connected" << std::endl;
-  return fuse_main(argc, argv, &nfs_oper, NULL);
+  int code = fuse_main(argc, argv, &nfs_oper, NULL);
 }

@@ -14,6 +14,8 @@
 
 syntax = "proto3";
 
+import "struct.proto";
+
 package nfs;
 
 // Interface exported by the server.
@@ -29,14 +31,38 @@ service NFS {
 
 // A Message is a message sent while at a given point.
 
+message TimeSpec {
+  int64 tv_sec = 1;
+  int64 tv_nsec = 2;
+}
+
+message Stat {
+  uint64 st_dev = 1;
+  uint64 st_ino = 2;
+  uint32 st_mode = 3;
+  uint32 st_nlink = 4;
+  uint32 st_uid = 5;
+  uint32 st_gid = 6;
+  uint64 st_rdev = 7;
+  int64 off_t = 8;
+  TimeSpec st_atime_ = 9;
+  TimeSpec st_mtime_ = 10;
+  TimeSpec st_ctime_ = 11;
+  int64 st_blksize = 12;
+  int64 st_blocks = 13;
+}
+
 message NULLargs {
 }
 message NULLres {
 }
 
 message GETATTRargs {
+  string pathname = 1;
 }
 message GETATTRres {
+  int32 syscall_errno = 1;
+  Stat stat = 2;
 }
 
 message MKNODargs {

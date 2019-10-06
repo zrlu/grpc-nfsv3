@@ -19,7 +19,8 @@ using grpc::Status;
 using nfs::NFS;
 using nfs::NULLargs;
 using nfs::NULLres;
-
+using nfs::GETATTRargs;
+using nfs::GETATTRres;
 using nfs::MKNODargs;
 using nfs::MKNODres;
 
@@ -34,6 +35,7 @@ protected:
 public:
   NFSImpl(const std::string &path);
   Status NFSPROC_NULL(ServerContext *, const NULLargs *, NULLres *) override;
+  Status NFSPROC_GETATTR(ServerContext *, const GETATTRargs *, GETATTRres *) override;
   Status NFSPROC_MKNOD(ServerContext *, const MKNODargs *, MKNODres *) override;
 };
 

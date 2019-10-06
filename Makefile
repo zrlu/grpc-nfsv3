@@ -51,16 +51,22 @@ NFSClient.o: NFSClient.cc
 NFSServer.o: NFSServer.cc
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -c
 
-runserver: nfs.pb.o nfs.grpc.pb.o NFSServer.o runserver.cc
+runserver: nfs.pb.o nfs.grpc.pb.o NFSServer.o runserver.cc struct.pb.cc
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
 
-nfsmount: NFSClient.o nfs.pb.o nfs.grpc.pb.o nfsmount.cc
+nfsmount: NFSClient.o nfs.pb.o nfs.grpc.pb.o nfsmount.cc struct.pb.cc
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
 
-%.grpc.pb.cc: %.proto
+nfs.grpc.pb.cc: nfs.proto
 	$(PROTOC) -I $(PROTOS_PATH) --grpc_out=. --plugin=protoc-gen-grpc=$(GRPC_CPP_PLUGIN_PATH) $<
 
-%.pb.cc: %.proto
+nfs.pb.cc: nfs.proto struct.grpc.pb.cc struct.pb.cc
+	$(PROTOC) -I $(PROTOS_PATH) --cpp_out=. $<
+
+struct.grpc.pb.cc: struct.proto
+	$(PROTOC) -I $(PROTOS_PATH) --grpc_out=. --plugin=protoc-gen-grpc=$(GRPC_CPP_PLUGIN_PATH) $<
+
+struct.pb.cc: struct.proto
 	$(PROTOC) -I $(PROTOS_PATH) --cpp_out=. $<
 
 clean:

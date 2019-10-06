@@ -13,6 +13,7 @@
 #include <errno.h>
 
 #include "NFSServer.h"
+#include "helpers.h"
 
 using grpc::Server;
 using grpc::ServerBuilder;
@@ -22,9 +23,12 @@ using grpc::ServerReaderWriter;
 using grpc::ServerWriter;
 using grpc::Status;
 using nfs::NFS;
+using nfs::Stat;
+using nfs::TimeSpec;
 using nfs::NULLargs;
 using nfs::NULLres;
-
+using nfs::GETATTRargs;
+using nfs::GETATTRres;
 using nfs::MKNODargs;
 using nfs::MKNODres;
 
@@ -45,6 +49,26 @@ Status NFSImpl::NFSPROC_NULL(ServerContext *context, const NULLargs *request, NU
   std::cerr << "NULL" << std::endl;
   nfs::NULLres res;
   *response = res;
+  return Status::OK;
+}
+
+Status NFSImpl::NFSPROC_GETATTR(ServerContext *context, const GETATTRargs *request, GETATTRres *response)
+{
+  std::cerr << "GETATTR" << std::endl;
+  nfs::GETATTRres res;
+  
+  const char *pathname = getFullPath(request->pathname().c_str());
+
+  struct stat statbuf;
+
+  if (!~stat(pathname, &statbuf))
+  {
+    res.set_syscall_errno(-errno);
+  }
+  Stat *stat = new Stat;
+  copystat2Stat(&statbuf, stat);
+  *response = res;
+  res.set_allocated_stat(stat);
   return Status::OK;
 }
 
