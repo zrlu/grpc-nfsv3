@@ -22,6 +22,8 @@ CXXFLAGS += `pkg-config fuse --cflags --libs`
 CXXFLAGS += -std=c++17
 
 LDFLAGS = `pkg-config fuse --libs`
+LDFLAGS += -Wl,-rpath,./shared
+
 ifeq ($(SYSTEM),Darwin)
 LDFLAGS += -L/usr/local/lib `pkg-config --libs protobuf grpc++`\
 					 -pthread\
