@@ -80,8 +80,10 @@ int main(int argc, char **argv)
 {
   NFSClient *client_ptr = new NFSClient(
       grpc::CreateChannel("127.0.0.1:50055", grpc::InsecureChannelCredentials()));
-
+  if (client_ptr->NFSPROC_NULL())
+  {
+    exit(-1);
+  }
   std::cerr << "connected" << std::endl;
-  
   return fuse_main(argc, argv, &nfs_oper, NULL);
 }

@@ -81,20 +81,12 @@
     }
     // 注册自定义函数
 
-#ifdef __cplusplus 
-extern "C" { 
-#endif 
-
-    static struct fuse_operations hello_oper {
-        hello_getattr
+    static struct fuse_operations hello_oper = {
+        .getattr    = hello_getattr,
+        .readdir    = hello_readdir,
+        .open        = hello_open,
+        .read        = hello_read, // 读文件函数
     };
-
-
-
-#ifdef __cplusplus 
-} 
-#endif 
-
     // 调用 fuse_main , 把控制权交给了fuse
     int main(int argc, char *argv[])
     {

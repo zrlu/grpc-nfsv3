@@ -33,7 +33,7 @@ class NFSClient
 public:
   NFSClient(std::shared_ptr<Channel> channel);
 
-  void NFSPROC_NULL();
+  int NFSPROC_NULL();
   int NFSPROC_MKNOD(const char *, mode_t, dev_t);
 
 private:
