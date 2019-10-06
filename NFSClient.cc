@@ -34,4 +34,5 @@ int NFSClient::NFSPROC_MKNOD(const char *pathname, mode_t mode, dev_t dev)
   args.set_mode(mode);
   args.set_dev(dev);
   Status status = stub_->NFSPROC_MKNOD(&context, args, &res);
+  return status.error_code() | res.syscall_errno();
 }

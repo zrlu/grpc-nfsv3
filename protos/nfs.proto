@@ -45,5 +45,5 @@ message MKNODargs {
   uint64 dev = 3;
 }
 message MKNODres {
-  int32 ret = 1;
+  int32 syscall_errno = 1;
 }

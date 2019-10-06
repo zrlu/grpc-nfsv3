@@ -809,15 +809,15 @@ class MKNODres :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kRetFieldNumber = 1,
+    kSyscallErrnoFieldNumber = 1,
   };
-  // int32 ret = 1;
-  void clear_ret();
-  ::PROTOBUF_NAMESPACE_ID::int32 ret() const;
-  void set_ret(::PROTOBUF_NAMESPACE_ID::int32 value);
+  // int32 syscall_errno = 1;
+  void clear_syscall_errno();
+  ::PROTOBUF_NAMESPACE_ID::int32 syscall_errno() const;
+  void set_syscall_errno(::PROTOBUF_NAMESPACE_ID::int32 value);
   private:
-  ::PROTOBUF_NAMESPACE_ID::int32 _internal_ret() const;
-  void _internal_set_ret(::PROTOBUF_NAMESPACE_ID::int32 value);
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_syscall_errno() const;
+  void _internal_set_syscall_errno(::PROTOBUF_NAMESPACE_ID::int32 value);
   public:
 
   // @@protoc_insertion_point(class_scope:nfs.MKNODres)
@@ -825,7 +825,7 @@ class MKNODres :
   class _Internal;
 
   ::PROTOBUF_NAMESPACE_ID::internal::InternalMetadataWithArena _internal_metadata_;
-  ::PROTOBUF_NAMESPACE_ID::int32 ret_;
+  ::PROTOBUF_NAMESPACE_ID::int32 syscall_errno_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_nfs_2eproto;
 };
@@ -960,24 +960,24 @@ inline void MKNODargs::set_dev(::PROTOBUF_NAMESPACE_ID::uint64 value) {
 
 // MKNODres
 
-// int32 ret = 1;
-inline void MKNODres::clear_ret() {
-  ret_ = 0;
+// int32 syscall_errno = 1;
+inline void MKNODres::clear_syscall_errno() {
+  syscall_errno_ = 0;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 MKNODres::_internal_ret() const {
-  return ret_;
+inline ::PROTOBUF_NAMESPACE_ID::int32 MKNODres::_internal_syscall_errno() const {
+  return syscall_errno_;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 MKNODres::ret() const {
-  // @@protoc_insertion_point(field_get:nfs.MKNODres.ret)
-  return _internal_ret();
+inline ::PROTOBUF_NAMESPACE_ID::int32 MKNODres::syscall_errno() const {
+  // @@protoc_insertion_point(field_get:nfs.MKNODres.syscall_errno)
+  return _internal_syscall_errno();
 }
-inline void MKNODres::_internal_set_ret(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void MKNODres::_internal_set_syscall_errno(::PROTOBUF_NAMESPACE_ID::int32 value) {
   
-  ret_ = value;
+  syscall_errno_ = value;
 }
-inline void MKNODres::set_ret(::PROTOBUF_NAMESPACE_ID::int32 value) {
-  _internal_set_ret(value);
-  // @@protoc_insertion_point(field_set:nfs.MKNODres.ret)
+inline void MKNODres::set_syscall_errno(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_syscall_errno(value);
+  // @@protoc_insertion_point(field_set:nfs.MKNODres.syscall_errno)
 }
 
 #ifdef __GNUC__

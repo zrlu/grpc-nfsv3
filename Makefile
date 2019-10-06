@@ -16,7 +16,7 @@
 
 HOST_SYSTEM = $(shell uname | cut -f 1 -d_)
 SYSTEM ?= $(HOST_SYSTEM)
-CXX = g++
+CXX = g++-9
 CXXFLAGS = `pkg-config --cflags protobuf grpc`
 CXXFLAGS += `pkg-config fuse --cflags --libs`
 CXXFLAGS += -std=c++17
@@ -44,10 +44,10 @@ vpath %.proto $(PROTOS_PATH)
 all: system-check runserver nfsmount
 
 NFSClient.o: NFSClient.cc
-	$(CXX) $(CXXFLAGS) $^ -c
+	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -c
 
 NFSServer.o: NFSServer.cc
-	$(CXX) $(CXXFLAGS) $^ -c
+	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -c
 
 runserver: nfs.pb.o nfs.grpc.pb.o NFSServer.o runserver.cc
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@

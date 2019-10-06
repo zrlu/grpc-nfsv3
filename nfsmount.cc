@@ -15,14 +15,18 @@ NFSClient *client_ptr;
 
 #include <fuse.h>
 
-static int nfs_getattr(const char *pathname, struct stat *st)
+static int nfs_getattr(const char *pathname, struct stat *statbuf)
 {
   return 0;
 }
 
 static int nfs_mknod(const char *pathname, mode_t mode, dev_t dev)
 {
-  return client_ptr->NFSPROC_MKNOD(pathname, mode, dev);
+  int retval = client_ptr->NFSPROC_MKNOD(pathname, mode, dev);
+  if (retval > 0) {
+    retval = -EINVAL;
+  }
+  return retval;
 }
 
 static struct fuse_operations nfs_oper = {

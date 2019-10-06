@@ -4,6 +4,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <filesystem>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -29,9 +30,12 @@ using nfs::MKNODres;
 
 using std::chrono::system_clock;
 
+namespace fs = std::filesystem;
+
 const char *NFSImpl::getFullPath(const std::string &suffix)
 {
-  return (m_serverStoragePath + suffix).c_str();
+    fs::path fp = fs::path(m_serverStoragePath) / fs::path(suffix);
+    return fp.c_str();
 }
 
 NFSImpl::NFSImpl(const std::string &path) : m_serverStoragePath(path) {}
@@ -48,7 +52,6 @@ Status NFSImpl::NFSPROC_MKNOD(ServerContext *context, const MKNODargs *request, 
 {
   std::cerr << "MKNOD" << std::endl;
   nfs::MKNODres res;
-  res.set_ret(0);
 
   const char *pathname = getFullPath(request->pathname().c_str());
   mode_t mode = request->mode();
@@ -56,7 +59,7 @@ Status NFSImpl::NFSPROC_MKNOD(ServerContext *context, const MKNODargs *request, 
 
   if (!~mknod(pathname, mode, dev))
   {
-    res.set_ret(-errno);
+    res.set_syscall_errno(-errno);
   }
 
   *response = res;
