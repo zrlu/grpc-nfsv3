@@ -18,12 +18,32 @@ package nfs;
 
 // Interface exported by the server.
 service NFS {
-
-  rpc NFSPROC3_NULL(VOIDARGS) returns (VOIDRES) {}
   
+  rpc NFSPROC_NULL(NULLargs) returns (NULLres) {}
+  
+  rpc NFSPROC_GETATTR(GETATTRargs) returns (GETATTRres) {}
+
+  rpc NFSPROC_MKNOD(MKNODargs) returns (MKNODres) {}
+
 }
 
 // A Message is a message sent while at a given point.
-message VOIDARGS {}
-message VOIDRES {}
 
+message NULLargs {
+}
+message NULLres {
+}
+
+message GETATTRargs {
+}
+message GETATTRres {
+}
+
+message MKNODargs {
+  string pathname = 1;
+  uint32 mode = 2;
+  uint64 dev = 3;
+}
+message MKNODres {
+  int32 ret = 1;
+}

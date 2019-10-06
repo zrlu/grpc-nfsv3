@@ -23,6 +23,8 @@
 #include <string>
 #include <thread>
 
+#include <sys/types.h>
+
 #include <grpc/grpc.h>
 #include <grpcpp/channel.h>
 #include <grpcpp/client_context.h>
@@ -40,8 +42,12 @@ using grpc::ClientReader;
 using grpc::ClientReaderWriter;
 using grpc::ClientWriter;
 using grpc::Status;
-using nfs::VOIDARGS;
-using nfs::VOIDRES;
+using nfs::NULLargs;
+using nfs::NULLres;
+
+using nfs::MKNODargs;
+using nfs::MKNODres;
+
 using nfs::NFS;
 
 class NFSClient
@@ -51,11 +57,22 @@ public:
   {
   }
 
-  void NFSPROC3_NULL()
+  void NFSPROC_NULL()
   {
     ClientContext context;
-    nfs::VOIDRES res;
-    stub_->NFSPROC3_NULL(&context, nfs::VOIDARGS(), &res);
+    nfs::NULLres res;
+    stub_->NFSPROC_NULL(&context, nfs::NULLargs(), &res);
+  }
+
+  void NFSPROC_MKNOD(const char *pathname, mode_t mode, dev_t dev)
+  {
+    ClientContext context;
+    nfs::MKNODres res;
+    nfs::MKNODargs args;
+    args.set_pathname(pathname);
+    args.set_mode(mode);
+    args.set_dev(dev);
+    stub_->NFSPROC_MKNOD(&context, args, &res);
   }
 
 private:
@@ -66,7 +83,7 @@ int main(int argc, char **argv)
 {
   NFSClient client(
       grpc::CreateChannel("127.0.0.1:50055", grpc::InsecureChannelCredentials()));
-      client.NFSPROC3_NULL();
+      client.NFSPROC_NULL();
 
   return 0;
 }

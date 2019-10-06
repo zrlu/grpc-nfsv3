@@ -5,6 +5,7 @@
         "bitset": "c",
         "fuse.h": "c",
         "cstring": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "chrono": "cpp"
     }
 }

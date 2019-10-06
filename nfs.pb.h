@@ -47,7 +47,7 @@ struct TableStruct_nfs_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxillaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[2]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[6]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -55,38 +55,54 @@ struct TableStruct_nfs_2eproto {
 };
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_nfs_2eproto;
 namespace nfs {
-class VOIDARGS;
-class VOIDARGSDefaultTypeInternal;
-extern VOIDARGSDefaultTypeInternal _VOIDARGS_default_instance_;
-class VOIDRES;
-class VOIDRESDefaultTypeInternal;
-extern VOIDRESDefaultTypeInternal _VOIDRES_default_instance_;
+class GETATTRargs;
+class GETATTRargsDefaultTypeInternal;
+extern GETATTRargsDefaultTypeInternal _GETATTRargs_default_instance_;
+class GETATTRres;
+class GETATTRresDefaultTypeInternal;
+extern GETATTRresDefaultTypeInternal _GETATTRres_default_instance_;
+class MKNODargs;
+class MKNODargsDefaultTypeInternal;
+extern MKNODargsDefaultTypeInternal _MKNODargs_default_instance_;
+class MKNODres;
+class MKNODresDefaultTypeInternal;
+extern MKNODresDefaultTypeInternal _MKNODres_default_instance_;
+class NULLargs;
+class NULLargsDefaultTypeInternal;
+extern NULLargsDefaultTypeInternal _NULLargs_default_instance_;
+class NULLres;
+class NULLresDefaultTypeInternal;
+extern NULLresDefaultTypeInternal _NULLres_default_instance_;
 }  // namespace nfs
 PROTOBUF_NAMESPACE_OPEN
-template<> ::nfs::VOIDARGS* Arena::CreateMaybeMessage<::nfs::VOIDARGS>(Arena*);
-template<> ::nfs::VOIDRES* Arena::CreateMaybeMessage<::nfs::VOIDRES>(Arena*);
+template<> ::nfs::GETATTRargs* Arena::CreateMaybeMessage<::nfs::GETATTRargs>(Arena*);
+template<> ::nfs::GETATTRres* Arena::CreateMaybeMessage<::nfs::GETATTRres>(Arena*);
+template<> ::nfs::MKNODargs* Arena::CreateMaybeMessage<::nfs::MKNODargs>(Arena*);
+template<> ::nfs::MKNODres* Arena::CreateMaybeMessage<::nfs::MKNODres>(Arena*);
+template<> ::nfs::NULLargs* Arena::CreateMaybeMessage<::nfs::NULLargs>(Arena*);
+template<> ::nfs::NULLres* Arena::CreateMaybeMessage<::nfs::NULLres>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace nfs {
 
 // ===================================================================
 
-class VOIDARGS :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:nfs.VOIDARGS) */ {
+class NULLargs :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:nfs.NULLargs) */ {
  public:
-  VOIDARGS();
-  virtual ~VOIDARGS();
+  NULLargs();
+  virtual ~NULLargs();
 
-  VOIDARGS(const VOIDARGS& from);
-  VOIDARGS(VOIDARGS&& from) noexcept
-    : VOIDARGS() {
+  NULLargs(const NULLargs& from);
+  NULLargs(NULLargs&& from) noexcept
+    : NULLargs() {
     *this = ::std::move(from);
   }
 
-  inline VOIDARGS& operator=(const VOIDARGS& from) {
+  inline NULLargs& operator=(const NULLargs& from) {
     CopyFrom(from);
     return *this;
   }
-  inline VOIDARGS& operator=(VOIDARGS&& from) noexcept {
+  inline NULLargs& operator=(NULLargs&& from) noexcept {
     if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
       if (this != &from) InternalSwap(&from);
     } else {
@@ -104,37 +120,37 @@ class VOIDARGS :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return GetMetadataStatic().reflection;
   }
-  static const VOIDARGS& default_instance();
+  static const NULLargs& default_instance();
 
   static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const VOIDARGS* internal_default_instance() {
-    return reinterpret_cast<const VOIDARGS*>(
-               &_VOIDARGS_default_instance_);
+  static inline const NULLargs* internal_default_instance() {
+    return reinterpret_cast<const NULLargs*>(
+               &_NULLargs_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     0;
 
-  friend void swap(VOIDARGS& a, VOIDARGS& b) {
+  friend void swap(NULLargs& a, NULLargs& b) {
     a.Swap(&b);
   }
-  inline void Swap(VOIDARGS* other) {
+  inline void Swap(NULLargs* other) {
     if (other == this) return;
     InternalSwap(other);
   }
 
   // implements Message ----------------------------------------------
 
-  inline VOIDARGS* New() const final {
-    return CreateMaybeMessage<VOIDARGS>(nullptr);
+  inline NULLargs* New() const final {
+    return CreateMaybeMessage<NULLargs>(nullptr);
   }
 
-  VOIDARGS* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
-    return CreateMaybeMessage<VOIDARGS>(arena);
+  NULLargs* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<NULLargs>(arena);
   }
   void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
   void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
-  void CopyFrom(const VOIDARGS& from);
-  void MergeFrom(const VOIDARGS& from);
+  void CopyFrom(const NULLargs& from);
+  void MergeFrom(const NULLargs& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -148,10 +164,10 @@ class VOIDARGS :
   inline void SharedCtor();
   inline void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(VOIDARGS* other);
+  void InternalSwap(NULLargs* other);
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "nfs.VOIDARGS";
+    return "nfs.NULLargs";
   }
   private:
   inline ::PROTOBUF_NAMESPACE_ID::Arena* GetArenaNoVirtual() const {
@@ -175,7 +191,7 @@ class VOIDARGS :
 
   // accessors -------------------------------------------------------
 
-  // @@protoc_insertion_point(class_scope:nfs.VOIDARGS)
+  // @@protoc_insertion_point(class_scope:nfs.NULLargs)
  private:
   class _Internal;
 
@@ -185,23 +201,23 @@ class VOIDARGS :
 };
 // -------------------------------------------------------------------
 
-class VOIDRES :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:nfs.VOIDRES) */ {
+class NULLres :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:nfs.NULLres) */ {
  public:
-  VOIDRES();
-  virtual ~VOIDRES();
+  NULLres();
+  virtual ~NULLres();
 
-  VOIDRES(const VOIDRES& from);
-  VOIDRES(VOIDRES&& from) noexcept
-    : VOIDRES() {
+  NULLres(const NULLres& from);
+  NULLres(NULLres&& from) noexcept
+    : NULLres() {
     *this = ::std::move(from);
   }
 
-  inline VOIDRES& operator=(const VOIDRES& from) {
+  inline NULLres& operator=(const NULLres& from) {
     CopyFrom(from);
     return *this;
   }
-  inline VOIDRES& operator=(VOIDRES&& from) noexcept {
+  inline NULLres& operator=(NULLres&& from) noexcept {
     if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
       if (this != &from) InternalSwap(&from);
     } else {
@@ -219,37 +235,37 @@ class VOIDRES :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return GetMetadataStatic().reflection;
   }
-  static const VOIDRES& default_instance();
+  static const NULLres& default_instance();
 
   static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const VOIDRES* internal_default_instance() {
-    return reinterpret_cast<const VOIDRES*>(
-               &_VOIDRES_default_instance_);
+  static inline const NULLres* internal_default_instance() {
+    return reinterpret_cast<const NULLres*>(
+               &_NULLres_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     1;
 
-  friend void swap(VOIDRES& a, VOIDRES& b) {
+  friend void swap(NULLres& a, NULLres& b) {
     a.Swap(&b);
   }
-  inline void Swap(VOIDRES* other) {
+  inline void Swap(NULLres* other) {
     if (other == this) return;
     InternalSwap(other);
   }
 
   // implements Message ----------------------------------------------
 
-  inline VOIDRES* New() const final {
-    return CreateMaybeMessage<VOIDRES>(nullptr);
+  inline NULLres* New() const final {
+    return CreateMaybeMessage<NULLres>(nullptr);
   }
 
-  VOIDRES* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
-    return CreateMaybeMessage<VOIDRES>(arena);
+  NULLres* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<NULLres>(arena);
   }
   void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
   void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
-  void CopyFrom(const VOIDRES& from);
-  void MergeFrom(const VOIDRES& from);
+  void CopyFrom(const NULLres& from);
+  void MergeFrom(const NULLres& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -263,10 +279,10 @@ class VOIDRES :
   inline void SharedCtor();
   inline void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(VOIDRES* other);
+  void InternalSwap(NULLres* other);
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "nfs.VOIDRES";
+    return "nfs.NULLres";
   }
   private:
   inline ::PROTOBUF_NAMESPACE_ID::Arena* GetArenaNoVirtual() const {
@@ -290,11 +306,526 @@ class VOIDRES :
 
   // accessors -------------------------------------------------------
 
-  // @@protoc_insertion_point(class_scope:nfs.VOIDRES)
+  // @@protoc_insertion_point(class_scope:nfs.NULLres)
  private:
   class _Internal;
 
   ::PROTOBUF_NAMESPACE_ID::internal::InternalMetadataWithArena _internal_metadata_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_nfs_2eproto;
+};
+// -------------------------------------------------------------------
+
+class GETATTRargs :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:nfs.GETATTRargs) */ {
+ public:
+  GETATTRargs();
+  virtual ~GETATTRargs();
+
+  GETATTRargs(const GETATTRargs& from);
+  GETATTRargs(GETATTRargs&& from) noexcept
+    : GETATTRargs() {
+    *this = ::std::move(from);
+  }
+
+  inline GETATTRargs& operator=(const GETATTRargs& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline GETATTRargs& operator=(GETATTRargs&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const GETATTRargs& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const GETATTRargs* internal_default_instance() {
+    return reinterpret_cast<const GETATTRargs*>(
+               &_GETATTRargs_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    2;
+
+  friend void swap(GETATTRargs& a, GETATTRargs& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(GETATTRargs* other) {
+    if (other == this) return;
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline GETATTRargs* New() const final {
+    return CreateMaybeMessage<GETATTRargs>(nullptr);
+  }
+
+  GETATTRargs* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<GETATTRargs>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const GETATTRargs& from);
+  void MergeFrom(const GETATTRargs& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* InternalSerializeWithCachedSizesToArray(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(GETATTRargs* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "nfs.GETATTRargs";
+  }
+  private:
+  inline ::PROTOBUF_NAMESPACE_ID::Arena* GetArenaNoVirtual() const {
+    return nullptr;
+  }
+  inline void* MaybeArenaPtr() const {
+    return nullptr;
+  }
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_nfs_2eproto);
+    return ::descriptor_table_nfs_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:nfs.GETATTRargs)
+ private:
+  class _Internal;
+
+  ::PROTOBUF_NAMESPACE_ID::internal::InternalMetadataWithArena _internal_metadata_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_nfs_2eproto;
+};
+// -------------------------------------------------------------------
+
+class GETATTRres :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:nfs.GETATTRres) */ {
+ public:
+  GETATTRres();
+  virtual ~GETATTRres();
+
+  GETATTRres(const GETATTRres& from);
+  GETATTRres(GETATTRres&& from) noexcept
+    : GETATTRres() {
+    *this = ::std::move(from);
+  }
+
+  inline GETATTRres& operator=(const GETATTRres& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline GETATTRres& operator=(GETATTRres&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const GETATTRres& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const GETATTRres* internal_default_instance() {
+    return reinterpret_cast<const GETATTRres*>(
+               &_GETATTRres_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    3;
+
+  friend void swap(GETATTRres& a, GETATTRres& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(GETATTRres* other) {
+    if (other == this) return;
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline GETATTRres* New() const final {
+    return CreateMaybeMessage<GETATTRres>(nullptr);
+  }
+
+  GETATTRres* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<GETATTRres>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const GETATTRres& from);
+  void MergeFrom(const GETATTRres& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* InternalSerializeWithCachedSizesToArray(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(GETATTRres* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "nfs.GETATTRres";
+  }
+  private:
+  inline ::PROTOBUF_NAMESPACE_ID::Arena* GetArenaNoVirtual() const {
+    return nullptr;
+  }
+  inline void* MaybeArenaPtr() const {
+    return nullptr;
+  }
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_nfs_2eproto);
+    return ::descriptor_table_nfs_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // @@protoc_insertion_point(class_scope:nfs.GETATTRres)
+ private:
+  class _Internal;
+
+  ::PROTOBUF_NAMESPACE_ID::internal::InternalMetadataWithArena _internal_metadata_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_nfs_2eproto;
+};
+// -------------------------------------------------------------------
+
+class MKNODargs :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:nfs.MKNODargs) */ {
+ public:
+  MKNODargs();
+  virtual ~MKNODargs();
+
+  MKNODargs(const MKNODargs& from);
+  MKNODargs(MKNODargs&& from) noexcept
+    : MKNODargs() {
+    *this = ::std::move(from);
+  }
+
+  inline MKNODargs& operator=(const MKNODargs& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline MKNODargs& operator=(MKNODargs&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const MKNODargs& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const MKNODargs* internal_default_instance() {
+    return reinterpret_cast<const MKNODargs*>(
+               &_MKNODargs_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    4;
+
+  friend void swap(MKNODargs& a, MKNODargs& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(MKNODargs* other) {
+    if (other == this) return;
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline MKNODargs* New() const final {
+    return CreateMaybeMessage<MKNODargs>(nullptr);
+  }
+
+  MKNODargs* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<MKNODargs>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const MKNODargs& from);
+  void MergeFrom(const MKNODargs& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* InternalSerializeWithCachedSizesToArray(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(MKNODargs* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "nfs.MKNODargs";
+  }
+  private:
+  inline ::PROTOBUF_NAMESPACE_ID::Arena* GetArenaNoVirtual() const {
+    return nullptr;
+  }
+  inline void* MaybeArenaPtr() const {
+    return nullptr;
+  }
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_nfs_2eproto);
+    return ::descriptor_table_nfs_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kPathnameFieldNumber = 1,
+    kDevFieldNumber = 3,
+    kModeFieldNumber = 2,
+  };
+  // string pathname = 1;
+  void clear_pathname();
+  const std::string& pathname() const;
+  void set_pathname(const std::string& value);
+  void set_pathname(std::string&& value);
+  void set_pathname(const char* value);
+  void set_pathname(const char* value, size_t size);
+  std::string* mutable_pathname();
+  std::string* release_pathname();
+  void set_allocated_pathname(std::string* pathname);
+  private:
+  const std::string& _internal_pathname() const;
+  void _internal_set_pathname(const std::string& value);
+  std::string* _internal_mutable_pathname();
+  public:
+
+  // uint64 dev = 3;
+  void clear_dev();
+  ::PROTOBUF_NAMESPACE_ID::uint64 dev() const;
+  void set_dev(::PROTOBUF_NAMESPACE_ID::uint64 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint64 _internal_dev() const;
+  void _internal_set_dev(::PROTOBUF_NAMESPACE_ID::uint64 value);
+  public:
+
+  // uint32 mode = 2;
+  void clear_mode();
+  ::PROTOBUF_NAMESPACE_ID::uint32 mode() const;
+  void set_mode(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_mode() const;
+  void _internal_set_mode(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:nfs.MKNODargs)
+ private:
+  class _Internal;
+
+  ::PROTOBUF_NAMESPACE_ID::internal::InternalMetadataWithArena _internal_metadata_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr pathname_;
+  ::PROTOBUF_NAMESPACE_ID::uint64 dev_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 mode_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_nfs_2eproto;
+};
+// -------------------------------------------------------------------
+
+class MKNODres :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:nfs.MKNODres) */ {
+ public:
+  MKNODres();
+  virtual ~MKNODres();
+
+  MKNODres(const MKNODres& from);
+  MKNODres(MKNODres&& from) noexcept
+    : MKNODres() {
+    *this = ::std::move(from);
+  }
+
+  inline MKNODres& operator=(const MKNODres& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline MKNODres& operator=(MKNODres&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const MKNODres& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const MKNODres* internal_default_instance() {
+    return reinterpret_cast<const MKNODres*>(
+               &_MKNODres_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    5;
+
+  friend void swap(MKNODres& a, MKNODres& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(MKNODres* other) {
+    if (other == this) return;
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline MKNODres* New() const final {
+    return CreateMaybeMessage<MKNODres>(nullptr);
+  }
+
+  MKNODres* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<MKNODres>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const MKNODres& from);
+  void MergeFrom(const MKNODres& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* InternalSerializeWithCachedSizesToArray(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(MKNODres* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "nfs.MKNODres";
+  }
+  private:
+  inline ::PROTOBUF_NAMESPACE_ID::Arena* GetArenaNoVirtual() const {
+    return nullptr;
+  }
+  inline void* MaybeArenaPtr() const {
+    return nullptr;
+  }
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_nfs_2eproto);
+    return ::descriptor_table_nfs_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kRetFieldNumber = 1,
+  };
+  // int32 ret = 1;
+  void clear_ret();
+  ::PROTOBUF_NAMESPACE_ID::int32 ret() const;
+  void set_ret(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_ret() const;
+  void _internal_set_ret(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:nfs.MKNODres)
+ private:
+  class _Internal;
+
+  ::PROTOBUF_NAMESPACE_ID::internal::InternalMetadataWithArena _internal_metadata_;
+  ::PROTOBUF_NAMESPACE_ID::int32 ret_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_nfs_2eproto;
 };
@@ -307,15 +838,159 @@ class VOIDRES :
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif  // __GNUC__
-// VOIDARGS
+// NULLargs
 
 // -------------------------------------------------------------------
 
-// VOIDRES
+// NULLres
+
+// -------------------------------------------------------------------
+
+// GETATTRargs
+
+// -------------------------------------------------------------------
+
+// GETATTRres
+
+// -------------------------------------------------------------------
+
+// MKNODargs
+
+// string pathname = 1;
+inline void MKNODargs::clear_pathname() {
+  pathname_.ClearToEmptyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+inline const std::string& MKNODargs::pathname() const {
+  // @@protoc_insertion_point(field_get:nfs.MKNODargs.pathname)
+  return _internal_pathname();
+}
+inline void MKNODargs::set_pathname(const std::string& value) {
+  _internal_set_pathname(value);
+  // @@protoc_insertion_point(field_set:nfs.MKNODargs.pathname)
+}
+inline std::string* MKNODargs::mutable_pathname() {
+  // @@protoc_insertion_point(field_mutable:nfs.MKNODargs.pathname)
+  return _internal_mutable_pathname();
+}
+inline const std::string& MKNODargs::_internal_pathname() const {
+  return pathname_.GetNoArena();
+}
+inline void MKNODargs::_internal_set_pathname(const std::string& value) {
+  
+  pathname_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value);
+}
+inline void MKNODargs::set_pathname(std::string&& value) {
+  
+  pathname_.SetNoArena(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:nfs.MKNODargs.pathname)
+}
+inline void MKNODargs::set_pathname(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  pathname_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:nfs.MKNODargs.pathname)
+}
+inline void MKNODargs::set_pathname(const char* value, size_t size) {
+  
+  pathname_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:nfs.MKNODargs.pathname)
+}
+inline std::string* MKNODargs::_internal_mutable_pathname() {
+  
+  return pathname_.MutableNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+inline std::string* MKNODargs::release_pathname() {
+  // @@protoc_insertion_point(field_release:nfs.MKNODargs.pathname)
+  
+  return pathname_.ReleaseNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+inline void MKNODargs::set_allocated_pathname(std::string* pathname) {
+  if (pathname != nullptr) {
+    
+  } else {
+    
+  }
+  pathname_.SetAllocatedNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), pathname);
+  // @@protoc_insertion_point(field_set_allocated:nfs.MKNODargs.pathname)
+}
+
+// uint32 mode = 2;
+inline void MKNODargs::clear_mode() {
+  mode_ = 0u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 MKNODargs::_internal_mode() const {
+  return mode_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 MKNODargs::mode() const {
+  // @@protoc_insertion_point(field_get:nfs.MKNODargs.mode)
+  return _internal_mode();
+}
+inline void MKNODargs::_internal_set_mode(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  
+  mode_ = value;
+}
+inline void MKNODargs::set_mode(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_mode(value);
+  // @@protoc_insertion_point(field_set:nfs.MKNODargs.mode)
+}
+
+// uint64 dev = 3;
+inline void MKNODargs::clear_dev() {
+  dev_ = PROTOBUF_ULONGLONG(0);
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint64 MKNODargs::_internal_dev() const {
+  return dev_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint64 MKNODargs::dev() const {
+  // @@protoc_insertion_point(field_get:nfs.MKNODargs.dev)
+  return _internal_dev();
+}
+inline void MKNODargs::_internal_set_dev(::PROTOBUF_NAMESPACE_ID::uint64 value) {
+  
+  dev_ = value;
+}
+inline void MKNODargs::set_dev(::PROTOBUF_NAMESPACE_ID::uint64 value) {
+  _internal_set_dev(value);
+  // @@protoc_insertion_point(field_set:nfs.MKNODargs.dev)
+}
+
+// -------------------------------------------------------------------
+
+// MKNODres
+
+// int32 ret = 1;
+inline void MKNODres::clear_ret() {
+  ret_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 MKNODres::_internal_ret() const {
+  return ret_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 MKNODres::ret() const {
+  // @@protoc_insertion_point(field_get:nfs.MKNODres.ret)
+  return _internal_ret();
+}
+inline void MKNODres::_internal_set_ret(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  ret_ = value;
+}
+inline void MKNODres::set_ret(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_ret(value);
+  // @@protoc_insertion_point(field_set:nfs.MKNODres.ret)
+}
 
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 

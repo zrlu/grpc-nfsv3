@@ -62,43 +62,91 @@ class NFS final {
   class StubInterface {
    public:
     virtual ~StubInterface() {}
-    virtual ::grpc::Status NFSPROC3_NULL(::grpc::ClientContext* context, const ::nfs::VOIDARGS& request, ::nfs::VOIDRES* response) = 0;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::nfs::VOIDRES>> AsyncNFSPROC3_NULL(::grpc::ClientContext* context, const ::nfs::VOIDARGS& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::nfs::VOIDRES>>(AsyncNFSPROC3_NULLRaw(context, request, cq));
+    virtual ::grpc::Status NFSPROC_NULL(::grpc::ClientContext* context, const ::nfs::NULLargs& request, ::nfs::NULLres* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::nfs::NULLres>> AsyncNFSPROC_NULL(::grpc::ClientContext* context, const ::nfs::NULLargs& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::nfs::NULLres>>(AsyncNFSPROC_NULLRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::nfs::VOIDRES>> PrepareAsyncNFSPROC3_NULL(::grpc::ClientContext* context, const ::nfs::VOIDARGS& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::nfs::VOIDRES>>(PrepareAsyncNFSPROC3_NULLRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::nfs::NULLres>> PrepareAsyncNFSPROC_NULL(::grpc::ClientContext* context, const ::nfs::NULLargs& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::nfs::NULLres>>(PrepareAsyncNFSPROC_NULLRaw(context, request, cq));
+    }
+    virtual ::grpc::Status NFSPROC_GETATTR(::grpc::ClientContext* context, const ::nfs::GETATTRargs& request, ::nfs::GETATTRres* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::nfs::GETATTRres>> AsyncNFSPROC_GETATTR(::grpc::ClientContext* context, const ::nfs::GETATTRargs& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::nfs::GETATTRres>>(AsyncNFSPROC_GETATTRRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::nfs::GETATTRres>> PrepareAsyncNFSPROC_GETATTR(::grpc::ClientContext* context, const ::nfs::GETATTRargs& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::nfs::GETATTRres>>(PrepareAsyncNFSPROC_GETATTRRaw(context, request, cq));
+    }
+    virtual ::grpc::Status NFSPROC_MKNOD(::grpc::ClientContext* context, const ::nfs::MKNODargs& request, ::nfs::MKNODres* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::nfs::MKNODres>> AsyncNFSPROC_MKNOD(::grpc::ClientContext* context, const ::nfs::MKNODargs& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::nfs::MKNODres>>(AsyncNFSPROC_MKNODRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::nfs::MKNODres>> PrepareAsyncNFSPROC_MKNOD(::grpc::ClientContext* context, const ::nfs::MKNODargs& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::nfs::MKNODres>>(PrepareAsyncNFSPROC_MKNODRaw(context, request, cq));
     }
     class experimental_async_interface {
      public:
       virtual ~experimental_async_interface() {}
-      virtual void NFSPROC3_NULL(::grpc::ClientContext* context, const ::nfs::VOIDARGS* request, ::nfs::VOIDRES* response, std::function<void(::grpc::Status)>) = 0;
-      virtual void NFSPROC3_NULL(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::nfs::VOIDRES* response, std::function<void(::grpc::Status)>) = 0;
-      virtual void NFSPROC3_NULL(::grpc::ClientContext* context, const ::nfs::VOIDARGS* request, ::nfs::VOIDRES* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
-      virtual void NFSPROC3_NULL(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::nfs::VOIDRES* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      virtual void NFSPROC_NULL(::grpc::ClientContext* context, const ::nfs::NULLargs* request, ::nfs::NULLres* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void NFSPROC_NULL(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::nfs::NULLres* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void NFSPROC_NULL(::grpc::ClientContext* context, const ::nfs::NULLargs* request, ::nfs::NULLres* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      virtual void NFSPROC_NULL(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::nfs::NULLres* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      virtual void NFSPROC_GETATTR(::grpc::ClientContext* context, const ::nfs::GETATTRargs* request, ::nfs::GETATTRres* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void NFSPROC_GETATTR(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::nfs::GETATTRres* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void NFSPROC_GETATTR(::grpc::ClientContext* context, const ::nfs::GETATTRargs* request, ::nfs::GETATTRres* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      virtual void NFSPROC_GETATTR(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::nfs::GETATTRres* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      virtual void NFSPROC_MKNOD(::grpc::ClientContext* context, const ::nfs::MKNODargs* request, ::nfs::MKNODres* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void NFSPROC_MKNOD(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::nfs::MKNODres* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void NFSPROC_MKNOD(::grpc::ClientContext* context, const ::nfs::MKNODargs* request, ::nfs::MKNODres* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      virtual void NFSPROC_MKNOD(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::nfs::MKNODres* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
     };
     virtual class experimental_async_interface* experimental_async() { return nullptr; }
   private:
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::nfs::VOIDRES>* AsyncNFSPROC3_NULLRaw(::grpc::ClientContext* context, const ::nfs::VOIDARGS& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::nfs::VOIDRES>* PrepareAsyncNFSPROC3_NULLRaw(::grpc::ClientContext* context, const ::nfs::VOIDARGS& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::nfs::NULLres>* AsyncNFSPROC_NULLRaw(::grpc::ClientContext* context, const ::nfs::NULLargs& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::nfs::NULLres>* PrepareAsyncNFSPROC_NULLRaw(::grpc::ClientContext* context, const ::nfs::NULLargs& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::nfs::GETATTRres>* AsyncNFSPROC_GETATTRRaw(::grpc::ClientContext* context, const ::nfs::GETATTRargs& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::nfs::GETATTRres>* PrepareAsyncNFSPROC_GETATTRRaw(::grpc::ClientContext* context, const ::nfs::GETATTRargs& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::nfs::MKNODres>* AsyncNFSPROC_MKNODRaw(::grpc::ClientContext* context, const ::nfs::MKNODargs& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::nfs::MKNODres>* PrepareAsyncNFSPROC_MKNODRaw(::grpc::ClientContext* context, const ::nfs::MKNODargs& request, ::grpc::CompletionQueue* cq) = 0;
   };
   class Stub final : public StubInterface {
    public:
     Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel);
-    ::grpc::Status NFSPROC3_NULL(::grpc::ClientContext* context, const ::nfs::VOIDARGS& request, ::nfs::VOIDRES* response) override;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::nfs::VOIDRES>> AsyncNFSPROC3_NULL(::grpc::ClientContext* context, const ::nfs::VOIDARGS& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::nfs::VOIDRES>>(AsyncNFSPROC3_NULLRaw(context, request, cq));
+    ::grpc::Status NFSPROC_NULL(::grpc::ClientContext* context, const ::nfs::NULLargs& request, ::nfs::NULLres* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::nfs::NULLres>> AsyncNFSPROC_NULL(::grpc::ClientContext* context, const ::nfs::NULLargs& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::nfs::NULLres>>(AsyncNFSPROC_NULLRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::nfs::VOIDRES>> PrepareAsyncNFSPROC3_NULL(::grpc::ClientContext* context, const ::nfs::VOIDARGS& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::nfs::VOIDRES>>(PrepareAsyncNFSPROC3_NULLRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::nfs::NULLres>> PrepareAsyncNFSPROC_NULL(::grpc::ClientContext* context, const ::nfs::NULLargs& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::nfs::NULLres>>(PrepareAsyncNFSPROC_NULLRaw(context, request, cq));
+    }
+    ::grpc::Status NFSPROC_GETATTR(::grpc::ClientContext* context, const ::nfs::GETATTRargs& request, ::nfs::GETATTRres* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::nfs::GETATTRres>> AsyncNFSPROC_GETATTR(::grpc::ClientContext* context, const ::nfs::GETATTRargs& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::nfs::GETATTRres>>(AsyncNFSPROC_GETATTRRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::nfs::GETATTRres>> PrepareAsyncNFSPROC_GETATTR(::grpc::ClientContext* context, const ::nfs::GETATTRargs& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::nfs::GETATTRres>>(PrepareAsyncNFSPROC_GETATTRRaw(context, request, cq));
+    }
+    ::grpc::Status NFSPROC_MKNOD(::grpc::ClientContext* context, const ::nfs::MKNODargs& request, ::nfs::MKNODres* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::nfs::MKNODres>> AsyncNFSPROC_MKNOD(::grpc::ClientContext* context, const ::nfs::MKNODargs& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::nfs::MKNODres>>(AsyncNFSPROC_MKNODRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::nfs::MKNODres>> PrepareAsyncNFSPROC_MKNOD(::grpc::ClientContext* context, const ::nfs::MKNODargs& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::nfs::MKNODres>>(PrepareAsyncNFSPROC_MKNODRaw(context, request, cq));
     }
     class experimental_async final :
       public StubInterface::experimental_async_interface {
      public:
-      void NFSPROC3_NULL(::grpc::ClientContext* context, const ::nfs::VOIDARGS* request, ::nfs::VOIDRES* response, std::function<void(::grpc::Status)>) override;
-      void NFSPROC3_NULL(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::nfs::VOIDRES* response, std::function<void(::grpc::Status)>) override;
-      void NFSPROC3_NULL(::grpc::ClientContext* context, const ::nfs::VOIDARGS* request, ::nfs::VOIDRES* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
-      void NFSPROC3_NULL(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::nfs::VOIDRES* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      void NFSPROC_NULL(::grpc::ClientContext* context, const ::nfs::NULLargs* request, ::nfs::NULLres* response, std::function<void(::grpc::Status)>) override;
+      void NFSPROC_NULL(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::nfs::NULLres* response, std::function<void(::grpc::Status)>) override;
+      void NFSPROC_NULL(::grpc::ClientContext* context, const ::nfs::NULLargs* request, ::nfs::NULLres* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      void NFSPROC_NULL(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::nfs::NULLres* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      void NFSPROC_GETATTR(::grpc::ClientContext* context, const ::nfs::GETATTRargs* request, ::nfs::GETATTRres* response, std::function<void(::grpc::Status)>) override;
+      void NFSPROC_GETATTR(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::nfs::GETATTRres* response, std::function<void(::grpc::Status)>) override;
+      void NFSPROC_GETATTR(::grpc::ClientContext* context, const ::nfs::GETATTRargs* request, ::nfs::GETATTRres* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      void NFSPROC_GETATTR(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::nfs::GETATTRres* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      void NFSPROC_MKNOD(::grpc::ClientContext* context, const ::nfs::MKNODargs* request, ::nfs::MKNODres* response, std::function<void(::grpc::Status)>) override;
+      void NFSPROC_MKNOD(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::nfs::MKNODres* response, std::function<void(::grpc::Status)>) override;
+      void NFSPROC_MKNOD(::grpc::ClientContext* context, const ::nfs::MKNODargs* request, ::nfs::MKNODres* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      void NFSPROC_MKNOD(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::nfs::MKNODres* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
      private:
       friend class Stub;
       explicit experimental_async(Stub* stub): stub_(stub) { }
@@ -110,9 +158,15 @@ class NFS final {
    private:
     std::shared_ptr< ::grpc::ChannelInterface> channel_;
     class experimental_async async_stub_{this};
-    ::grpc::ClientAsyncResponseReader< ::nfs::VOIDRES>* AsyncNFSPROC3_NULLRaw(::grpc::ClientContext* context, const ::nfs::VOIDARGS& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::nfs::VOIDRES>* PrepareAsyncNFSPROC3_NULLRaw(::grpc::ClientContext* context, const ::nfs::VOIDARGS& request, ::grpc::CompletionQueue* cq) override;
-    const ::grpc::internal::RpcMethod rpcmethod_NFSPROC3_NULL_;
+    ::grpc::ClientAsyncResponseReader< ::nfs::NULLres>* AsyncNFSPROC_NULLRaw(::grpc::ClientContext* context, const ::nfs::NULLargs& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::nfs::NULLres>* PrepareAsyncNFSPROC_NULLRaw(::grpc::ClientContext* context, const ::nfs::NULLargs& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::nfs::GETATTRres>* AsyncNFSPROC_GETATTRRaw(::grpc::ClientContext* context, const ::nfs::GETATTRargs& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::nfs::GETATTRres>* PrepareAsyncNFSPROC_GETATTRRaw(::grpc::ClientContext* context, const ::nfs::GETATTRargs& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::nfs::MKNODres>* AsyncNFSPROC_MKNODRaw(::grpc::ClientContext* context, const ::nfs::MKNODargs& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::nfs::MKNODres>* PrepareAsyncNFSPROC_MKNODRaw(::grpc::ClientContext* context, const ::nfs::MKNODargs& request, ::grpc::CompletionQueue* cq) override;
+    const ::grpc::internal::RpcMethod rpcmethod_NFSPROC_NULL_;
+    const ::grpc::internal::RpcMethod rpcmethod_NFSPROC_GETATTR_;
+    const ::grpc::internal::RpcMethod rpcmethod_NFSPROC_MKNOD_;
   };
   static std::unique_ptr<Stub> NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options = ::grpc::StubOptions());
 
@@ -120,146 +174,414 @@ class NFS final {
    public:
     Service();
     virtual ~Service();
-    virtual ::grpc::Status NFSPROC3_NULL(::grpc::ServerContext* context, const ::nfs::VOIDARGS* request, ::nfs::VOIDRES* response);
+    virtual ::grpc::Status NFSPROC_NULL(::grpc::ServerContext* context, const ::nfs::NULLargs* request, ::nfs::NULLres* response);
+    virtual ::grpc::Status NFSPROC_GETATTR(::grpc::ServerContext* context, const ::nfs::GETATTRargs* request, ::nfs::GETATTRres* response);
+    virtual ::grpc::Status NFSPROC_MKNOD(::grpc::ServerContext* context, const ::nfs::MKNODargs* request, ::nfs::MKNODres* response);
   };
   template <class BaseClass>
-  class WithAsyncMethod_NFSPROC3_NULL : public BaseClass {
+  class WithAsyncMethod_NFSPROC_NULL : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
-    WithAsyncMethod_NFSPROC3_NULL() {
+    WithAsyncMethod_NFSPROC_NULL() {
       ::grpc::Service::MarkMethodAsync(0);
     }
-    ~WithAsyncMethod_NFSPROC3_NULL() override {
+    ~WithAsyncMethod_NFSPROC_NULL() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status NFSPROC3_NULL(::grpc::ServerContext* /*context*/, const ::nfs::VOIDARGS* /*request*/, ::nfs::VOIDRES* /*response*/) override {
+    ::grpc::Status NFSPROC_NULL(::grpc::ServerContext* /*context*/, const ::nfs::NULLargs* /*request*/, ::nfs::NULLres* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void RequestNFSPROC3_NULL(::grpc::ServerContext* context, ::nfs::VOIDARGS* request, ::grpc::ServerAsyncResponseWriter< ::nfs::VOIDRES>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+    void RequestNFSPROC_NULL(::grpc::ServerContext* context, ::nfs::NULLargs* request, ::grpc::ServerAsyncResponseWriter< ::nfs::NULLres>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(0, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
-  typedef WithAsyncMethod_NFSPROC3_NULL<Service > AsyncService;
   template <class BaseClass>
-  class ExperimentalWithCallbackMethod_NFSPROC3_NULL : public BaseClass {
+  class WithAsyncMethod_NFSPROC_GETATTR : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
-    ExperimentalWithCallbackMethod_NFSPROC3_NULL() {
+    WithAsyncMethod_NFSPROC_GETATTR() {
+      ::grpc::Service::MarkMethodAsync(1);
+    }
+    ~WithAsyncMethod_NFSPROC_GETATTR() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status NFSPROC_GETATTR(::grpc::ServerContext* /*context*/, const ::nfs::GETATTRargs* /*request*/, ::nfs::GETATTRres* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestNFSPROC_GETATTR(::grpc::ServerContext* context, ::nfs::GETATTRargs* request, ::grpc::ServerAsyncResponseWriter< ::nfs::GETATTRres>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithAsyncMethod_NFSPROC_MKNOD : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_NFSPROC_MKNOD() {
+      ::grpc::Service::MarkMethodAsync(2);
+    }
+    ~WithAsyncMethod_NFSPROC_MKNOD() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status NFSPROC_MKNOD(::grpc::ServerContext* /*context*/, const ::nfs::MKNODargs* /*request*/, ::nfs::MKNODres* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestNFSPROC_MKNOD(::grpc::ServerContext* context, ::nfs::MKNODargs* request, ::grpc::ServerAsyncResponseWriter< ::nfs::MKNODres>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(2, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  typedef WithAsyncMethod_NFSPROC_NULL<WithAsyncMethod_NFSPROC_GETATTR<WithAsyncMethod_NFSPROC_MKNOD<Service > > > AsyncService;
+  template <class BaseClass>
+  class ExperimentalWithCallbackMethod_NFSPROC_NULL : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithCallbackMethod_NFSPROC_NULL() {
       ::grpc::Service::experimental().MarkMethodCallback(0,
-        new ::grpc_impl::internal::CallbackUnaryHandler< ::nfs::VOIDARGS, ::nfs::VOIDRES>(
+        new ::grpc_impl::internal::CallbackUnaryHandler< ::nfs::NULLargs, ::nfs::NULLres>(
           [this](::grpc::ServerContext* context,
-                 const ::nfs::VOIDARGS* request,
-                 ::nfs::VOIDRES* response,
+                 const ::nfs::NULLargs* request,
+                 ::nfs::NULLres* response,
                  ::grpc::experimental::ServerCallbackRpcController* controller) {
-                   return this->NFSPROC3_NULL(context, request, response, controller);
+                   return this->NFSPROC_NULL(context, request, response, controller);
                  }));
     }
-    void SetMessageAllocatorFor_NFSPROC3_NULL(
-        ::grpc::experimental::MessageAllocator< ::nfs::VOIDARGS, ::nfs::VOIDRES>* allocator) {
-      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::nfs::VOIDARGS, ::nfs::VOIDRES>*>(
+    void SetMessageAllocatorFor_NFSPROC_NULL(
+        ::grpc::experimental::MessageAllocator< ::nfs::NULLargs, ::nfs::NULLres>* allocator) {
+      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::nfs::NULLargs, ::nfs::NULLres>*>(
           ::grpc::Service::experimental().GetHandler(0))
               ->SetMessageAllocator(allocator);
     }
-    ~ExperimentalWithCallbackMethod_NFSPROC3_NULL() override {
+    ~ExperimentalWithCallbackMethod_NFSPROC_NULL() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status NFSPROC3_NULL(::grpc::ServerContext* /*context*/, const ::nfs::VOIDARGS* /*request*/, ::nfs::VOIDRES* /*response*/) override {
+    ::grpc::Status NFSPROC_NULL(::grpc::ServerContext* /*context*/, const ::nfs::NULLargs* /*request*/, ::nfs::NULLres* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    virtual void NFSPROC3_NULL(::grpc::ServerContext* /*context*/, const ::nfs::VOIDARGS* /*request*/, ::nfs::VOIDRES* /*response*/, ::grpc::experimental::ServerCallbackRpcController* controller) { controller->Finish(::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "")); }
+    virtual void NFSPROC_NULL(::grpc::ServerContext* /*context*/, const ::nfs::NULLargs* /*request*/, ::nfs::NULLres* /*response*/, ::grpc::experimental::ServerCallbackRpcController* controller) { controller->Finish(::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "")); }
   };
-  typedef ExperimentalWithCallbackMethod_NFSPROC3_NULL<Service > ExperimentalCallbackService;
   template <class BaseClass>
-  class WithGenericMethod_NFSPROC3_NULL : public BaseClass {
+  class ExperimentalWithCallbackMethod_NFSPROC_GETATTR : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
-    WithGenericMethod_NFSPROC3_NULL() {
+    ExperimentalWithCallbackMethod_NFSPROC_GETATTR() {
+      ::grpc::Service::experimental().MarkMethodCallback(1,
+        new ::grpc_impl::internal::CallbackUnaryHandler< ::nfs::GETATTRargs, ::nfs::GETATTRres>(
+          [this](::grpc::ServerContext* context,
+                 const ::nfs::GETATTRargs* request,
+                 ::nfs::GETATTRres* response,
+                 ::grpc::experimental::ServerCallbackRpcController* controller) {
+                   return this->NFSPROC_GETATTR(context, request, response, controller);
+                 }));
+    }
+    void SetMessageAllocatorFor_NFSPROC_GETATTR(
+        ::grpc::experimental::MessageAllocator< ::nfs::GETATTRargs, ::nfs::GETATTRres>* allocator) {
+      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::nfs::GETATTRargs, ::nfs::GETATTRres>*>(
+          ::grpc::Service::experimental().GetHandler(1))
+              ->SetMessageAllocator(allocator);
+    }
+    ~ExperimentalWithCallbackMethod_NFSPROC_GETATTR() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status NFSPROC_GETATTR(::grpc::ServerContext* /*context*/, const ::nfs::GETATTRargs* /*request*/, ::nfs::GETATTRres* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual void NFSPROC_GETATTR(::grpc::ServerContext* /*context*/, const ::nfs::GETATTRargs* /*request*/, ::nfs::GETATTRres* /*response*/, ::grpc::experimental::ServerCallbackRpcController* controller) { controller->Finish(::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "")); }
+  };
+  template <class BaseClass>
+  class ExperimentalWithCallbackMethod_NFSPROC_MKNOD : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithCallbackMethod_NFSPROC_MKNOD() {
+      ::grpc::Service::experimental().MarkMethodCallback(2,
+        new ::grpc_impl::internal::CallbackUnaryHandler< ::nfs::MKNODargs, ::nfs::MKNODres>(
+          [this](::grpc::ServerContext* context,
+                 const ::nfs::MKNODargs* request,
+                 ::nfs::MKNODres* response,
+                 ::grpc::experimental::ServerCallbackRpcController* controller) {
+                   return this->NFSPROC_MKNOD(context, request, response, controller);
+                 }));
+    }
+    void SetMessageAllocatorFor_NFSPROC_MKNOD(
+        ::grpc::experimental::MessageAllocator< ::nfs::MKNODargs, ::nfs::MKNODres>* allocator) {
+      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::nfs::MKNODargs, ::nfs::MKNODres>*>(
+          ::grpc::Service::experimental().GetHandler(2))
+              ->SetMessageAllocator(allocator);
+    }
+    ~ExperimentalWithCallbackMethod_NFSPROC_MKNOD() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status NFSPROC_MKNOD(::grpc::ServerContext* /*context*/, const ::nfs::MKNODargs* /*request*/, ::nfs::MKNODres* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual void NFSPROC_MKNOD(::grpc::ServerContext* /*context*/, const ::nfs::MKNODargs* /*request*/, ::nfs::MKNODres* /*response*/, ::grpc::experimental::ServerCallbackRpcController* controller) { controller->Finish(::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "")); }
+  };
+  typedef ExperimentalWithCallbackMethod_NFSPROC_NULL<ExperimentalWithCallbackMethod_NFSPROC_GETATTR<ExperimentalWithCallbackMethod_NFSPROC_MKNOD<Service > > > ExperimentalCallbackService;
+  template <class BaseClass>
+  class WithGenericMethod_NFSPROC_NULL : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_NFSPROC_NULL() {
       ::grpc::Service::MarkMethodGeneric(0);
     }
-    ~WithGenericMethod_NFSPROC3_NULL() override {
+    ~WithGenericMethod_NFSPROC_NULL() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status NFSPROC3_NULL(::grpc::ServerContext* /*context*/, const ::nfs::VOIDARGS* /*request*/, ::nfs::VOIDRES* /*response*/) override {
+    ::grpc::Status NFSPROC_NULL(::grpc::ServerContext* /*context*/, const ::nfs::NULLargs* /*request*/, ::nfs::NULLres* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
   };
   template <class BaseClass>
-  class WithRawMethod_NFSPROC3_NULL : public BaseClass {
+  class WithGenericMethod_NFSPROC_GETATTR : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
-    WithRawMethod_NFSPROC3_NULL() {
-      ::grpc::Service::MarkMethodRaw(0);
+    WithGenericMethod_NFSPROC_GETATTR() {
+      ::grpc::Service::MarkMethodGeneric(1);
     }
-    ~WithRawMethod_NFSPROC3_NULL() override {
+    ~WithGenericMethod_NFSPROC_GETATTR() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status NFSPROC3_NULL(::grpc::ServerContext* /*context*/, const ::nfs::VOIDARGS* /*request*/, ::nfs::VOIDRES* /*response*/) override {
+    ::grpc::Status NFSPROC_GETATTR(::grpc::ServerContext* /*context*/, const ::nfs::GETATTRargs* /*request*/, ::nfs::GETATTRres* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void RequestNFSPROC3_NULL(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+  };
+  template <class BaseClass>
+  class WithGenericMethod_NFSPROC_MKNOD : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_NFSPROC_MKNOD() {
+      ::grpc::Service::MarkMethodGeneric(2);
+    }
+    ~WithGenericMethod_NFSPROC_MKNOD() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status NFSPROC_MKNOD(::grpc::ServerContext* /*context*/, const ::nfs::MKNODargs* /*request*/, ::nfs::MKNODres* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithRawMethod_NFSPROC_NULL : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_NFSPROC_NULL() {
+      ::grpc::Service::MarkMethodRaw(0);
+    }
+    ~WithRawMethod_NFSPROC_NULL() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status NFSPROC_NULL(::grpc::ServerContext* /*context*/, const ::nfs::NULLargs* /*request*/, ::nfs::NULLres* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestNFSPROC_NULL(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(0, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
-  class ExperimentalWithRawCallbackMethod_NFSPROC3_NULL : public BaseClass {
+  class WithRawMethod_NFSPROC_GETATTR : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
-    ExperimentalWithRawCallbackMethod_NFSPROC3_NULL() {
+    WithRawMethod_NFSPROC_GETATTR() {
+      ::grpc::Service::MarkMethodRaw(1);
+    }
+    ~WithRawMethod_NFSPROC_GETATTR() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status NFSPROC_GETATTR(::grpc::ServerContext* /*context*/, const ::nfs::GETATTRargs* /*request*/, ::nfs::GETATTRres* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestNFSPROC_GETATTR(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithRawMethod_NFSPROC_MKNOD : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_NFSPROC_MKNOD() {
+      ::grpc::Service::MarkMethodRaw(2);
+    }
+    ~WithRawMethod_NFSPROC_MKNOD() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status NFSPROC_MKNOD(::grpc::ServerContext* /*context*/, const ::nfs::MKNODargs* /*request*/, ::nfs::MKNODres* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestNFSPROC_MKNOD(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(2, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class ExperimentalWithRawCallbackMethod_NFSPROC_NULL : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithRawCallbackMethod_NFSPROC_NULL() {
       ::grpc::Service::experimental().MarkMethodRawCallback(0,
         new ::grpc_impl::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
           [this](::grpc::ServerContext* context,
                  const ::grpc::ByteBuffer* request,
                  ::grpc::ByteBuffer* response,
                  ::grpc::experimental::ServerCallbackRpcController* controller) {
-                   this->NFSPROC3_NULL(context, request, response, controller);
+                   this->NFSPROC_NULL(context, request, response, controller);
                  }));
     }
-    ~ExperimentalWithRawCallbackMethod_NFSPROC3_NULL() override {
+    ~ExperimentalWithRawCallbackMethod_NFSPROC_NULL() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status NFSPROC3_NULL(::grpc::ServerContext* /*context*/, const ::nfs::VOIDARGS* /*request*/, ::nfs::VOIDRES* /*response*/) override {
+    ::grpc::Status NFSPROC_NULL(::grpc::ServerContext* /*context*/, const ::nfs::NULLargs* /*request*/, ::nfs::NULLres* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    virtual void NFSPROC3_NULL(::grpc::ServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/, ::grpc::experimental::ServerCallbackRpcController* controller) { controller->Finish(::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "")); }
+    virtual void NFSPROC_NULL(::grpc::ServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/, ::grpc::experimental::ServerCallbackRpcController* controller) { controller->Finish(::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "")); }
   };
   template <class BaseClass>
-  class WithStreamedUnaryMethod_NFSPROC3_NULL : public BaseClass {
+  class ExperimentalWithRawCallbackMethod_NFSPROC_GETATTR : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
-    WithStreamedUnaryMethod_NFSPROC3_NULL() {
-      ::grpc::Service::MarkMethodStreamed(0,
-        new ::grpc::internal::StreamedUnaryHandler< ::nfs::VOIDARGS, ::nfs::VOIDRES>(std::bind(&WithStreamedUnaryMethod_NFSPROC3_NULL<BaseClass>::StreamedNFSPROC3_NULL, this, std::placeholders::_1, std::placeholders::_2)));
+    ExperimentalWithRawCallbackMethod_NFSPROC_GETATTR() {
+      ::grpc::Service::experimental().MarkMethodRawCallback(1,
+        new ::grpc_impl::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+          [this](::grpc::ServerContext* context,
+                 const ::grpc::ByteBuffer* request,
+                 ::grpc::ByteBuffer* response,
+                 ::grpc::experimental::ServerCallbackRpcController* controller) {
+                   this->NFSPROC_GETATTR(context, request, response, controller);
+                 }));
     }
-    ~WithStreamedUnaryMethod_NFSPROC3_NULL() override {
+    ~ExperimentalWithRawCallbackMethod_NFSPROC_GETATTR() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status NFSPROC_GETATTR(::grpc::ServerContext* /*context*/, const ::nfs::GETATTRargs* /*request*/, ::nfs::GETATTRres* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual void NFSPROC_GETATTR(::grpc::ServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/, ::grpc::experimental::ServerCallbackRpcController* controller) { controller->Finish(::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "")); }
+  };
+  template <class BaseClass>
+  class ExperimentalWithRawCallbackMethod_NFSPROC_MKNOD : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithRawCallbackMethod_NFSPROC_MKNOD() {
+      ::grpc::Service::experimental().MarkMethodRawCallback(2,
+        new ::grpc_impl::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+          [this](::grpc::ServerContext* context,
+                 const ::grpc::ByteBuffer* request,
+                 ::grpc::ByteBuffer* response,
+                 ::grpc::experimental::ServerCallbackRpcController* controller) {
+                   this->NFSPROC_MKNOD(context, request, response, controller);
+                 }));
+    }
+    ~ExperimentalWithRawCallbackMethod_NFSPROC_MKNOD() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status NFSPROC_MKNOD(::grpc::ServerContext* /*context*/, const ::nfs::MKNODargs* /*request*/, ::nfs::MKNODres* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual void NFSPROC_MKNOD(::grpc::ServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/, ::grpc::experimental::ServerCallbackRpcController* controller) { controller->Finish(::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "")); }
+  };
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_NFSPROC_NULL : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_NFSPROC_NULL() {
+      ::grpc::Service::MarkMethodStreamed(0,
+        new ::grpc::internal::StreamedUnaryHandler< ::nfs::NULLargs, ::nfs::NULLres>(std::bind(&WithStreamedUnaryMethod_NFSPROC_NULL<BaseClass>::StreamedNFSPROC_NULL, this, std::placeholders::_1, std::placeholders::_2)));
+    }
+    ~WithStreamedUnaryMethod_NFSPROC_NULL() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable regular version of this method
-    ::grpc::Status NFSPROC3_NULL(::grpc::ServerContext* /*context*/, const ::nfs::VOIDARGS* /*request*/, ::nfs::VOIDRES* /*response*/) override {
+    ::grpc::Status NFSPROC_NULL(::grpc::ServerContext* /*context*/, const ::nfs::NULLargs* /*request*/, ::nfs::NULLres* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     // replace default version of method with streamed unary
-    virtual ::grpc::Status StreamedNFSPROC3_NULL(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::nfs::VOIDARGS,::nfs::VOIDRES>* server_unary_streamer) = 0;
+    virtual ::grpc::Status StreamedNFSPROC_NULL(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::nfs::NULLargs,::nfs::NULLres>* server_unary_streamer) = 0;
   };
-  typedef WithStreamedUnaryMethod_NFSPROC3_NULL<Service > StreamedUnaryService;
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_NFSPROC_GETATTR : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_NFSPROC_GETATTR() {
+      ::grpc::Service::MarkMethodStreamed(1,
+        new ::grpc::internal::StreamedUnaryHandler< ::nfs::GETATTRargs, ::nfs::GETATTRres>(std::bind(&WithStreamedUnaryMethod_NFSPROC_GETATTR<BaseClass>::StreamedNFSPROC_GETATTR, this, std::placeholders::_1, std::placeholders::_2)));
+    }
+    ~WithStreamedUnaryMethod_NFSPROC_GETATTR() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status NFSPROC_GETATTR(::grpc::ServerContext* /*context*/, const ::nfs::GETATTRargs* /*request*/, ::nfs::GETATTRres* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedNFSPROC_GETATTR(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::nfs::GETATTRargs,::nfs::GETATTRres>* server_unary_streamer) = 0;
+  };
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_NFSPROC_MKNOD : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_NFSPROC_MKNOD() {
+      ::grpc::Service::MarkMethodStreamed(2,
+        new ::grpc::internal::StreamedUnaryHandler< ::nfs::MKNODargs, ::nfs::MKNODres>(std::bind(&WithStreamedUnaryMethod_NFSPROC_MKNOD<BaseClass>::StreamedNFSPROC_MKNOD, this, std::placeholders::_1, std::placeholders::_2)));
+    }
+    ~WithStreamedUnaryMethod_NFSPROC_MKNOD() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status NFSPROC_MKNOD(::grpc::ServerContext* /*context*/, const ::nfs::MKNODargs* /*request*/, ::nfs::MKNODres* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedNFSPROC_MKNOD(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::nfs::MKNODargs,::nfs::MKNODres>* server_unary_streamer) = 0;
+  };
+  typedef WithStreamedUnaryMethod_NFSPROC_NULL<WithStreamedUnaryMethod_NFSPROC_GETATTR<WithStreamedUnaryMethod_NFSPROC_MKNOD<Service > > > StreamedUnaryService;
   typedef Service SplitStreamedService;
-  typedef WithStreamedUnaryMethod_NFSPROC3_NULL<Service > StreamedService;
+  typedef WithStreamedUnaryMethod_NFSPROC_NULL<WithStreamedUnaryMethod_NFSPROC_GETATTR<WithStreamedUnaryMethod_NFSPROC_MKNOD<Service > > > StreamedService;
 };
 
 }  // namespace nfs
