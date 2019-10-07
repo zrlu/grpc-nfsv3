@@ -1,3 +1,5 @@
+#include <filesystem>
+
 #include <grpc/grpc.h>
 #include <grpcpp/server.h>
 #include <grpcpp/server_builder.h>
@@ -26,11 +28,14 @@ using nfs::MKNODres;
 
 using std::chrono::system_clock;
 
+namespace fs = std::filesystem;
+
 class NFSImpl final : public NFS::Service
 {
   std::mutex mu_;
   const std::string m_serverStoragePath;
-  const char *getFullPath(const std::string &);
+  fs::path fullpath(const std::string &suffix);
+
 protected:
 public:
   NFSImpl(const std::string &path);

@@ -34,64 +34,27 @@ static int nfs_mknod(const char *pathname, mode_t mode, dev_t dev)
 }
 
 static struct fuse_operations nfs_oper = {
-  getattr : nfs_getattr,
-  readlink : nullptr,
-  getdir : nullptr,
-  mknod : nfs_mknod,
-  mkdir : nullptr,
-  unlink : nullptr,
-  rmdir : nullptr,
-  symlink : nullptr,
-  rename : nullptr,
-  link : nullptr,
-  chmod : nullptr,
-  chown : nullptr,
-  truncate : nullptr,
-  utime : nullptr,
-  open : nullptr,
-  read : nullptr,
-  write : nullptr,
-  statfs : nullptr,
-  flush : nullptr,
-  release : nullptr,
-  fsync : nullptr,
-  setxattr : nullptr,
-  getxattr : nullptr,
-  listxattr : nullptr,
-  removexattr : nullptr,
-  opendir : nullptr,
-  readdir : nullptr,
-  releasedir : nullptr,
-  fsyncdir : nullptr,
-  init : nullptr,
-  destroy : nullptr,
-  access : nullptr,
-  create : nullptr,
-  ftruncate : nullptr,
-  fgetattr : nullptr,
-  lock : nullptr,
-  utimens : nullptr,
-  bmap : nullptr,
-  flag_nullpath_ok : 1,
-  flag_nopath : 1,
-  flag_utime_omit_ok : 1,
-  flag_reserved : 29,
-  ioctl : nullptr,
-  poll : nullptr,
-  write_buf : nullptr,
-  read_buf : nullptr,
-  flock : nullptr,
-  fallocate : nullptr
+  .getattr = nfs_getattr,
+  .mknod = nfs_mknod
 };
 
 int main(int argc, char **argv)
 {
-  NFSClient *client_ptr = new NFSClient(
-      grpc::CreateChannel("127.0.0.1:50055", grpc::InsecureChannelCredentials()));
-  if (client_ptr->NFSPROC_NULL())
-  {
+  gpr_timespec timeout{3, 0, GPR_TIMESPAN};
+  auto channel = grpc::CreateChannel("127.0.0.1:50055", grpc::InsecureChannelCredentials());
+  bool connected = channel->WaitForConnected<gpr_timespec>(timeout);
+  if (connected) {
+    std::cerr << "connected" << std::endl;
+  } else {
+    std::cerr << "timeout" << std::endl;
     exit(-1);
   }
-  std::cerr << "connected" << std::endl;
-  int code = fuse_main(argc, argv, &nfs_oper, NULL);
+  NFSClient *client_ptr = new NFSClient(channel);
+
+  // just some tests...to be deleted
+  struct stat statbuf;
+  int code = client_ptr->NFSPROC_GETATTR("./a", &statbuf);
+  // to be deleted
+
+  fuse_main(argc, argv, &nfs_oper, NULL);
 }

@@ -43,7 +43,7 @@ PROTOS_PATH = ./protos
 
 vpath %.proto $(PROTOS_PATH)
 
-all: system-check runserver nfsmount
+all: system-check runserver nfsmount stattest
 
 NFSClient.o: NFSClient.cc
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -c
@@ -68,6 +68,9 @@ struct.grpc.pb.cc: struct.proto
 
 struct.pb.cc: struct.proto
 	$(PROTOC) -I $(PROTOS_PATH) --cpp_out=. $<
+
+stattest: stattest.cc
+	$(CXX) $^ -o $@
 
 clean:
 	rm -f *.o *.pb.cc *.pb.h runserver nfsmount

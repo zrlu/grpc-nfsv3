@@ -34,9 +34,9 @@ int NFSClient::NFSPROC_GETATTR(const char *pathname, struct stat *statbuf) {
   nfs::GETATTRargs args;
   nfs::GETATTRres res;
   args.set_pathname(pathname);
-  Status status = stub_->NFSPROC_GETATTR(&context, args, &res);
-  Stat stat = res.stat();
-  copyStat2stat(&stat, statbuf);
+  Status status = stub_ ->NFSPROC_GETATTR(&context, args, &res);
+  const Stat stat = res.stat();
+  copyStat2stat(stat, statbuf);
   return status.error_code() | res.syscall_errno();
 }
 

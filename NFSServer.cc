@@ -36,17 +36,16 @@ using std::chrono::system_clock;
 
 namespace fs = std::filesystem;
 
-const char *NFSImpl::getFullPath(const std::string &suffix)
+fs::path NFSImpl::fullpath(const std::string &suffix)
 {
-    fs::path fp = fs::path(m_serverStoragePath) / fs::path(suffix);
-    return fp.c_str();
+    auto fp = fs::path(m_serverStoragePath) / fs::path(suffix);
+    return fs::canonical(fp) ;
 }
 
 NFSImpl::NFSImpl(const std::string &path) : m_serverStoragePath(path) {}
 
 Status NFSImpl::NFSPROC_NULL(ServerContext *context, const NULLargs *request, NULLres *response)
 {
-  std::cerr << "NULL" << std::endl;
   nfs::NULLres res;
   *response = res;
   return Status::OK;
@@ -54,38 +53,28 @@ Status NFSImpl::NFSPROC_NULL(ServerContext *context, const NULLargs *request, NU
 
 Status NFSImpl::NFSPROC_GETATTR(ServerContext *context, const GETATTRargs *request, GETATTRres *response)
 {
-  std::cerr << "GETATTR" << std::endl;
   nfs::GETATTRres res;
-  
-  const char *pathname = getFullPath(request->pathname().c_str());
-
+  auto fp = fullpath(request->pathname());
   struct stat statbuf;
 
-  if (!~stat(pathname, &statbuf))
-  {
-    res.set_syscall_errno(-errno);
-  }
+  if (!~stat(fp.c_str(), &statbuf)) res.set_syscall_errno(-errno);
+
   Stat *stat = new Stat;
-  copystat2Stat(&statbuf, stat);
-  *response = res;
+  copystat2Stat(statbuf, stat);
   res.set_allocated_stat(stat);
+  *response = res;
   return Status::OK;
 }
 
 Status NFSImpl::NFSPROC_MKNOD(ServerContext *context, const MKNODargs *request, MKNODres *response)
 {
-  std::cerr << "MKNOD" << std::endl;
   nfs::MKNODres res;
-
-  const char *pathname = getFullPath(request->pathname().c_str());
+  auto fp = fullpath(request->pathname());
   mode_t mode = request->mode();
   dev_t dev = request->dev();
 
-  if (!~mknod(pathname, mode, dev))
-  {
-    res.set_syscall_errno(-errno);
-  }
-
+  if (!~mknod(fp.c_str(), mode, dev)) res.set_syscall_errno(-errno);
+  
   *response = res;
   return Status::OK;
 }
