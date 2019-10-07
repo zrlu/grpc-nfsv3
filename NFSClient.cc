@@ -10,6 +10,7 @@ using grpc::ClientReaderWriter;
 using grpc::ClientWriter;
 using grpc::Status;
 using grpc::StatusCode;
+using nfs::NFS;
 using nfs::Stat;
 using nfs::NULLargs;
 using nfs::NULLres;
@@ -19,7 +20,8 @@ using nfs::MKNODargs;
 using nfs::MKNODres;
 using nfs::OPENargs;
 using nfs::OPENres;
-using nfs::NFS;
+using nfs::RELEASEargs;
+using nfs::RELEASEres;
 
 NFSClient::NFSClient(std::shared_ptr<Channel> channel) : stub_(NFS::NewStub(channel)) {}
 
@@ -66,5 +68,16 @@ int NFSClient::NFSPROC_OPEN(const char *pathname, const struct fuse_file_info *f
   args.set_oflag(fi->flags);
   Status status = stub_->NFSPROC_OPEN(&context, args, &res);
   *ret = res.syscall_value();
+  return status.error_code() | res.syscall_errno();
+}
+
+int NFSClient::NFSPROC_RELEASE(const char *pathname, const struct fuse_file_info *fi)
+{
+  ClientContext context;
+  nfs::RELEASEargs args;
+  nfs::RELEASEres res;
+  args.set_pathname(pathname);
+  args.set_fh(fi->fh);
+  Status status = stub_->NFSPROC_RELEASE(&context, args, &res);
   return status.error_code() | res.syscall_errno();
 }

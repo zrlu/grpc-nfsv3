@@ -89,9 +89,21 @@ Status NFSImpl::NFSPROC_OPEN(ServerContext *context, const OPENargs *request, OP
   int retval = open(fp.c_str(), oflag);
 
   if (!~retval) res.set_syscall_errno(-errno);
-  
+
   res.set_syscall_value(retval);
   *response = res;
   return Status::OK;
 
+}
+
+Status NFSImpl::NFSPROC_RELEASE(ServerContext *context, const RELEASEargs *request, RELEASEres *response)
+{
+  nfs::RELEASEres res;
+  auto fp = fullpath(request->pathname());
+  int fh = request->fh();
+  
+  if (!~close(fh)) res.set_syscall_errno(-errno);
+
+  *response = res;
+  return Status::OK;
 }

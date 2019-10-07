@@ -28,6 +28,8 @@ service NFS {
   rpc NFSPROC_MKNOD(MKNODargs) returns (MKNODres) {}
 
   rpc NFSPROC_OPEN(OPENargs) returns (OPENres) {}
+
+  rpc NFSPROC_RELEASE(RELEASEargs) returns (RELEASEres) {}
 }
 
 // A Message is a message sent while at a given point.
@@ -86,4 +88,13 @@ message OPENargs {
 message OPENres {
   int32 syscall_value = 1;
   int32 syscall_errno = 2;
+}
+
+message RELEASEargs {
+  string pathname = 1;
+  int32 fh = 2;
+}
+
+message RELEASEres {
+  int32 syscall_errno = 1;
 }

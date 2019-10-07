@@ -71,7 +71,10 @@ static int nfs_open(const char *pathname, struct fuse_file_info *fi)
 
 static int nfs_release(const char *pathname, struct fuse_file_info *fi)
 {
-  return 0;
+  int err = get_user_data()->client()->NFSPROC_RELEASE(pathname, fi);
+  if (err == 0) get_user_data()->fhtable()->deallocate(fi->fh);
+  if (err > 0) return -EINVAL;
+  return err;
 }
 
 static struct fuse_operations nfs_oper = {

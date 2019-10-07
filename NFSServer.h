@@ -27,6 +27,8 @@ using nfs::MKNODargs;
 using nfs::MKNODres;
 using nfs::OPENargs;
 using nfs::OPENres;
+using nfs::RELEASEargs;
+using nfs::RELEASEres;
 
 using std::chrono::system_clock;
 
@@ -45,6 +47,7 @@ public:
   Status NFSPROC_GETATTR(ServerContext *, const GETATTRargs *, GETATTRres *) override;
   Status NFSPROC_MKNOD(ServerContext *, const MKNODargs *, MKNODres *) override;
   Status NFSPROC_OPEN(ServerContext *, const OPENargs *, OPENres *) override;
+  Status NFSPROC_RELEASE(ServerContext *, const RELEASEargs *, RELEASEres *) override;
 };
 
 
