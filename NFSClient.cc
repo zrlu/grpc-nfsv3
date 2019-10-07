@@ -41,7 +41,6 @@ int NFSClient::NFSPROC_GETATTR(const char *pathname, struct stat *statbuf) {
   return status.error_code() | res.syscall_errno();
 }
 
-
 int NFSClient::NFSPROC_MKNOD(const char *pathname, mode_t mode, dev_t dev)
 {
   ClientContext context;

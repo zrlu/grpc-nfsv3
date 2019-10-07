@@ -16,19 +16,22 @@ NFSClient *client_ptr;
 #include <fuse.h>
 
 class UserData {
+  NFSClient *m_client;
 public:
-  NFSClient *client;
-  explicit UserData(NFSClient *cli): client(cli) {}
+  explicit UserData(NFSClient *cli): m_client(cli) {}
+  NFSClient *client()
+  {
+    return m_client;
+  }
   ~UserData() {
-    delete client;
+    delete m_client;
   }
 };
 
-NFSClient *get_client()
+UserData *get_user_data()
 {
   struct fuse_context *context = fuse_get_context();
-  NFSClient *client = ((UserData*)(context->private_data))->client;
-  return client;
+  return (UserData*)(context->private_data);
 }
 
 static void *nfs_init(struct fuse_conn_info *conn)
@@ -55,7 +58,7 @@ static int nfs_getattr(const char *pathname, struct stat *statbuf)
 {
   struct fuse_context *context = fuse_get_context();
 
-  int retval = get_client()->NFSPROC_GETATTR(pathname, statbuf);
+  int retval = get_user_data()->client()->NFSPROC_GETATTR(pathname, statbuf);
   if (retval > 0) {
     retval = -EINVAL;
   }
@@ -64,7 +67,7 @@ static int nfs_getattr(const char *pathname, struct stat *statbuf)
 
 static int nfs_mknod(const char *pathname, mode_t mode, dev_t dev)
 {
-  int retval = get_client()->NFSPROC_MKNOD(pathname, mode, dev);
+  int retval = get_user_data()->client()->NFSPROC_MKNOD(pathname, mode, dev);
   if (retval > 0) {
     retval = -EINVAL;
   }
