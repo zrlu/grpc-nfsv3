@@ -22,11 +22,6 @@ using grpc::ClientReader;
 using grpc::ClientReaderWriter;
 using grpc::ClientWriter;
 using grpc::Status;
-using nfs::NULLargs;
-using nfs::NULLres;
-
-using nfs::MKNODargs;
-using nfs::MKNODres;
 
 using nfs::NFS;
 
@@ -38,6 +33,7 @@ public:
   int NFSPROC_NULL(void);
   int NFSPROC_GETATTR(const char *, struct stat *);
   int NFSPROC_MKNOD(const char *, mode_t, dev_t);
+  int NFSPROC_OPEN(const char *, int);
 
 private:
   std::unique_ptr<NFS::Stub> stub_;

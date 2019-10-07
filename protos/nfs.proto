@@ -27,6 +27,7 @@ service NFS {
 
   rpc NFSPROC_MKNOD(MKNODargs) returns (MKNODres) {}
 
+  rpc NFSPROC_OPEN(OPENargs) returns (OPENres) {}
 }
 
 // A Message is a message sent while at a given point.
@@ -54,12 +55,14 @@ message Stat {
 
 message NULLargs {
 }
+
 message NULLres {
 }
 
 message GETATTRargs {
   string pathname = 1;
 }
+
 message GETATTRres {
   int32 syscall_errno = 1;
   Stat stat = 2;
@@ -70,6 +73,16 @@ message MKNODargs {
   uint32 mode = 2;
   uint64 dev = 3;
 }
+
 message MKNODres {
+  int32 syscall_errno = 1;
+}
+
+message OPENargs {
+  string pathname = 1;
+  int32 oflag = 2;
+}
+
+message OPENres {
   int32 syscall_errno = 1;
 }

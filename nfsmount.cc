@@ -60,9 +60,15 @@ static int nfs_mknod(const char *pathname, mode_t mode, dev_t dev)
   return retval;
 }
 
+static int nfs_open(const char *pathname, struct fuse_file_info *fi)
+{
+  return 0;
+}
+
 static struct fuse_operations nfs_oper = {
   .getattr = nfs_getattr,
   .mknod = nfs_mknod,
+  .open = nfs_open,
   .init = nfs_init,
   .destroy = nfs_destroy
 };

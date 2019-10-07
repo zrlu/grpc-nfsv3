@@ -31,6 +31,8 @@ using nfs::GETATTRargs;
 using nfs::GETATTRres;
 using nfs::MKNODargs;
 using nfs::MKNODres;
+using nfs::OPENargs;
+using nfs::OPENres;
 
 using std::chrono::system_clock;
 
@@ -74,7 +76,20 @@ Status NFSImpl::NFSPROC_MKNOD(ServerContext *context, const MKNODargs *request, 
   dev_t dev = request->dev();
 
   if (!~mknod(fp.c_str(), mode, dev)) res.set_syscall_errno(-errno);
-  
+
   *response = res;
   return Status::OK;
+}
+
+Status NFSImpl::NFSPROC_OPEN(ServerContext *context, const OPENargs *request, OPENres *response)
+{
+  nfs::OPENres res;
+  auto fp = fullpath(request->pathname());
+  int oflag = request->oflag();
+
+  if (!~open(fp.c_str(), oflag)) res.set_syscall_errno(-errno);
+
+  *response = res;
+  return Status::OK;
+
 }

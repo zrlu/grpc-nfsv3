@@ -25,6 +25,8 @@ using nfs::GETATTRargs;
 using nfs::GETATTRres;
 using nfs::MKNODargs;
 using nfs::MKNODres;
+using nfs::OPENargs;
+using nfs::OPENres;
 
 using std::chrono::system_clock;
 
@@ -42,6 +44,7 @@ public:
   Status NFSPROC_NULL(ServerContext *, const NULLargs *, NULLres *) override;
   Status NFSPROC_GETATTR(ServerContext *, const GETATTRargs *, GETATTRres *) override;
   Status NFSPROC_MKNOD(ServerContext *, const MKNODargs *, MKNODres *) override;
+  Status NFSPROC_OPEN(ServerContext *, const OPENargs *, OPENres *) override;
 };
 
 

@@ -15,6 +15,8 @@ using nfs::GETATTRargs;
 using nfs::GETATTRres;
 using nfs::MKNODargs;
 using nfs::MKNODres;
+using nfs::OPENargs;
+using nfs::OPENres;
 using nfs::NFS;
 
 NFSClient::NFSClient(std::shared_ptr<Channel> channel) : stub_(NFS::NewStub(channel)) {}
@@ -50,5 +52,16 @@ int NFSClient::NFSPROC_MKNOD(const char *pathname, mode_t mode, dev_t dev)
   args.set_mode(mode);
   args.set_dev(dev);
   Status status = stub_->NFSPROC_MKNOD(&context, args, &res);
+  return status.error_code() | res.syscall_errno();
+}
+
+int NFSClient::NFSPROC_OPEN(const char *pathname, int oflag)
+{
+  ClientContext context;
+  nfs::OPENargs args;
+  nfs::OPENres res;
+  args.set_pathname(pathname);
+  args.set_oflag(oflag);
+  Status status = stub_->NFSPROC_OPEN(&context, args, &res);
   return status.error_code() | res.syscall_errno();
 }
