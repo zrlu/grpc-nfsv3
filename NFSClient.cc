@@ -1,3 +1,5 @@
+#include <fuse.h>
+
 #include "NFSClient.h"
 #include "helpers.h"
 
@@ -55,13 +57,14 @@ int NFSClient::NFSPROC_MKNOD(const char *pathname, mode_t mode, dev_t dev)
   return status.error_code() | res.syscall_errno();
 }
 
-int NFSClient::NFSPROC_OPEN(const char *pathname, int oflag)
+int NFSClient::NFSPROC_OPEN(const char *pathname, const struct fuse_file_info *fi, int *ret)
 {
   ClientContext context;
   nfs::OPENargs args;
   nfs::OPENres res;
   args.set_pathname(pathname);
-  args.set_oflag(oflag);
+  args.set_oflag(fi->flags);
   Status status = stub_->NFSPROC_OPEN(&context, args, &res);
+  *ret = res.syscall_value();
   return status.error_code() | res.syscall_errno();
 }

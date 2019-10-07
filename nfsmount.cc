@@ -44,16 +44,16 @@ static int nfs_getattr(const char *pathname, struct stat *statbuf)
 {
   struct fuse_context *context = fuse_get_context();
 
-  int retval = get_user_data()->client()->NFSPROC_GETATTR(pathname, statbuf);
-  if (retval > 0) return -EINVAL;
-  return retval;
+  int err = get_user_data()->client()->NFSPROC_GETATTR(pathname, statbuf);
+  if (err > 0) return -EINVAL;
+  return err;
 }
 
 static int nfs_mknod(const char *pathname, mode_t mode, dev_t dev)
 {
-  int retval = get_user_data()->client()->NFSPROC_MKNOD(pathname, mode, dev);
-  if (retval > 0) return -EINVAL;
-  return retval;
+  int err = get_user_data()->client()->NFSPROC_MKNOD(pathname, mode, dev);
+  if (err > 0) return -EINVAL;
+  return err;
 }
 
 static int nfs_open(const char *pathname, struct fuse_file_info *fi)
@@ -61,37 +61,29 @@ static int nfs_open(const char *pathname, struct fuse_file_info *fi)
   int fh = get_user_data()->fhtable()->allocate();
   if (!~fh) return -ENFILE;
   fi->fh = fh;
-  int retval = get_user_data()->client()->NFSPROC_OPEN(pathname, fi->flags);
-  if (retval != 0) get_user_data()->fhtable()->deallocate(fh);
-  if (retval > 0) return -EINVAL;
-  return retval;
+  int ret;
+  int err = get_user_data()->client()->NFSPROC_OPEN(pathname, fi, &ret);
+  if (err != 0) get_user_data()->fhtable()->deallocate(fh);
+  if (err > 0) return -EINVAL;
+  if (err < 0) return err;
+  return ret;
+}
+
+static int nfs_release(const char *pathname, struct fuse_file_info *fi)
+{
+  return 0;
 }
 
 static struct fuse_operations nfs_oper = {
   .getattr = nfs_getattr,
   .mknod = nfs_mknod,
   .open = nfs_open,
+  .release = nfs_release,
   .init = nfs_init,
   .destroy = nfs_destroy
 };
 
 int main(int argc, char **argv)
 {
-  // gpr_timespec timeout{10, 0, GPR_TIMESPAN};
-  // auto channel = grpc::CreateChannel("127.0.0.1:50055", grpc::InsecureChannelCredentials());
-  // bool connected = channel->WaitForConnected<gpr_timespec>(timeout);
-  // if (connected) {
-  //   std::cerr << "connected" << std::endl;
-  // } else {
-  //   std::cerr << "timeout" << std::endl;
-  //   exit(-1);
-  // }
-  // NFSClient *client_ptr = new NFSClient(channel);
-
-  // just some tests...to be deleted
-  // struct stat statbuf;
-  // int code = client_ptr->NFSPROC_GETATTR("a", &statbuf);
-  // to be deleted
-
   fuse_main(argc, argv, &nfs_oper, NULL);
 }

@@ -33,7 +33,7 @@ public:
   int NFSPROC_NULL(void);
   int NFSPROC_GETATTR(const char *, struct stat *);
   int NFSPROC_MKNOD(const char *, mode_t, dev_t);
-  int NFSPROC_OPEN(const char *, int);
+  int NFSPROC_OPEN(const char *, const struct fuse_file_info *, int *ret);
 
 private:
   std::unique_ptr<NFS::Stub> stub_;

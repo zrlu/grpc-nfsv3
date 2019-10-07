@@ -86,9 +86,11 @@ Status NFSImpl::NFSPROC_OPEN(ServerContext *context, const OPENargs *request, OP
   nfs::OPENres res;
   auto fp = fullpath(request->pathname());
   int oflag = request->oflag();
+  int retval = open(fp.c_str(), oflag);
 
-  if (!~open(fp.c_str(), oflag)) res.set_syscall_errno(-errno);
-
+  if (!~retval) res.set_syscall_errno(-errno);
+  
+  res.set_syscall_value(retval);
   *response = res;
   return Status::OK;
 

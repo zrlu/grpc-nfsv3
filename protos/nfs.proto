@@ -84,5 +84,6 @@ message OPENargs {
 }
 
 message OPENres {
-  int32 syscall_errno = 1;
+  int32 syscall_value = 1;
+  int32 syscall_errno = 2;
 }
