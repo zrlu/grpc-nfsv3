@@ -46,6 +46,12 @@ vpath %.proto $(PROTOS_PATH)
 
 all: system-check runserver nfsmount stattest
 
+UserData.o: UserData.cc
+	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -c
+
+FileHandlerTable.o: FileHandlerTable.cc
+	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -c
+
 NFSClient.o: NFSClient.cc
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -c
 
@@ -55,7 +61,7 @@ NFSServer.o: NFSServer.cc
 runserver: nfs.pb.o nfs.grpc.pb.o NFSServer.o runserver.cc struct.pb.cc
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
 
-nfsmount: NFSClient.o nfs.pb.o nfs.grpc.pb.o nfsmount.cc struct.pb.cc
+nfsmount: NFSClient.o nfs.pb.o nfs.grpc.pb.o nfsmount.cc struct.pb.cc FileHandlerTable.o UserData.o
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
 
 nfs.grpc.pb.cc: nfs.proto

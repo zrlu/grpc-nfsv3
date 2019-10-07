@@ -6,27 +6,13 @@
 #include <fcntl.h>
 #include <stddef.h>
 #include <assert.h>
+#include <fuse.h>
 
 #include <iostream>
 
 #include "NFSClient.h"
-
-NFSClient *client_ptr;
-
-#include <fuse.h>
-
-class UserData {
-  NFSClient *m_client;
-public:
-  explicit UserData(NFSClient *cli): m_client(cli) {}
-  NFSClient *client()
-  {
-    return m_client;
-  }
-  ~UserData() {
-    delete m_client;
-  }
-};
+#include "FileHandlerTable.h"
+#include "UserData.h"
 
 UserData *get_user_data()
 {
