@@ -15,9 +15,47 @@ NFSClient *client_ptr;
 
 #include <fuse.h>
 
+class UserData {
+public:
+  NFSClient *client;
+  explicit UserData(NFSClient *cli): client(cli) {}
+  ~UserData() {
+    delete client;
+  }
+};
+
+NFSClient *get_client()
+{
+  struct fuse_context *context = fuse_get_context();
+  NFSClient *client = ((UserData*)(context->private_data))->client;
+  return client;
+}
+
+static void *nfs_init(struct fuse_conn_info *conn)
+{
+  auto channel = grpc::CreateChannel("127.0.0.1:50055", grpc::InsecureChannelCredentials());
+  gpr_timespec timeout{10, 0, GPR_TIMESPAN};
+  bool connected = channel->WaitForConnected<gpr_timespec>(timeout);
+  if (connected) {
+    std::cerr << "connected" << std::endl;
+  } else {
+    std::cerr << "timeout" << std::endl;
+    exit(-1);
+  }
+  UserData *ud = new UserData(new NFSClient(channel));
+  return (void *)ud;
+}
+
+static void nfs_destroy(void *userdata)
+{
+  delete (UserData *)userdata;
+}
+
 static int nfs_getattr(const char *pathname, struct stat *statbuf)
 {
-  int retval = client_ptr->NFSPROC_GETATTR(pathname, statbuf);
+  struct fuse_context *context = fuse_get_context();
+
+  int retval = get_client()->NFSPROC_GETATTR(pathname, statbuf);
   if (retval > 0) {
     retval = -EINVAL;
   }
@@ -26,7 +64,7 @@ static int nfs_getattr(const char *pathname, struct stat *statbuf)
 
 static int nfs_mknod(const char *pathname, mode_t mode, dev_t dev)
 {
-  int retval = client_ptr->NFSPROC_MKNOD(pathname, mode, dev);
+  int retval = get_client()->NFSPROC_MKNOD(pathname, mode, dev);
   if (retval > 0) {
     retval = -EINVAL;
   }
@@ -35,25 +73,27 @@ static int nfs_mknod(const char *pathname, mode_t mode, dev_t dev)
 
 static struct fuse_operations nfs_oper = {
   .getattr = nfs_getattr,
-  .mknod = nfs_mknod
+  .mknod = nfs_mknod,
+  .init = nfs_init,
+  .destroy = nfs_destroy
 };
 
 int main(int argc, char **argv)
 {
-  gpr_timespec timeout{3, 0, GPR_TIMESPAN};
-  auto channel = grpc::CreateChannel("127.0.0.1:50055", grpc::InsecureChannelCredentials());
-  bool connected = channel->WaitForConnected<gpr_timespec>(timeout);
-  if (connected) {
-    std::cerr << "connected" << std::endl;
-  } else {
-    std::cerr << "timeout" << std::endl;
-    exit(-1);
-  }
-  NFSClient *client_ptr = new NFSClient(channel);
+  // gpr_timespec timeout{10, 0, GPR_TIMESPAN};
+  // auto channel = grpc::CreateChannel("127.0.0.1:50055", grpc::InsecureChannelCredentials());
+  // bool connected = channel->WaitForConnected<gpr_timespec>(timeout);
+  // if (connected) {
+  //   std::cerr << "connected" << std::endl;
+  // } else {
+  //   std::cerr << "timeout" << std::endl;
+  //   exit(-1);
+  // }
+  // NFSClient *client_ptr = new NFSClient(channel);
 
   // just some tests...to be deleted
-  struct stat statbuf;
-  int code = client_ptr->NFSPROC_GETATTR("./a", &statbuf);
+  // struct stat statbuf;
+  // int code = client_ptr->NFSPROC_GETATTR("a", &statbuf);
   // to be deleted
 
   fuse_main(argc, argv, &nfs_oper, NULL);

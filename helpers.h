@@ -54,9 +54,9 @@ void copyStat2stat(const Stat &src, struct stat *dst)
     const TimeSpec st_atime_ = src.st_atime_();
     const TimeSpec st_mtime_ = src.st_mtime_();
     const TimeSpec st_ctime_ = src.st_ctime_();
-    copyTimeSpec2timespec(st_atime_, &dst->st_atim);
-    copyTimeSpec2timespec(st_mtime_, &dst->st_mtim);
-    copyTimeSpec2timespec(st_ctime_, &dst->st_ctim);
+    copyTimeSpec2timespec(st_atime_, &(dst->st_atim));
+    copyTimeSpec2timespec(st_mtime_, &(dst->st_mtim));
+    copyTimeSpec2timespec(st_ctime_, &(dst->st_ctim));
     dst->st_blksize = src.st_blksize();
     dst->st_blocks = src.st_blocks();
 }

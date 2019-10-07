@@ -20,6 +20,7 @@ CXX = g++-9
 CXXFLAGS = `pkg-config --cflags protobuf grpc`
 CXXFLAGS += `pkg-config fuse --cflags --libs`
 CXXFLAGS += -std=c++17
+CXXFLAGS += -g
 
 LDFLAGS = `pkg-config fuse --libs`
 LDFLAGS += -Wl,-rpath,./shared
