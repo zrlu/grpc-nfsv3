@@ -29,6 +29,10 @@ using nfs::OPENargs;
 using nfs::OPENres;
 using nfs::RELEASEargs;
 using nfs::RELEASEres;
+using nfs::READargs;
+using nfs::READres;
+using nfs::WRITEargs;
+using nfs::WRITEres;
 
 using std::chrono::system_clock;
 

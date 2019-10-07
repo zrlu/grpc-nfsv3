@@ -33,6 +33,10 @@ using nfs::MKNODargs;
 using nfs::MKNODres;
 using nfs::OPENargs;
 using nfs::OPENres;
+using nfs::READargs;
+using nfs::READres;
+using nfs::WRITEargs;
+using nfs::WRITEres;
 
 using std::chrono::system_clock;
 
@@ -99,7 +103,6 @@ Status NFSImpl::NFSPROC_OPEN(ServerContext *context, const OPENargs *request, OP
 Status NFSImpl::NFSPROC_RELEASE(ServerContext *context, const RELEASEargs *request, RELEASEres *response)
 {
   nfs::RELEASEres res;
-  auto fp = fullpath(request->pathname());
   int fh = request->fh();
   
   if (!~close(fh)) res.set_syscall_errno(-errno);

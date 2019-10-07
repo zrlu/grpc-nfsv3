@@ -71,16 +71,28 @@ static int nfs_open(const char *pathname, struct fuse_file_info *fi)
 
 static int nfs_release(const char *pathname, struct fuse_file_info *fi)
 {
-  int err = get_user_data()->client()->NFSPROC_RELEASE(pathname, fi);
+  int err = get_user_data()->client()->NFSPROC_RELEASE(nullptr, fi);
   if (NFSPROC_OK(err)) get_user_data()->fhtable()->deallocate(fi->fh);
   if (NFSPROC_RPC_ERROR(err > 0)) return -EINVAL;
   return err;
+}
+
+static int nfs_read(const char *pathname, char* buffer, size_t size, off_t offset, struct fuse_file_info *fi)
+{
+  return 0;
+}
+
+static int nfs_write(const char *pathname, const char* buffer, size_t size, off_t offset, struct fuse_file_info *fi)
+{
+  return 0;
 }
 
 static struct fuse_operations nfs_oper = {
   .getattr = nfs_getattr,
   .mknod = nfs_mknod,
   .open = nfs_open,
+  .read = nfs_read,
+  .write = nfs_write,
   .release = nfs_release,
   .init = nfs_init,
   .destroy = nfs_destroy

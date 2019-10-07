@@ -22,6 +22,10 @@ using nfs::OPENargs;
 using nfs::OPENres;
 using nfs::RELEASEargs;
 using nfs::RELEASEres;
+using nfs::READargs;
+using nfs::READres;
+using nfs::WRITEargs;
+using nfs::WRITEres;
 
 NFSClient::NFSClient(std::shared_ptr<Channel> channel) : stub_(NFS::NewStub(channel)) {}
 
@@ -76,7 +80,6 @@ int NFSClient::NFSPROC_RELEASE(const char *pathname, const struct fuse_file_info
   ClientContext context;
   nfs::RELEASEargs args;
   nfs::RELEASEres res;
-  args.set_pathname(pathname);
   args.set_fh(fi->fh);
   Status status = stub_->NFSPROC_RELEASE(&context, args, &res);
   return status.error_code() | res.syscall_errno();
