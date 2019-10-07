@@ -45,14 +45,14 @@ static int nfs_getattr(const char *pathname, struct stat *statbuf)
   struct fuse_context *context = fuse_get_context();
 
   int err = get_user_data()->client()->NFSPROC_GETATTR(pathname, statbuf);
-  if (err > 0) return -EINVAL;
+  if (NFSPROC_RPC_ERROR(err)) return -EINVAL;
   return err;
 }
 
 static int nfs_mknod(const char *pathname, mode_t mode, dev_t dev)
 {
   int err = get_user_data()->client()->NFSPROC_MKNOD(pathname, mode, dev);
-  if (err > 0) return -EINVAL;
+  if (NFSPROC_RPC_ERROR(err)) return -EINVAL;
   return err;
 }
 
@@ -63,17 +63,17 @@ static int nfs_open(const char *pathname, struct fuse_file_info *fi)
   fi->fh = fh;
   int ret;
   int err = get_user_data()->client()->NFSPROC_OPEN(pathname, fi, &ret);
-  if (err != 0) get_user_data()->fhtable()->deallocate(fh);
-  if (err > 0) return -EINVAL;
-  if (err < 0) return err;
+  if (!NFSPROC_OK(err)) get_user_data()->fhtable()->deallocate(fh);
+  if (NFSPROC_RPC_ERROR(err)) return -EINVAL;
+  if (NFSPROC_SYSCALL_ERROR(err) < 0) return err;
   return ret;
 }
 
 static int nfs_release(const char *pathname, struct fuse_file_info *fi)
 {
   int err = get_user_data()->client()->NFSPROC_RELEASE(pathname, fi);
-  if (err == 0) get_user_data()->fhtable()->deallocate(fi->fh);
-  if (err > 0) return -EINVAL;
+  if (NFSPROC_OK(err)) get_user_data()->fhtable()->deallocate(fi->fh);
+  if (NFSPROC_RPC_ERROR(err > 0)) return -EINVAL;
   return err;
 }
 

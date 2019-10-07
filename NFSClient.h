@@ -25,6 +25,10 @@ using grpc::Status;
 
 using nfs::NFS;
 
+#define NFSPROC_OK(x) x == 0
+#define NFSPROC_RPC_ERROR(x) x > 0
+#define NFSPROC_SYSCALL_ERROR(x) x < 0
+
 class NFSClient
 {
 public:
