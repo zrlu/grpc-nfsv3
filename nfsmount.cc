@@ -45,14 +45,14 @@ static int nfs_getattr(const char *pathname, struct stat *statbuf)
   struct fuse_context *context = fuse_get_context();
 
   int retval = get_user_data()->client()->NFSPROC_GETATTR(pathname, statbuf);
-  if (retval > 0)  retval = -EINVAL;
+  if (retval > 0) return -EINVAL;
   return retval;
 }
 
 static int nfs_mknod(const char *pathname, mode_t mode, dev_t dev)
 {
   int retval = get_user_data()->client()->NFSPROC_MKNOD(pathname, mode, dev);
-  if (retval > 0) retval = -EINVAL;
+  if (retval > 0) return -EINVAL;
   return retval;
 }
 
