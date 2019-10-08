@@ -134,27 +134,21 @@ Status NFSImpl::NFSPROC_READ(ServerContext *context, const READargs *request, Se
 
   int retval = lseek(fh, offset, SEEK_SET);
 
-  // std::cerr << "fh " << fh << std::endl;
-  // std::cerr << "here " << retval << std::endl;
-  // std::cerr << "errno " << errno << std::endl;
-
   if (retval == -1) {
     res.set_syscall_errno(-errno);
     goto NFSPROC_READ_reply;
   }
 
-  // std::cerr << "before read " << errno << std::endl;
   retval = read(fh, buffer, size);
-  // std::cerr << "here " << retval << std::endl;
 
   if (retval == -1) res.set_syscall_errno(-errno);
   res.set_syscall_value(retval);
   res.set_data(buffer);
 
 NFSPROC_READ_reply:
-  // std::cerr << "before write" << std::endl;
+
   writer->Write(res);
-  // std::cerr << "write done" << std::endl;
+  
   delete buffer;
   return Status::OK;
 }
