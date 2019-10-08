@@ -59,11 +59,12 @@ Status NFSImpl::NFSPROC_NULL(ServerContext *context, const NULLargs *request, NU
 
 Status NFSImpl::NFSPROC_GETATTR(ServerContext *context, const GETATTRargs *request, GETATTRres *response)
 {
+  std::cerr << "GETATTR" << std::endl;
   nfs::GETATTRres res;
   auto fp = fullpath(request->pathname());
   struct stat statbuf;
 
-  if (!~stat(fp.c_str(), &statbuf))
+  if (stat(fp.c_str(), &statbuf) == -1)
   {
     res.set_syscall_errno(-errno);
     *response = res;
@@ -85,7 +86,7 @@ Status NFSImpl::NFSPROC_MKNOD(ServerContext *context, const MKNODargs *request, 
   mode_t mode = request->mode();
   dev_t dev = request->dev();
 
-  if (!~mknod(fp.c_str(), mode, dev)) res.set_syscall_errno(-errno);
+  if (mknod(fp.c_str(), mode, dev) == -1) res.set_syscall_errno(-errno);
 
   *response = res;
   return Status::OK;
@@ -93,12 +94,13 @@ Status NFSImpl::NFSPROC_MKNOD(ServerContext *context, const MKNODargs *request, 
 
 Status NFSImpl::NFSPROC_OPEN(ServerContext *context, const OPENargs *request, OPENres *response)
 {
+  std::cerr << "OPEN" << std::endl;
   nfs::OPENres res;
   auto fp = fullpath(request->pathname());
   int oflag = request->oflag();
   int retval = open(fp.c_str(), oflag);
 
-  if (!~retval) res.set_syscall_errno(-errno);
+  if (retval == -1) res.set_syscall_errno(-errno);
 
   res.set_syscall_value(retval);
   *response = res;
@@ -111,7 +113,7 @@ Status NFSImpl::NFSPROC_RELEASE(ServerContext *context, const RELEASEargs *reque
   nfs::RELEASEres res;
   int fh = request->fh();
   
-  if (!~close(fh)) res.set_syscall_errno(-errno);
+  if (close(fh) == -1) res.set_syscall_errno(-errno);
 
   *response = res;
   return Status::OK;
@@ -119,27 +121,38 @@ Status NFSImpl::NFSPROC_RELEASE(ServerContext *context, const RELEASEargs *reque
 
 Status NFSImpl::NFSPROC_READ(ServerContext *context, const READargs *request, ServerWriter<READres> *writer)
 {
+  std::cerr << "READ" << std::endl;
   nfs::READres res;
   int fh = request->fh();
   size_t size = request->size();
   off_t offset = request->offset();
   char *buffer = new char[size]; 
+  bzero(buffer, size);
+  errno = 0;
 
   int retval = lseek(fh, offset, SEEK_SET);
 
-  if (!~retval) {
+  // std::cerr << "fh " << fh << std::endl;
+  // std::cerr << "here " << retval << std::endl;
+  // std::cerr << "errno " << errno << std::endl;
+
+  if (retval == -1) {
     res.set_syscall_errno(-errno);
     goto NFSPROC_READ_reply;
   }
 
+  // std::cerr << "before read " << errno << std::endl;
   retval = read(fh, buffer, size);
+  // std::cerr << "here " << retval << std::endl;
 
-  if (!~retval) res.set_syscall_errno(-errno);
+  if (retval == -1) res.set_syscall_errno(-errno);
   res.set_syscall_value(retval);
   res.set_data(buffer);
 
 NFSPROC_READ_reply:
-  while (writer->Write(res)) {}
+  // std::cerr << "before write" << std::endl;
+  writer->Write(res);
+  // std::cerr << "write done" << std::endl;
   delete buffer;
   return Status::OK;
 }

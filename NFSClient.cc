@@ -50,6 +50,7 @@ int NFSClient::NFSPROC_GETATTR(const char *pathname, struct stat *statbuf) {
   std::cerr << res.ShortDebugString() << std::endl;
   const Stat stat = res.stat();
   copyStat2stat(stat, statbuf);
+  std::cerr << status.error_message() << status.error_details() << std::endl;
   return status.error_code() | res.syscall_errno();
 }
 
@@ -96,7 +97,9 @@ int NFSClient::NFSPROC_READ(const char *pathname, char *buffer, size_t size, off
   args.set_size(size);
   args.set_offset(offset);
   std::shared_ptr<ClientReader<nfs::READres>> stream(stub_->NFSPROC_READ(&context, args));
+  // std::cerr << "before read" << std::endl;
   while (stream->Read(&res)) {};
+  // std::cerr << "read done" << std::endl;
   Status status = stream->Finish();
   if (status.ok())
   {

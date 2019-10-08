@@ -44,9 +44,12 @@ PROTOS_PATH = ./protos
 
 vpath %.proto $(PROTOS_PATH)
 
-all: system-check runserver nfsmount stattest
+all: system-check runserver nfsmount stattest readtest
 
 stattest: NFSClient.o stattest.cc nfs.pb.o nfs.grpc.pb.o
+	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
+
+readtest: NFSClient.o readtest.cc nfs.pb.o nfs.grpc.pb.o
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
 
 UserData.o: UserData.cc
