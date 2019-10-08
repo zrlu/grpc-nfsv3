@@ -63,11 +63,17 @@ Status NFSImpl::NFSPROC_GETATTR(ServerContext *context, const GETATTRargs *reque
   auto fp = fullpath(request->pathname());
   struct stat statbuf;
 
-  if (!~stat(fp.c_str(), &statbuf)) res.set_syscall_errno(-errno);
+  if (!~stat(fp.c_str(), &statbuf))
+  {
+    res.set_syscall_errno(-errno);
+    *response = res;
+    return Status::OK;
+  }
 
   Stat *stat = new Stat;
   copystat2Stat(statbuf, stat);
   res.set_allocated_stat(stat);
+
   *response = res;
   return Status::OK;
 }
@@ -108,5 +114,32 @@ Status NFSImpl::NFSPROC_RELEASE(ServerContext *context, const RELEASEargs *reque
   if (!~close(fh)) res.set_syscall_errno(-errno);
 
   *response = res;
+  return Status::OK;
+}
+
+Status NFSImpl::NFSPROC_READ(ServerContext *context, const READargs *request, ServerWriter<READres> *writer)
+{
+  nfs::READres res;
+  int fh = request->fh();
+  size_t size = request->size();
+  off_t offset = request->offset();
+  char *buffer = new char[size]; 
+
+  int retval = lseek(fh, offset, SEEK_SET);
+
+  if (!~retval) {
+    res.set_syscall_errno(-errno);
+    goto NFSPROC_READ_reply;
+  }
+
+  retval = read(fh, buffer, size);
+
+  if (!~retval) res.set_syscall_errno(-errno);
+  res.set_syscall_value(retval);
+  res.set_data(buffer);
+
+NFSPROC_READ_reply:
+  while (writer->Write(res)) {}
+  delete buffer;
   return Status::OK;
 }

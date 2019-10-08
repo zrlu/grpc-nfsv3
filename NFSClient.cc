@@ -44,7 +44,9 @@ int NFSClient::NFSPROC_GETATTR(const char *pathname, struct stat *statbuf) {
   nfs::GETATTRargs args;
   nfs::GETATTRres res;
   args.set_pathname(pathname);
-  Status status = stub_ ->NFSPROC_GETATTR(&context, args, &res);
+  Status status = stub_->NFSPROC_GETATTR(&context, args, &res);
+  std::cerr << "rpc: " << status.error_code() << std::endl;
+  std::cerr << "errno: " << res.syscall_errno() << std::endl;
   std::cerr << res.ShortDebugString() << std::endl;
   const Stat stat = res.stat();
   copyStat2stat(stat, statbuf);
@@ -82,5 +84,25 @@ int NFSClient::NFSPROC_RELEASE(const char *pathname, const struct fuse_file_info
   nfs::RELEASEres res;
   args.set_fh(fi->fh);
   Status status = stub_->NFSPROC_RELEASE(&context, args, &res);
+  return status.error_code() | res.syscall_errno();
+}
+
+int NFSClient::NFSPROC_READ(const char *pathname, char *buffer, size_t size, off_t offset, const struct fuse_file_info *fi, int *ret)
+{
+  ClientContext context;
+  nfs::READargs args;
+  nfs::READres res;
+  args.set_fh(fi->fh);
+  args.set_size(size);
+  args.set_offset(offset);
+  std::shared_ptr<ClientReader<nfs::READres>> stream(stub_->NFSPROC_READ(&context, args));
+  while (stream->Read(&res)) {};
+  Status status = stream->Finish();
+  if (status.ok())
+  {
+    res.data().copy(buffer, size, 0);
+    *ret = res.syscall_value();
+    std::cerr << res.ShortDebugString() << std::endl;
+  }
   return status.error_code() | res.syscall_errno();
 }

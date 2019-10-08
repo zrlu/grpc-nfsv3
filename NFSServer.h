@@ -52,6 +52,7 @@ public:
   Status NFSPROC_MKNOD(ServerContext *, const MKNODargs *, MKNODres *) override;
   Status NFSPROC_OPEN(ServerContext *, const OPENargs *, OPENres *) override;
   Status NFSPROC_RELEASE(ServerContext *, const RELEASEargs *, RELEASEres *) override;
+  Status NFSPROC_READ(ServerContext *, const READargs *, ServerWriter<READres> *) override;
 };
 
 

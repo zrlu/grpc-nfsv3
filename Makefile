@@ -46,6 +46,9 @@ vpath %.proto $(PROTOS_PATH)
 
 all: system-check runserver nfsmount stattest
 
+stattest: NFSClient.o stattest.cc nfs.pb.o nfs.grpc.pb.o
+	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
+
 UserData.o: UserData.cc
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -c
 
@@ -58,29 +61,20 @@ NFSClient.o: NFSClient.cc
 NFSServer.o: NFSServer.cc
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -c
 
-runserver: nfs.pb.o nfs.grpc.pb.o NFSServer.o runserver.cc struct.pb.cc
+runserver: nfs.pb.o nfs.grpc.pb.o NFSServer.o runserver.cc
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
 
-nfsmount: NFSClient.o nfs.pb.o nfs.grpc.pb.o nfsmount.cc struct.pb.cc FileHandlerTable.o UserData.o
+nfsmount: NFSClient.o nfs.pb.o nfs.grpc.pb.o nfsmount.cc FileHandlerTable.o UserData.o
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
 
 nfs.grpc.pb.cc: nfs.proto
 	$(PROTOC) -I $(PROTOS_PATH) --grpc_out=. --plugin=protoc-gen-grpc=$(GRPC_CPP_PLUGIN_PATH) $<
 
-nfs.pb.cc: nfs.proto struct.grpc.pb.cc struct.pb.cc
+nfs.pb.cc: nfs.proto struct.grpc.pb.cc
 	$(PROTOC) -I $(PROTOS_PATH) --cpp_out=. $<
-
-struct.grpc.pb.cc: struct.proto
-	$(PROTOC) -I $(PROTOS_PATH) --grpc_out=. --plugin=protoc-gen-grpc=$(GRPC_CPP_PLUGIN_PATH) $<
-
-struct.pb.cc: struct.proto
-	$(PROTOC) -I $(PROTOS_PATH) --cpp_out=. $<
-
-stattest: stattest.cc
-	$(CXX) $^ -o $@
 
 clean:
-	rm -f *.o *.pb.cc *.pb.h runserver nfsmount
+	rm -f *.o *.pb.cc *.pb.h runserver nfsmount stattest
 
 
 # The following is to test your system and ensure a smoother experience.
