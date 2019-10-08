@@ -106,8 +106,10 @@ int NFSClient::NFSPROC_READ(const char *pathname, char *buffer, size_t size, off
     total_size_read += read_chunk_size;
     res.data().copy(buffer + total_size_read, read_chunk_size);
   };
+  
   Status status = stream->Finish();
-  std::cerr << total_size_read << std::endl;
-  if (status.ok()) *ret = total_size_read;
+  // std::cerr << total_size_read << std::endl;
+  if (status.ok() && res.syscall_errno() != 0) *ret = total_size_read;
+  if (res.syscall_errno() < 0) *ret = -1;
   return status.error_code() | res.syscall_errno();
 }
