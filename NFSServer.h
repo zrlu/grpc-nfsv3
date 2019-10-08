@@ -1,3 +1,5 @@
+#pragma once
+
 #include <filesystem>
 
 #include <grpc/grpc.h>
@@ -43,7 +45,7 @@ class NFSImpl final : public NFS::Service
   std::mutex mu_;
   const std::string m_serverStoragePath;
   fs::path fullpath(const std::string &suffix);
-
+  
 protected:
 public:
   NFSImpl(const std::string &path);

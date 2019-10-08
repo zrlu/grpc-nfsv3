@@ -73,7 +73,7 @@ nfsmount: NFSClient.o nfs.pb.o nfs.grpc.pb.o nfsmount.cc FileHandlerTable.o User
 nfs.grpc.pb.cc: nfs.proto
 	$(PROTOC) -I $(PROTOS_PATH) --grpc_out=. --plugin=protoc-gen-grpc=$(GRPC_CPP_PLUGIN_PATH) $<
 
-nfs.pb.cc: nfs.proto struct.grpc.pb.cc
+nfs.pb.cc: nfs.proto
 	$(PROTOC) -I $(PROTOS_PATH) --cpp_out=. $<
 
 clean:

@@ -110,6 +110,7 @@ message READres {
   int32 syscall_value = 1;
   int32 syscall_errno = 2;
   bytes data = 3;
+  int32 chunk_idx = 4;
 }
 
 message WRITEargs {
@@ -117,6 +118,8 @@ message WRITEargs {
   uint64 size = 2;
   int64 offset = 3;
   bytes data = 4;
+  int32 chunk_idx = 5;
+  int32 chunk_size = 6;
 }
 
 message WRITEres {

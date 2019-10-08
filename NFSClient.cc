@@ -27,6 +27,8 @@ using nfs::READres;
 using nfs::WRITEargs;
 using nfs::WRITEres;
 
+#define CHUNK_SIZE (1<<20)
+
 NFSClient::NFSClient(std::shared_ptr<Channel> channel) : stub_(NFS::NewStub(channel)) {}
 
 int NFSClient::NFSPROC_NULL(void)
@@ -95,17 +97,17 @@ int NFSClient::NFSPROC_READ(const char *pathname, char *buffer, size_t size, off
   args.set_fh(fi->fh);
   args.set_size(size);
   args.set_offset(offset);
+
+  size_t total_size_read = 0;
   std::shared_ptr<ClientReader<nfs::READres>> stream(stub_->NFSPROC_READ(&context, args));
-  // std::cerr << "before read" << std::endl;
-  while (stream->Read(&res)) {};
-  // std::cerr << "read done" << std::endl;
+  while (stream->Read(&res)) {
+    if (res.syscall_errno() < 0) break;
+    const size_t read_chunk_size = res.syscall_value();
+    total_size_read += read_chunk_size;
+    res.data().copy(buffer + total_size_read, read_chunk_size);
+  };
   Status status = stream->Finish();
-  std::cerr << "read status: " << status.error_code() << " " << status.error_message() << std::endl;
-  if (status.ok())
-  {
-    res.data().copy(buffer, size, 0);
-    *ret = res.syscall_value();
-    std::cerr << res.ShortDebugString() << std::endl;
-  }
+  std::cerr << total_size_read << std::endl;
+  if (status.ok()) *ret = total_size_read;
   return status.error_code() | res.syscall_errno();
 }

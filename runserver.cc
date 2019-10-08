@@ -7,7 +7,6 @@ void runServer(const char *path)
 
   ServerBuilder builder;
   builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
-  builder.SetMaxReceiveMessageSize(INT_MAX);
   builder.RegisterService(&service);
 
   std::unique_ptr<Server> server(builder.BuildAndStart());

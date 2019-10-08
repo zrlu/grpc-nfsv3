@@ -41,6 +41,8 @@ using nfs::WRITEres;
 
 using std::chrono::system_clock;
 
+#define READ_CHUNK_SIZE (1<<20)
+
 namespace fs = std::filesystem;
 
 fs::path NFSImpl::fullpath(const std::string &suffix)
@@ -124,31 +126,30 @@ Status NFSImpl::NFSPROC_RELEASE(ServerContext *context, const RELEASEargs *reque
 
 Status NFSImpl::NFSPROC_READ(ServerContext *context, const READargs *request, ServerWriter<READres> *writer)
 {
-  std::cerr << "READ" << std::endl;
   nfs::READres res;
   int fh = request->fh();
   size_t size = request->size();
   off_t offset = request->offset();
-  char *buffer = new char[size]; 
-  bzero(buffer, size);
-
-  int retval = lseek(fh, offset, SEEK_SET);
-
-  if (retval == -1) {
-    res.set_syscall_errno(-errno);
-    goto NFSPROC_READ_reply;
+  int retval;
+  char *buffer = new char[READ_CHUNK_SIZE];
+  int num_chunk = ((int)size / (int)READ_CHUNK_SIZE) + 1;
+  for (int chunk_idx = 0; chunk_idx < num_chunk; ++chunk_idx)
+  {
+    if (lseek(fh, offset + chunk_idx*READ_CHUNK_SIZE, SEEK_SET) == -1)
+    {
+      res.set_syscall_errno(-errno);
+      break;
+    }
+    retval = read(fh, buffer, READ_CHUNK_SIZE);
+    if (retval == -1) {
+      res.set_syscall_errno(-errno);
+      break;
+    }
+    res.set_syscall_value(retval);
+    res.set_data(buffer);
+    res.set_chunk_idx(chunk_idx);
+    writer->Write(res);
   }
-
-  retval = read(fh, buffer, size);
-
-  if (retval == -1) res.set_syscall_errno(-errno);
-  res.set_syscall_value(retval);
-  res.set_data(buffer);
-
-NFSPROC_READ_reply:
-
-  writer->Write(res);
-  
   delete buffer;
   return Status::OK;
 }

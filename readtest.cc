@@ -36,8 +36,8 @@ int main()
     std::cerr << "fh: " << fh << std:: endl;
 
     fi.fh = fh;
-    ret = client.NFSPROC_READ(nullptr, buf, 30000000, 0, &fi, &size_read);
+    ret = client.NFSPROC_READ(nullptr, buf, 100000000, 0, &fi, &size_read);
     std::cerr << "READ large: " << size_read << std::endl;
 
-    std::cerr << buf << std::endl;
+    //std::cerr << buf << std::endl;
 }
