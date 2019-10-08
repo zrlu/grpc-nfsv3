@@ -19,6 +19,10 @@ void runServer(const char *path)
 
 int main(int argc, char **argv)
 {
+  if (argc != 2) {
+    puts("Usage: ./runserver server_cache");
+    exit(EINVAL);
+  }
   runServer(argv[1]);
   return 0;
 }
