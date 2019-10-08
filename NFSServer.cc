@@ -5,6 +5,7 @@
 #include <memory>
 #include <string>
 #include <filesystem>
+#include <thread>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -45,7 +46,7 @@ namespace fs = std::filesystem;
 fs::path NFSImpl::fullpath(const std::string &suffix)
 {
     auto fp = fs::path(m_serverStoragePath) / fs::path(suffix);
-    return fs::canonical(fp) ;
+    return fs::weakly_canonical(fp);
 }
 
 NFSImpl::NFSImpl(const std::string &path) : m_serverStoragePath(path) {}
@@ -59,12 +60,12 @@ Status NFSImpl::NFSPROC_NULL(ServerContext *context, const NULLargs *request, NU
 
 Status NFSImpl::NFSPROC_GETATTR(ServerContext *context, const GETATTRargs *request, GETATTRres *response)
 {
-  std::cerr << "GETATTR" << std::endl;
   nfs::GETATTRres res;
   auto fp = fullpath(request->pathname());
-  struct stat statbuf;
+  std::cerr << "GETATTR " << fp << std::endl;
+  struct stat *statbuf = new struct stat;
 
-  if (stat(fp.c_str(), &statbuf) == -1)
+  if (stat(fp.c_str(), statbuf) == -1)
   {
     res.set_syscall_errno(-errno);
     *response = res;
@@ -72,8 +73,10 @@ Status NFSImpl::NFSPROC_GETATTR(ServerContext *context, const GETATTRargs *reque
   }
 
   Stat *stat = new Stat;
-  copystat2Stat(statbuf, stat);
+  copystat2Stat(*statbuf, stat);
   res.set_allocated_stat(stat);
+
+  delete statbuf;
 
   *response = res;
   return Status::OK;
@@ -128,7 +131,6 @@ Status NFSImpl::NFSPROC_READ(ServerContext *context, const READargs *request, Se
   off_t offset = request->offset();
   char *buffer = new char[size]; 
   bzero(buffer, size);
-  errno = 0;
 
   int retval = lseek(fh, offset, SEEK_SET);
 

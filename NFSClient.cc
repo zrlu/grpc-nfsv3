@@ -45,12 +45,11 @@ int NFSClient::NFSPROC_GETATTR(const char *pathname, struct stat *statbuf) {
   nfs::GETATTRres res;
   args.set_pathname(pathname);
   Status status = stub_->NFSPROC_GETATTR(&context, args, &res);
-  std::cerr << "rpc: " << status.error_code() << std::endl;
-  std::cerr << "errno: " << res.syscall_errno() << std::endl;
+  // std::cerr << "rpc: " << status.error_code() << std::endl;
+  // std::cerr << "errno: " << res.syscall_errno() << std::endl;
   std::cerr << res.ShortDebugString() << std::endl;
   const Stat stat = res.stat();
   copyStat2stat(stat, statbuf);
-  std::cerr << status.error_message() << status.error_details() << std::endl;
   return status.error_code() | res.syscall_errno();
 }
 
