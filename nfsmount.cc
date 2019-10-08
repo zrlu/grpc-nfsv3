@@ -42,8 +42,6 @@ static void nfs_destroy(void *userdata)
 
 static int nfs_getattr(const char *pathname, struct stat *statbuf)
 {
-  struct fuse_context *context = fuse_get_context();
-
   int err = get_user_data()->client()->NFSPROC_GETATTR(pathname, statbuf);
   if (NFSPROC_RPC_ERROR(err)) return -EINVAL;
   return err;
@@ -91,8 +89,6 @@ static int nfs_write(const char *pathname, const char* buffer, size_t size, off_
 
 static int nfs_fgetattr(const char *pathname, struct stat *statbuf, struct fuse_file_info *fi)
 {
-  struct fuse_context *context = fuse_get_context();
-
   int err = get_user_data()->client()->NFSPROC_FGETATTR(nullptr, statbuf, fi);
   if (NFSPROC_RPC_ERROR(err)) return -EINVAL;
   return err;
