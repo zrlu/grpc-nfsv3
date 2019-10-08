@@ -21,6 +21,7 @@ CXXFLAGS = `pkg-config --cflags protobuf grpc`
 CXXFLAGS += `pkg-config fuse --cflags --libs`
 CXXFLAGS += -std=c++17
 CXXFLAGS += -g
+CXXFLAGS += -Wunused-variable
 
 LDFLAGS = `pkg-config fuse --libs`
 LDFLAGS += -Wl,-rpath,./shared
@@ -44,7 +45,10 @@ PROTOS_PATH = ./protos
 
 vpath %.proto $(PROTOS_PATH)
 
-all: system-check runserver nfsmount stattest readtest
+all: system-check runserver nfsmount stattest readtest diroper
+
+diroper: diroper.cc
+	$(CXX) $(CXXFLAGS) $^ -o $@
 
 stattest: NFSClient.o stattest.cc nfs.pb.o nfs.grpc.pb.o
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
