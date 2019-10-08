@@ -100,6 +100,7 @@ int NFSClient::NFSPROC_READ(const char *pathname, char *buffer, size_t size, off
   while (stream->Read(&res)) {};
   // std::cerr << "read done" << std::endl;
   Status status = stream->Finish();
+  std::cerr << "read status: " << status.error_code() << " " << status.error_message() << std::endl;
   if (status.ok())
   {
     res.data().copy(buffer, size, 0);

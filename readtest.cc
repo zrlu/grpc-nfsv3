@@ -24,20 +24,20 @@ int main()
     }
     auto client = NFSClient(channel);
 
-    char *buf = new char[100];
-    bzero(buf, 100);
+    char *buf = new char[100000000];
+    bzero(buf, 100000000);
 
     int ret, fh, size_read;
     struct fuse_file_info fi;
     fi.fh = 3;
     fi.flags = O_RDONLY;
-    ret = client.NFSPROC_OPEN("./a.txt", &fi, &fh);
+    ret = client.NFSPROC_OPEN("./large.txt", &fi, &fh);
     std::cerr << "OPEN: " << ret << std::endl;
     std::cerr << "fh: " << fh << std:: endl;
 
     fi.fh = fh;
-    ret = client.NFSPROC_READ(nullptr, buf, 5, 0, &fi, &size_read);
-    std::cerr << "READ 5: " << ret << std::endl;
+    ret = client.NFSPROC_READ(nullptr, buf, 30000000, 0, &fi, &size_read);
+    std::cerr << "READ large: " << size_read << std::endl;
 
     std::cerr << buf << std::endl;
 }
