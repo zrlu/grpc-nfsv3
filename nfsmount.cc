@@ -89,15 +89,25 @@ static int nfs_write(const char *pathname, const char* buffer, size_t size, off_
   return 0;
 }
 
+static int nfs_fgetattr(const char *pathname, struct stat *statbuf, struct fuse_file_info *fi)
+{
+  struct fuse_context *context = fuse_get_context();
+
+  int err = get_user_data()->client()->NFSPROC_FGETATTR(nullptr, statbuf, fi);
+  if (NFSPROC_RPC_ERROR(err)) return -EINVAL;
+  return err;
+}
+
 static struct fuse_operations nfs_oper = {
   .getattr = nfs_getattr,
   .mknod = nfs_mknod,
   .open = nfs_open,
   .read = nfs_read,
-  // .write = nfs_write,
+  .write = nfs_write,
   .release = nfs_release,
   .init = nfs_init,
-  .destroy = nfs_destroy
+  .destroy = nfs_destroy,
+  .fgetattr = nfs_fgetattr
 };
 
 int main(int argc, char **argv)

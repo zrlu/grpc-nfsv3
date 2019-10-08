@@ -47,8 +47,6 @@ int NFSClient::NFSPROC_GETATTR(const char *pathname, struct stat *statbuf) {
   nfs::GETATTRres res;
   args.set_pathname(pathname);
   Status status = stub_->NFSPROC_GETATTR(&context, args, &res);
-  // std::cerr << "rpc: " << status.error_code() << std::endl;
-  // std::cerr << "errno: " << res.syscall_errno() << std::endl;
   std::cerr << res.ShortDebugString() << std::endl;
   const Stat stat = res.stat();
   copyStat2stat(stat, statbuf);
@@ -111,5 +109,17 @@ int NFSClient::NFSPROC_READ(const char *pathname, char *buffer, size_t size, off
   // std::cerr << total_size_read << std::endl;
   if (status.ok() && res.syscall_errno() != 0) *ret = total_size_read;
   if (res.syscall_errno() < 0) *ret = -1;
+  return status.error_code() | res.syscall_errno();
+}
+
+int NFSClient::NFSPROC_FGETATTR(const char *pathname, struct stat *statbuf, const struct fuse_file_info *fi) {
+  ClientContext context;
+  nfs::FGETATTRargs args;
+  nfs::FGETATTRres res;
+  args.set_fh(fi->fh);
+  Status status = stub_->NFSPROC_FGETATTR(&context, args, &res);
+  std::cerr << res.ShortDebugString() << std::endl;
+  const Stat stat = res.stat();
+  copyStat2stat(stat, statbuf);
   return status.error_code() | res.syscall_errno();
 }

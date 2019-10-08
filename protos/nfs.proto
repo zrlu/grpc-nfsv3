@@ -32,6 +32,8 @@ service NFS {
   rpc NFSPROC_READ(READargs) returns (stream READres) {}
 
   rpc NFSPROC_WRITE(stream WRITEargs) returns (WRITEres) {}
+
+  rpc NFSPROC_FGETATTR(FGETATTRargs) returns (FGETATTRres) {}
 }
 
 // A Message is a message sent while at a given point.
@@ -125,4 +127,13 @@ message WRITEargs {
 message WRITEres {
   int32 syscall_value = 1;
   int32 syscall_errno = 2;
+}
+
+message FGETATTRargs {
+  int32 fh = 1;
+}
+
+message FGETATTRres {
+  int32 syscall_errno = 1;
+  Stat stat = 2;
 }

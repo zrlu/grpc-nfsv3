@@ -35,6 +35,8 @@ using nfs::READargs;
 using nfs::READres;
 using nfs::WRITEargs;
 using nfs::WRITEres;
+using nfs::FGETATTRargs;
+using nfs::FGETATTRres;
 
 using std::chrono::system_clock;
 
@@ -55,6 +57,7 @@ public:
   Status NFSPROC_OPEN(ServerContext *, const OPENargs *, OPENres *) override;
   Status NFSPROC_RELEASE(ServerContext *, const RELEASEargs *, RELEASEres *) override;
   Status NFSPROC_READ(ServerContext *, const READargs *, ServerWriter<READres> *) override;
+  Status NFSPROC_FGETATTR(ServerContext *, const FGETATTRargs *, FGETATTRres *) override;
 };
 
 

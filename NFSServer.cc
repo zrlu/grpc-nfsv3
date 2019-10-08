@@ -153,3 +153,26 @@ Status NFSImpl::NFSPROC_READ(ServerContext *context, const READargs *request, Se
   delete buffer;
   return Status::OK;
 }
+
+Status NFSImpl::NFSPROC_FGETATTR(ServerContext *context, const FGETATTRargs *request, FGETATTRres *response)
+{
+  nfs::FGETATTRres res;
+  struct stat *statbuf = new struct stat;
+  int fh = request->fh();
+
+  if (fstat(fh, statbuf) == -1)
+  {
+    res.set_syscall_errno(-errno);
+    *response = res;
+    return Status::OK;
+  }
+
+  Stat *stat = new Stat;
+  copystat2Stat(*statbuf, stat);
+  res.set_allocated_stat(stat);
+
+  delete statbuf;
+
+  *response = res;
+  return Status::OK;
+}
