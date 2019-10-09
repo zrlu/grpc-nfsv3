@@ -60,7 +60,7 @@ UserData.o: UserData.cc
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -c
 
 FileHandlerTable.o: FileHandlerTable.cc
-	$(CXX) $(CXXFLAGS) $ $(LDFLAGS) -c
+	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -c
 
 NFSClient.o: NFSClient.cc helpers.h
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -c
@@ -81,7 +81,7 @@ nfs.pb.cc: nfs.proto
 	$(PROTOC) -I $(PROTOS_PATH) --cpp_out=. $<
 
 clean:
-	rm -f *.o *.pb.cc *.pb.h runserver nfsmount stattest
+	rm -f *.o *.pb.cc *.pb.h runserver nfsmount stattest readtest
 
 
 # The following is to test your system and ensure a smoother experience.
