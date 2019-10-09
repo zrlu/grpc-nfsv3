@@ -110,7 +110,6 @@ Status NFSImpl::NFSPROC_RELEASE(ServerContext *context, const nfs::RELEASEargs *
 
 Status NFSImpl::NFSPROC_READ(ServerContext *context, const nfs::READargs *request, ServerWriter<nfs::READres> *writer)
 {
-  nfs::READres res;
   int fh = request->fh();
   size_t size = request->size();
   off_t offset = request->offset();
@@ -122,15 +121,18 @@ Status NFSImpl::NFSPROC_READ(ServerContext *context, const nfs::READargs *reques
   {
     if (lseek(fh, offset + chunk_idx*READ_CHUNK_SIZE, SEEK_SET) == -1)
     {
+      nfs::READres res;
       res.set_syscall_errno(-errno);
       writer->Write(res);
       break;
     }
     retval = read(fh, buffer, READ_CHUNK_SIZE);
     if (retval == -1) {
+      nfs::READres res;
       res.set_syscall_errno(-errno);
       break;
     }
+    nfs::READres res;
     res.set_syscall_value(retval);
     res.set_data(buffer);
     res.set_chunk_idx(chunk_idx);
@@ -144,7 +146,7 @@ Status NFSImpl::NFSPROC_WRITE(ServerContext *context, ServerReader<nfs::WRITEarg
 {
   nfs::WRITEres res;
   
-  
+
   return Status::OK;
 }
 
