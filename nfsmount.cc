@@ -15,6 +15,8 @@
 #include "FileHandlerTable.h"
 #include "UserData.h"
 
+#define NFS_DEBUG(pathname) fprintf(stderr, "%s(%s)\n", __func__, pathname)
+
 UserData *get_user_data()
 {
   struct fuse_context *context = fuse_get_context();
@@ -43,6 +45,7 @@ static void nfs_destroy(void *userdata)
 
 static int nfs_getattr(const char *pathname, struct stat *statbuf)
 {
+  NFS_DEBUG(pathname);
   int err = get_user_data()->client()->NFSPROC_GETATTR(pathname, statbuf);
   if (NFSPROC_RPC_ERROR(err)) return -EINVAL;
   return err;
@@ -50,6 +53,7 @@ static int nfs_getattr(const char *pathname, struct stat *statbuf)
 
 static int nfs_mknod(const char *pathname, mode_t mode, dev_t dev)
 {
+  NFS_DEBUG(pathname);
   int err = get_user_data()->client()->NFSPROC_MKNOD(pathname, mode, dev);
   if (NFSPROC_RPC_ERROR(err)) return -EINVAL;
   return err;
@@ -57,6 +61,7 @@ static int nfs_mknod(const char *pathname, mode_t mode, dev_t dev)
 
 static int nfs_open(const char *pathname, struct fuse_file_info *fi)
 {
+  NFS_DEBUG(pathname);
   int fh = get_user_data()->fhtable()->allocate();
   if (!~fh) return -ENFILE;
   fi->fh = fh;
@@ -69,6 +74,7 @@ static int nfs_open(const char *pathname, struct fuse_file_info *fi)
 
 static int nfs_release(const char *pathname, struct fuse_file_info *fi)
 {
+  NFS_DEBUG(pathname);
   int err = get_user_data()->client()->NFSPROC_RELEASE(nullptr, fi);
   if (NFSPROC_OK(err)) get_user_data()->fhtable()->deallocate(fi->fh);
   if (NFSPROC_RPC_ERROR(err)) return -EINVAL;
@@ -77,6 +83,7 @@ static int nfs_release(const char *pathname, struct fuse_file_info *fi)
 
 static int nfs_read(const char *pathname, char* buffer, size_t size, off_t offset, struct fuse_file_info *fi)
 {
+  NFS_DEBUG(pathname);
   int ret, err = get_user_data()->client()->NFSPROC_READ(nullptr, buffer, size, offset, fi, &ret);
   if (NFSPROC_RPC_ERROR(err)) return -EINVAL;
   if (NFSPROC_SYSCALL_ERROR(err)) return err;
@@ -85,22 +92,36 @@ static int nfs_read(const char *pathname, char* buffer, size_t size, off_t offse
 
 static int nfs_write(const char *pathname, const char* buffer, size_t size, off_t offset, struct fuse_file_info *fi)
 {
+  NFS_DEBUG(pathname);
   return 0;
 }
 
 static int nfs_fgetattr(const char *pathname, struct stat *statbuf, struct fuse_file_info *fi)
 {
+  NFS_DEBUG(pathname);
   int err = get_user_data()->client()->NFSPROC_FGETATTR(nullptr, statbuf, fi);
   if (NFSPROC_RPC_ERROR(err)) return -EINVAL;
   return err;
 }
 
-static int nfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi)
+static int nfs_opendir(const char *pathname, struct fuse_file_info *fi)
 {
-  int err = get_user_data()->client()->NFSPROC_READDIR(path, buf, filler, offset, fi);
-  puts("here");
+  NFS_DEBUG(pathname);
+  return 0;
+}
+
+static int nfs_readdir(const char *pathname, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi)
+{
+  NFS_DEBUG(pathname);
+  int err = get_user_data()->client()->NFSPROC_READDIR(pathname, buf, filler, offset, fi);
   if (NFSPROC_RPC_ERROR(err)) return -EINVAL;
   if (NFSPROC_SYSCALL_ERROR(err)) return err;
+  return 0;
+}
+
+static int nfs_releasedir(const char *pathname, struct fuse_file_info *fi)
+{
+  NFS_DEBUG(pathname);
   return 0;
 }
 
@@ -111,7 +132,9 @@ static struct fuse_operations nfs_oper = {
   .read = nfs_read,
   .write = nfs_write,
   .release = nfs_release,
+  .opendir = nfs_opendir,
   .readdir = nfs_readdir,
+  .releasedir = nfs_releasedir,
   .init = nfs_init,
   .destroy = nfs_destroy,
   .fgetattr = nfs_fgetattr
