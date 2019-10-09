@@ -90,7 +90,7 @@ Status NFSImpl::NFSPROC_OPEN(ServerContext *context, const nfs::OPENargs *reques
   int retval = open(fp.c_str(), oflag);
 
   if (retval == -1) res.set_syscall_errno(-errno);
-
+  
   res.set_syscall_value(retval);
   *response = res;
   return Status::OK;

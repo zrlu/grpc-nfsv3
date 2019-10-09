@@ -69,13 +69,15 @@ static int nfs_open(const char *pathname, struct fuse_file_info *fi)
 {
   NFS_DEBUG(pathname);
   int fh = get_user_data()->fhtable()->allocate();
-  if (!~fh) return -ENFILE;
+  std::cerr << fh << std::endl;
+  if (fh == -1) return -ENFILE;
   fi->fh = fh;
   int ret, err = get_user_data()->client()->NFSPROC_OPEN(pathname, fi, &ret);
+  fi->fh = ret;
   if (!NFSPROC_OK(err)) get_user_data()->fhtable()->deallocate(fh);
   if (NFSPROC_RPC_ERROR(err)) return -EINVAL;
   if (NFSPROC_SYSCALL_ERROR(err)) return err;
-  return ret;
+  return 0;
 }
 
 static int nfs_release(const char *pathname, struct fuse_file_info *fi)
