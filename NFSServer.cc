@@ -59,7 +59,7 @@ Status NFSImpl::NFSPROC_GETATTR(ServerContext *context, const nfs::GETATTRargs *
     return Status::OK;
   }
 
-  Stat *stat = new Stat;
+  nfs::Stat *stat = new nfs::Stat;
   copystat2Stat(*statbuf, stat);
   res.set_allocated_stat(stat);
 
@@ -153,7 +153,7 @@ Status NFSImpl::NFSPROC_FGETATTR(ServerContext *context, const nfs::FGETATTRargs
     return Status::OK;
   }
 
-  nfs::Stat *stat = new Stat;
+  nfs::Stat *stat = new nfs::Stat;
   copystat2Stat(*statbuf, stat);
   res.set_allocated_stat(stat);
 

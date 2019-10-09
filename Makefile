@@ -60,12 +60,12 @@ UserData.o: UserData.cc
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -c
 
 FileHandlerTable.o: FileHandlerTable.cc
+	$(CXX) $(CXXFLAGS) $ $(LDFLAGS) -c
+
+NFSClient.o: NFSClient.cc helpers.h
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -c
 
-NFSClient.o: NFSClient.cc
-	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -c
-
-NFSServer.o: NFSServer.cc
+NFSServer.o: NFSServer.cc helpers.h
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -c
 
 runserver: nfs.pb.o nfs.grpc.pb.o NFSServer.o runserver.cc

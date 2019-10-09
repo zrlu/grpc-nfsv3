@@ -53,12 +53,12 @@ message Stat {
   uint32 st_uid = 5;
   uint32 st_gid = 6;
   uint64 st_rdev = 7;
-  int64 off_t = 8;
-  TimeSpec st_atime_ = 9;
-  TimeSpec st_mtime_ = 10;
-  TimeSpec st_ctime_ = 11;
-  int64 st_blksize = 12;
-  int64 st_blocks = 13;
+  int64 st_size = 8;
+  int64 st_blksize = 9;
+  int64 st_blocks = 10;
+  TimeSpec st_atime_ = 11;
+  TimeSpec st_mtime_ = 12;
+  TimeSpec st_ctime_ = 13;
 }
 
 message NULLargs {
