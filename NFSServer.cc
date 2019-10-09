@@ -31,10 +31,10 @@ using std::chrono::system_clock;
 
 namespace fs = std::filesystem;
 
-fs::path NFSImpl::fullpath(const std::string &suffix)
+fs::path NFSImpl::fullpath(const std::string &fuse_path)
 {
-    auto fp = fs::path(m_serverStoragePath) / fs::path(suffix);
-    return fs::weakly_canonical(fp);
+  auto path = fs::path(m_serverStoragePath + fuse_path).make_preferred();
+  return fs::weakly_canonical(path);
 }
 
 NFSImpl::NFSImpl(const std::string &path) : m_serverStoragePath(path) {}
@@ -50,7 +50,6 @@ Status NFSImpl::NFSPROC_GETATTR(ServerContext *context, const nfs::GETATTRargs *
 {
   nfs::GETATTRres res;
   auto fp = fullpath(request->pathname());
-  // std::cerr << "GETATTR " << fp << std::endl;
   struct stat *statbuf = new struct stat;
 
   if (stat(fp.c_str(), statbuf) == -1)
@@ -85,7 +84,6 @@ Status NFSImpl::NFSPROC_MKNOD(ServerContext *context, const nfs::MKNODargs *requ
 
 Status NFSImpl::NFSPROC_OPEN(ServerContext *context, const nfs::OPENargs *request, nfs::OPENres *response)
 {
-  std::cerr << "OPEN" << std::endl;
   nfs::OPENres res;
   auto fp = fullpath(request->pathname());
   int oflag = request->oflag();
@@ -169,11 +167,9 @@ Status NFSImpl::NFSPROC_READDIR(ServerContext *context, const nfs::READDIRargs *
   DIR *dp;
   struct dirent *de;
 
-  const char *pathname = (m_serverStoragePath + request->pathname()).c_str();
+  auto fp = fullpath(request->pathname());
 
-  puts(pathname);
-
-  dp = opendir(pathname);
+  dp = opendir(fp.c_str());
   if (dp == NULL)
   {
     res.set_syscall_errno(-errno);
@@ -187,7 +183,6 @@ Status NFSImpl::NFSPROC_READDIR(ServerContext *context, const nfs::READDIRargs *
       st->set_st_mode(DTTOIF(de->d_type));
       
       std::string *fname = res.add_filename();
-      puts(de->d_name);
       fname->assign(de->d_name);
   }
 

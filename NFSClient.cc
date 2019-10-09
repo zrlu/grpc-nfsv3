@@ -13,6 +13,14 @@ using grpc::StatusCode;
 
 #define CHUNK_SIZE (1<<20)
 
+#define ENABLE_DEBUG_RESPONSE 0
+#if ENABLE_DEBUG_RESPONSE
+#define DEBUG_RESPONSE(res) std::cerr << __func__ << ": " << res.shortDebugString() << std::endl;
+#else
+#define DEBUG_RESPONSE(res)
+#endif
+
+
 NFSClient::NFSClient(std::shared_ptr<Channel> channel) : stub_(NFS::NewStub(channel)) {}
 
 int NFSClient::NFSPROC_NULL(void)
@@ -21,7 +29,7 @@ int NFSClient::NFSPROC_NULL(void)
   nfs::NULLargs args;
   nfs::NULLres res;
   Status status = stub_->NFSPROC_NULL(&context, args, &res);
-  std::cerr << status.error_message() << std::endl;
+  DEBUG_RESPONSE(res);
   return status.error_code();
 }
 
@@ -31,7 +39,7 @@ int NFSClient::NFSPROC_GETATTR(const char *pathname, struct stat *statbuf) {
   nfs::GETATTRres res;
   args.set_pathname(pathname);
   Status status = stub_->NFSPROC_GETATTR(&context, args, &res);
-  // std::cerr << res.ShortDebugString() << std::endl;
+  DEBUG_RESPONSE(res);
   const Stat stat = res.stat();
   copyStat2stat(stat, statbuf);
   return status.error_code() | res.syscall_errno();
@@ -46,6 +54,7 @@ int NFSClient::NFSPROC_MKNOD(const char *pathname, mode_t mode, dev_t dev)
   args.set_mode(mode);
   args.set_dev(dev);
   Status status = stub_->NFSPROC_MKNOD(&context, args, &res);
+  DEBUG_RESPONSE(res);
   return status.error_code() | res.syscall_errno();
 }
 
@@ -57,6 +66,7 @@ int NFSClient::NFSPROC_OPEN(const char *pathname, const struct fuse_file_info *f
   args.set_pathname(pathname);
   args.set_oflag(fi->flags);
   Status status = stub_->NFSPROC_OPEN(&context, args, &res);
+  DEBUG_RESPONSE(res);
   *ret = res.syscall_value();
   return status.error_code() | res.syscall_errno();
 }
@@ -68,6 +78,7 @@ int NFSClient::NFSPROC_RELEASE(const char *pathname, const struct fuse_file_info
   nfs::RELEASEres res;
   args.set_fh(fi->fh);
   Status status = stub_->NFSPROC_RELEASE(&context, args, &res);
+  DEBUG_RESPONSE(res);
   return status.error_code() | res.syscall_errno();
 }
 
@@ -83,6 +94,7 @@ int NFSClient::NFSPROC_READ(const char *pathname, char *buffer, size_t size, off
   size_t total_size_read = 0;
   std::shared_ptr<ClientReader<nfs::READres>> stream(stub_->NFSPROC_READ(&context, args));
   while (stream->Read(&res)) {
+    DEBUG_RESPONSE(res);
     if (res.syscall_errno() < 0) break;
     const size_t read_chunk_size = res.syscall_value();
     total_size_read += read_chunk_size;
@@ -90,7 +102,6 @@ int NFSClient::NFSPROC_READ(const char *pathname, char *buffer, size_t size, off
   };
   
   Status status = stream->Finish();
-  // std::cerr << total_size_read << std::endl;
   if (status.ok() && res.syscall_errno() != 0) *ret = total_size_read;
   if (res.syscall_errno() < 0) *ret = -1;
   return status.error_code() | res.syscall_errno();
@@ -103,7 +114,7 @@ int NFSClient::NFSPROC_FGETATTR(const char *pathname, struct stat *statbuf, cons
   nfs::FGETATTRres res;
   args.set_fh(fi->fh);
   Status status = stub_->NFSPROC_FGETATTR(&context, args, &res);
-  // std::cerr << res.ShortDebugString() << std::endl;
+  DEBUG_RESPONSE(res);
   const Stat stat = res.stat();
   copyStat2stat(stat, statbuf);
   return status.error_code() | res.syscall_errno();
@@ -116,17 +127,15 @@ int NFSClient::NFSPROC_READDIR(const char *path, void *buf, fuse_fill_dir_t fill
   nfs::READDIRres res;
   args.set_pathname(path);
   Status status = stub_->NFSPROC_READDIR(&context, args, &res);
+  DEBUG_RESPONSE(res);
   int code = status.error_code() | res.syscall_errno();
   if (code) return code;
-  // puts(res.ShortDebugString().c_str());
 
   int size = res.filename_size();
-  // std::cerr << size << std::endl;
   for (int index = 0; index < size; ++index)
   {
     nfs::Stat stat_obj = res.stat(index);
     const std::string filename = res.filename(index);
-    // puts(filename.c_str());
     struct stat st;
     copyStat2stat(stat_obj, &st);
     if (filler(buf, filename.c_str(), &st, 0)) break;

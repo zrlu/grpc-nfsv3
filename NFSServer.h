@@ -29,7 +29,7 @@ class NFSImpl final : public nfs::NFS::Service
 {
   std::mutex mu_;
   const std::string m_serverStoragePath;
-  fs::path fullpath(const std::string &suffix);
+  fs::path fullpath(const std::string &);
   
 protected:
 public:
