@@ -64,6 +64,7 @@
         "codecvt": "cpp",
         "iomanip": "cpp",
         "bit": "cpp",
-        "cerrno": "cpp"
+        "cerrno": "cpp",
+        "*.inc": "cpp"
     }
 }

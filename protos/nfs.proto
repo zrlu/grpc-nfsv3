@@ -146,6 +146,6 @@ message READDIRargs {
 
 message READDIRres {
   int32 syscall_errno = 1;
-  string filenames = 2;
-  repeated Stat stats = 3;
+  repeated string filename = 2;
+  repeated Stat stat = 3;
 }

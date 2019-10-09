@@ -111,5 +111,26 @@ int NFSClient::NFSPROC_FGETATTR(const char *pathname, struct stat *statbuf, cons
 
 int NFSClient::NFSPROC_READDIR(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi)
 {
+  ClientContext context;
+  nfs::READDIRargs args;
+  nfs::READDIRres res;
+  args.set_pathname(path);
+  Status status = stub_->NFSPROC_READDIR(&context, args, &res);
+  int code = status.error_code() | res.syscall_errno();
+  if (code) return code;
+  puts(res.ShortDebugString().c_str());
+
+  int size = res.filename_size();
+  std::cerr << size << std::endl;
+  for (int index = 0; index < size; ++index)
+  {
+    nfs::Stat stat_obj = res.stat(index);
+    const std::string filename = res.filename(index);
+    puts(filename.c_str());
+    struct stat st;
+    copyStat2stat(stat_obj, &st);
+    if (filler(buf, filename.c_str(), &st, 0)) break;
+  }
+  puts("here4");
   return 0;
 }

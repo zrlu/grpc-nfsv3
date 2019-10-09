@@ -11,6 +11,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <dirent.h>
 #include <errno.h>
 
 #include "NFSServer.h"
@@ -157,6 +158,40 @@ Status NFSImpl::NFSPROC_FGETATTR(ServerContext *context, const nfs::FGETATTRargs
 
   delete statbuf;
 
+  *response = res;
+  return Status::OK;
+}
+
+Status NFSImpl::NFSPROC_READDIR(ServerContext *context, const nfs::READDIRargs *request, nfs::READDIRres *response)
+{
+  nfs::READDIRres res;
+
+  DIR *dp;
+  struct dirent *de;
+
+  const char *pathname = (m_serverStoragePath + request->pathname()).c_str();
+
+  puts(pathname);
+
+  dp = opendir(pathname);
+  if (dp == NULL)
+  {
+    res.set_syscall_errno(-errno);
+    return Status::OK;
+  }
+
+  while ((de = readdir(dp)) != NULL) {
+      res.add_stat();
+      nfs::Stat *st = res.add_stat();
+      st->set_st_ino(de->d_ino);
+      st->set_st_mode(de->d_type << 12);
+      
+      std::string *fname = res.add_filename();
+      puts(de->d_name);
+      fname->assign(de->d_name);
+  }
+
+  closedir(dp);
   *response = res;
   return Status::OK;
 }
