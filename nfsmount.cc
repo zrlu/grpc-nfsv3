@@ -69,11 +69,10 @@ static int nfs_open(const char *pathname, struct fuse_file_info *fi)
 {
   NFS_DEBUG(pathname);
   int fh = get_user_data()->fhtable()->allocate();
-  std::cerr << fh << std::endl;
   if (fh == -1) return -ENFILE;
   fi->fh = fh;
-  int ret, err = get_user_data()->client()->NFSPROC_OPEN(pathname, fi, &ret);
-  fi->fh = ret;
+  int fh_server, err = get_user_data()->client()->NFSPROC_OPEN(pathname, fi, &fh_server);
+  fi->fh = fh_server;
   if (!NFSPROC_OK(err)) get_user_data()->fhtable()->deallocate(fh);
   if (NFSPROC_RPC_ERROR(err)) return -EINVAL;
   if (NFSPROC_SYSCALL_ERROR(err)) return err;
@@ -92,10 +91,11 @@ static int nfs_release(const char *pathname, struct fuse_file_info *fi)
 static int nfs_read(const char *pathname, char* buffer, size_t size, off_t offset, struct fuse_file_info *fi)
 {
   NFS_DEBUG(pathname);
-  int ret, err = get_user_data()->client()->NFSPROC_READ(nullptr, buffer, size, offset, fi, &ret);
+  int bytes_read;
+  int err = get_user_data()->client()->NFSPROC_READ(nullptr, buffer, size, offset, fi, &bytes_read);
   if (NFSPROC_RPC_ERROR(err)) return -EINVAL;
   if (NFSPROC_SYSCALL_ERROR(err)) return err;
-  return ret;
+  return bytes_read;
 }
 
 static int nfs_write(const char *pathname, const char* buffer, size_t size, off_t offset, struct fuse_file_info *fi)

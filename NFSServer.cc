@@ -116,15 +116,18 @@ Status NFSImpl::NFSPROC_READ(ServerContext *context, const nfs::READargs *reques
   off_t offset = request->offset();
   int retval;
   char *buffer = new char[READ_CHUNK_SIZE];
+  bzero(buffer, READ_CHUNK_SIZE);
   int num_chunk = ((int)size / (int)READ_CHUNK_SIZE) + 1;
   for (int chunk_idx = 0; chunk_idx < num_chunk; ++chunk_idx)
   {
     if (lseek(fh, offset + chunk_idx*READ_CHUNK_SIZE, SEEK_SET) == -1)
     {
       res.set_syscall_errno(-errno);
+      writer->Write(res);
       break;
     }
-    if (retval = read(fh, buffer, READ_CHUNK_SIZE) == -1) {
+    retval = read(fh, buffer, READ_CHUNK_SIZE);
+    if (retval == -1) {
       res.set_syscall_errno(-errno);
       break;
     }

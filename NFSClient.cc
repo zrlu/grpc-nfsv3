@@ -13,9 +13,9 @@ using grpc::StatusCode;
 
 #define CHUNK_SIZE (1<<20)
 
-#define ENABLE_DEBUG_RESPONSE 0
+#define ENABLE_DEBUG_RESPONSE 1
 #if ENABLE_DEBUG_RESPONSE
-#define DEBUG_RESPONSE(res) std::cerr << __func__ << ": " << res.shortDebugString() << std::endl;
+#define DEBUG_RESPONSE(res) std::cerr << __func__ << ": " << res.ShortDebugString() << std::endl;
 #else
 #define DEBUG_RESPONSE(res)
 #endif
@@ -91,18 +91,18 @@ int NFSClient::NFSPROC_READ(const char *pathname, char *buffer, size_t size, off
   args.set_size(size);
   args.set_offset(offset);
 
-  size_t total_size_read = 0;
+  int total_size_read = 0;
   std::shared_ptr<ClientReader<nfs::READres>> stream(stub_->NFSPROC_READ(&context, args));
   while (stream->Read(&res)) {
     DEBUG_RESPONSE(res);
     if (res.syscall_errno() < 0) break;
-    const size_t read_chunk_size = res.syscall_value();
+    const int read_chunk_size = res.syscall_value();
     total_size_read += read_chunk_size;
     res.data().copy(buffer + total_size_read, read_chunk_size);
   };
   
   Status status = stream->Finish();
-  if (status.ok() && res.syscall_errno() != 0) *ret = total_size_read;
+  if (status.ok() && res.syscall_errno() == 0) *ret = total_size_read;
   if (res.syscall_errno() < 0) *ret = -1;
   return status.error_code() | res.syscall_errno();
 }

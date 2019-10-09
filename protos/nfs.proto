@@ -72,8 +72,9 @@ message GETATTRargs {
 }
 
 message GETATTRres {
-  int32 syscall_errno = 1;
-  Stat stat = 2;
+  int32 syscall_value = 1;
+  int32 syscall_errno = 2;
+  Stat stat = 3;
 }
 
 message MKNODargs {
@@ -83,7 +84,8 @@ message MKNODargs {
 }
 
 message MKNODres {
-  int32 syscall_errno = 1;
+  int32 syscall_value = 1;
+  int32 syscall_errno = 2;
 }
 
 message OPENargs {
@@ -101,7 +103,8 @@ message RELEASEargs {
 }
 
 message RELEASEres {
-  int32 syscall_errno = 1;
+  int32 syscall_value = 1;
+  int32 syscall_errno = 2;
 }
 
 message READargs {
@@ -136,8 +139,9 @@ message FGETATTRargs {
 }
 
 message FGETATTRres {
-  int32 syscall_errno = 1;
-  Stat stat = 2;
+  int32 syscall_value = 1;
+  int32 syscall_errno = 2;
+  Stat stat = 3;
 }
 
 message READDIRargs {
@@ -145,7 +149,8 @@ message READDIRargs {
 }
 
 message READDIRres {
-  int32 syscall_errno = 1;
-  repeated string filename = 2;
-  repeated Stat stat = 3;
+  int32 syscall_value = 1;
+  int32 syscall_errno = 2;
+  repeated string filename = 3;
+  repeated Stat stat = 4;
 }
