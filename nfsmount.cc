@@ -15,7 +15,7 @@
 #include "FileHandlerTable.h"
 #include "UserData.h"
 
-#define ENABLE_NFS_DEBUG 1
+#define ENABLE_NFS_DEBUG 0
 
 #if ENABLE_NFS_DEBUG
 #define NFS_DEBUG(pathname) fprintf(stderr, "%s(%s)\n", __func__, pathname)
@@ -93,6 +93,7 @@ static int nfs_read(const char *pathname, char* buffer, size_t size, off_t offse
   NFS_DEBUG(pathname);
   int bytes_read;
   int err = get_user_data()->client()->NFSPROC_READ(nullptr, buffer, size, offset, fi, &bytes_read);
+  std::cerr << "buffer: " << buffer << std::endl;
   if (NFSPROC_RPC_ERROR(err)) return -EINVAL;
   if (NFSPROC_SYSCALL_ERROR(err)) return err;
   return bytes_read;

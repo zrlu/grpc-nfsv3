@@ -1,0 +1,16 @@
+#!/bin/bash
+
+CLIENT_CACHE_DIR=client_cache
+SERVER_CACHE_DIR=server_cache
+
+echo "kill processes..."
+fusermount -u ${CLIENT_CACHE_DIR} > /dev/null
+pkill nfsmount > /dev/null
+pkill runserver > /dev/null
+
+echo "start server in the background..."
+./runserver ${SERVER_CACHE_DIR} &
+
+echo "start client in the background..."
+
+./nfsmount ${CLIENT_CACHE_DIR} -f &

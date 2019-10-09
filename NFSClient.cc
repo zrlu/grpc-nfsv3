@@ -97,8 +97,8 @@ int NFSClient::NFSPROC_READ(const char *pathname, char *buffer, size_t size, off
     DEBUG_RESPONSE(res);
     if (res.syscall_errno() < 0) break;
     const int read_chunk_size = res.syscall_value();
+    res.data().copy(buffer, read_chunk_size);
     total_size_read += read_chunk_size;
-    res.data().copy(buffer + total_size_read, read_chunk_size);
   };
   
   Status status = stream->Finish();
