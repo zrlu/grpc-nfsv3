@@ -20,29 +20,12 @@ using grpc::ServerReader;
 using grpc::ServerReaderWriter;
 using grpc::ServerWriter;
 using grpc::Status;
-using nfs::NFS;
-using nfs::NULLargs;
-using nfs::NULLres;
-using nfs::GETATTRargs;
-using nfs::GETATTRres;
-using nfs::MKNODargs;
-using nfs::MKNODres;
-using nfs::OPENargs;
-using nfs::OPENres;
-using nfs::RELEASEargs;
-using nfs::RELEASEres;
-using nfs::READargs;
-using nfs::READres;
-using nfs::WRITEargs;
-using nfs::WRITEres;
-using nfs::FGETATTRargs;
-using nfs::FGETATTRres;
 
 using std::chrono::system_clock;
 
 namespace fs = std::filesystem;
 
-class NFSImpl final : public NFS::Service
+class NFSImpl final : public nfs::NFS::Service
 {
   std::mutex mu_;
   const std::string m_serverStoragePath;
@@ -51,13 +34,13 @@ class NFSImpl final : public NFS::Service
 protected:
 public:
   NFSImpl(const std::string &path);
-  Status NFSPROC_NULL(ServerContext *, const NULLargs *, NULLres *) override;
-  Status NFSPROC_GETATTR(ServerContext *, const GETATTRargs *, GETATTRres *) override;
-  Status NFSPROC_MKNOD(ServerContext *, const MKNODargs *, MKNODres *) override;
-  Status NFSPROC_OPEN(ServerContext *, const OPENargs *, OPENres *) override;
-  Status NFSPROC_RELEASE(ServerContext *, const RELEASEargs *, RELEASEres *) override;
-  Status NFSPROC_READ(ServerContext *, const READargs *, ServerWriter<READres> *) override;
-  Status NFSPROC_FGETATTR(ServerContext *, const FGETATTRargs *, FGETATTRres *) override;
+  Status NFSPROC_NULL(ServerContext *, const nfs::NULLargs *, nfs::NULLres *) override;
+  Status NFSPROC_GETATTR(ServerContext *, const nfs::GETATTRargs *, nfs::GETATTRres *) override;
+  Status NFSPROC_MKNOD(ServerContext *, const nfs::MKNODargs *, nfs::MKNODres *) override;
+  Status NFSPROC_OPEN(ServerContext *, const nfs::OPENargs *, nfs::OPENres *) override;
+  Status NFSPROC_RELEASE(ServerContext *, const nfs::RELEASEargs *, nfs::RELEASEres *) override;
+  Status NFSPROC_READ(ServerContext *, const nfs::READargs *, ServerWriter<nfs::READres> *) override;
+  Status NFSPROC_FGETATTR(ServerContext *, const nfs::FGETATTRargs *, nfs::FGETATTRres *) override;
 };
 
 

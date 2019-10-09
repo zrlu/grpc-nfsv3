@@ -4,6 +4,7 @@
 #include <string>
 
 #include <sys/types.h>
+#include <fuse.h>
 
 #include <grpc/grpc.h>
 #include <grpcpp/channel.h>
@@ -42,6 +43,7 @@ public:
   int NFSPROC_READ(const char *, char *, size_t, off_t, const struct fuse_file_info *, int *);
   int NFSPROC_WRITE(const char *, const char *, size_t, off_t, const struct fuse_file_info *, int *);
   int NFSPROC_FGETATTR(const char *, struct stat *, const struct fuse_file_info *);
+  int NFSPROC_READDIR(const char *, void *, fuse_fill_dir_t, off_t, struct fuse_file_info *);
 
 private:
   std::unique_ptr<NFS::Stub> stub_;

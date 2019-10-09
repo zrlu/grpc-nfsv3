@@ -10,22 +10,6 @@ using grpc::ClientReaderWriter;
 using grpc::ClientWriter;
 using grpc::Status;
 using grpc::StatusCode;
-using nfs::NFS;
-using nfs::Stat;
-using nfs::NULLargs;
-using nfs::NULLres;
-using nfs::GETATTRargs;
-using nfs::GETATTRres;
-using nfs::MKNODargs;
-using nfs::MKNODres;
-using nfs::OPENargs;
-using nfs::OPENres;
-using nfs::RELEASEargs;
-using nfs::RELEASEres;
-using nfs::READargs;
-using nfs::READres;
-using nfs::WRITEargs;
-using nfs::WRITEres;
 
 #define CHUNK_SIZE (1<<20)
 
@@ -112,7 +96,8 @@ int NFSClient::NFSPROC_READ(const char *pathname, char *buffer, size_t size, off
   return status.error_code() | res.syscall_errno();
 }
 
-int NFSClient::NFSPROC_FGETATTR(const char *pathname, struct stat *statbuf, const struct fuse_file_info *fi) {
+int NFSClient::NFSPROC_FGETATTR(const char *pathname, struct stat *statbuf, const struct fuse_file_info *fi)
+{
   ClientContext context;
   nfs::FGETATTRargs args;
   nfs::FGETATTRres res;
@@ -122,4 +107,9 @@ int NFSClient::NFSPROC_FGETATTR(const char *pathname, struct stat *statbuf, cons
   const Stat stat = res.stat();
   copyStat2stat(stat, statbuf);
   return status.error_code() | res.syscall_errno();
+}
+
+int NFSClient::NFSPROC_READDIR(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi)
+{
+  return 0;
 }
