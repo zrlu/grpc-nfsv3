@@ -15,9 +15,7 @@
 #include "FileHandlerTable.h"
 #include "UserData.h"
 
-#define ENABLE_NFS_DEBUG 1
-
-#if ENABLE_NFS_DEBUG
+#ifdef ENABLE_NFS_DEBUG
 #define NFS_DEBUG(pathname) fprintf(stderr, "%s(%s)\n", __func__, pathname)
 #else
 #define NFS_DEBUG(pathname)

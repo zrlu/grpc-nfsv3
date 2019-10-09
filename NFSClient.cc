@@ -13,8 +13,7 @@ using grpc::StatusCode;
 
 #define CHUNK_SIZE (1<<20)
 
-#define ENABLE_DEBUG_RESPONSE 0
-#if ENABLE_DEBUG_RESPONSE
+#ifdef ENABLE_DEBUG_RESPONSE
 #define DEBUG_RESPONSE(res) std::cerr << __func__ << ": " << res.ShortDebugString() << std::endl;
 #else
 #define DEBUG_RESPONSE(res)

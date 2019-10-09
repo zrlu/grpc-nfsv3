@@ -9,3 +9,6 @@ runserver
 server_cache
 client_cache
 *.h.gch
+stattest
+readtest
+scratch

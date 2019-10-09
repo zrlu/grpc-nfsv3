@@ -140,6 +140,14 @@ Status NFSImpl::NFSPROC_READ(ServerContext *context, const nfs::READargs *reques
   return Status::OK;
 }
 
+Status NFSImpl::NFSPROC_WRITE(ServerContext *context, ServerReader<nfs::WRITEargs> *reader, nfs::WRITEres *response)
+{
+  nfs::WRITEres res;
+  
+  
+  return Status::OK;
+}
+
 Status NFSImpl::NFSPROC_FGETATTR(ServerContext *context, const nfs::FGETATTRargs *request, nfs::FGETATTRres *response)
 {
   nfs::FGETATTRres res;

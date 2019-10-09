@@ -14,14 +14,24 @@
 # limitations under the License.
 #
 
+ver = release
+
 HOST_SYSTEM = $(shell uname | cut -f 1 -d_)
 SYSTEM ?= $(HOST_SYSTEM)
 CXX = g++-9
 CXXFLAGS = `pkg-config --cflags protobuf grpc`
 CXXFLAGS += `pkg-config fuse --cflags --libs`
 CXXFLAGS += -std=c++17
-CXXFLAGS += -g
 CXXFLAGS += -Wunused-variable
+
+ifeq ($(ver), debug)
+CXXFLAGS += -DENABLE_NFS_DEBUG
+CXXFLAGS += -DENABLE_DEBUG_RESPONSE
+CXXFLAGS += -g
+CXXFLAGS += -Og
+else
+CXXFLAGS += -O3
+endif
 
 LDFLAGS = `pkg-config fuse --libs`
 LDFLAGS += -Wl,-rpath,./shared
@@ -45,7 +55,12 @@ PROTOS_PATH = ./protos
 
 vpath %.proto $(PROTOS_PATH)
 
-all: system-check runserver nfsmount stattest readtest scratch
+EXECUTABLES = runserver nfsmount stattest readtest scratch
+
+all: system-check $(EXECUTABLES)
+
+debug: all
+	$(CXX) $(DEBUG_CXXFLAGS) $^ $(LDFLAGS) -o $@
 
 scratch: scratch.cc
 	$(CXX) $(CXXFLAGS) $^ -o $@
@@ -56,17 +71,17 @@ stattest: NFSClient.o stattest.cc nfs.pb.o nfs.grpc.pb.o
 readtest: NFSClient.o readtest.cc nfs.pb.o nfs.grpc.pb.o
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
 
-UserData.o: UserData.cc
-	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -c
+UserData.o: UserData.cc UserData.h
+	$(CXX) $(CXXFLAGS) $< $(LDFLAGS) -c
 
-FileHandlerTable.o: FileHandlerTable.cc
-	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -c
+FileHandlerTable.o: FileHandlerTable.cc FileHandlerTable.h
+	$(CXX) $(CXXFLAGS) $< $(LDFLAGS) -c
 
-NFSClient.o: NFSClient.cc helpers.h
-	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -c
+NFSClient.o: NFSClient.cc NFSClient.h helpers.h
+	$(CXX) $(CXXFLAGS) $< $(LDFLAGS) -c
 
-NFSServer.o: NFSServer.cc helpers.h
-	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -c
+NFSServer.o: NFSServer.cc NFSServer.h helpers.h
+	$(CXX) $(CXXFLAGS) $< $(LDFLAGS) -c
 
 runserver: nfs.pb.o nfs.grpc.pb.o NFSServer.o runserver.cc
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
@@ -80,8 +95,10 @@ nfs.grpc.pb.cc: nfs.proto
 nfs.pb.cc: nfs.proto
 	$(PROTOC) -I $(PROTOS_PATH) --cpp_out=. $<
 
+.PHONY: clean
+
 clean:
-	rm -f *.o *.pb.cc *.pb.h runserver nfsmount stattest readtest
+	rm -f *.o *.pb.cc *.pb.h $(EXECUTABLES)
 
 
 # The following is to test your system and ensure a smoother experience.
