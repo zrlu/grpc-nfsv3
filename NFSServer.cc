@@ -184,7 +184,7 @@ Status NFSImpl::NFSPROC_READDIR(ServerContext *context, const nfs::READDIRargs *
       res.add_stat();
       nfs::Stat *st = res.add_stat();
       st->set_st_ino(de->d_ino);
-      st->set_st_mode(de->d_type << 12);
+      st->set_st_mode(DTTOIF(de->d_type));
       
       std::string *fname = res.add_filename();
       puts(de->d_name);
