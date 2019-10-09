@@ -91,9 +91,7 @@ static int nfs_release(const char *pathname, struct fuse_file_info *fi)
 static int nfs_read(const char *pathname, char* buffer, size_t size, off_t offset, struct fuse_file_info *fi)
 {
   NFS_DEBUG(pathname);
-  int bytes_read;
-  int err = get_user_data()->client()->NFSPROC_READ(nullptr, buffer, size, offset, fi, &bytes_read);
-  std::cerr << "buffer: " << buffer << std::endl;
+  int bytes_read, err = get_user_data()->client()->NFSPROC_READ(nullptr, buffer, size, offset, fi, &bytes_read);
   if (NFSPROC_RPC_ERROR(err)) return -EINVAL;
   if (NFSPROC_SYSCALL_ERROR(err)) return err;
   return bytes_read;
