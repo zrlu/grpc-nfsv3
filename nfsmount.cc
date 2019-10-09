@@ -7,6 +7,7 @@
 #include <stddef.h>
 #include <assert.h>
 #include <fuse.h>
+#include <dirent.h>
 
 #include <iostream>
 
@@ -94,6 +95,32 @@ static int nfs_fgetattr(const char *pathname, struct stat *statbuf, struct fuse_
   return err;
 }
 
+static int nfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi)
+{
+  puts(path);
+  DIR *dp;
+  struct dirent *de;
+
+  (void) offset;
+  (void) fi;
+
+  dp = opendir(path);
+  if (dp == NULL)
+      return -errno;
+
+  while ((de = readdir(dp)) != NULL) {
+      struct stat st;
+      memset(&st, 0, sizeof(st));
+      st.st_ino = de->d_ino;
+      st.st_mode = de->d_type << 12;
+      if (filler(buf, de->d_name, &st, 0))
+          break;
+  }
+
+  closedir(dp);
+  return 0;
+}
+
 static struct fuse_operations nfs_oper = {
   .getattr = nfs_getattr,
   .mknod = nfs_mknod,
@@ -101,6 +128,7 @@ static struct fuse_operations nfs_oper = {
   .read = nfs_read,
   .write = nfs_write,
   .release = nfs_release,
+  .readdir = nfs_readdir,
   .init = nfs_init,
   .destroy = nfs_destroy,
   .fgetattr = nfs_fgetattr

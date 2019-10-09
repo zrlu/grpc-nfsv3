@@ -34,6 +34,8 @@ service NFS {
   rpc NFSPROC_WRITE(stream WRITEargs) returns (WRITEres) {}
 
   rpc NFSPROC_FGETATTR(FGETATTRargs) returns (FGETATTRres) {}
+
+  rpc NFSPROC_READDIR(READDIRargs) returns (READDIRres) {}
 }
 
 // A Message is a message sent while at a given point.
@@ -136,4 +138,14 @@ message FGETATTRargs {
 message FGETATTRres {
   int32 syscall_errno = 1;
   Stat stat = 2;
+}
+
+message READDIRargs {
+  string pathname = 1;
+}
+
+message READDIRres {
+  int32 syscall_errno = 1;
+  string filenames = 2;
+  repeated Stat stats = 3;
 }

@@ -64,7 +64,7 @@ Status NFSImpl::NFSPROC_GETATTR(ServerContext *context, const GETATTRargs *reque
 {
   nfs::GETATTRres res;
   auto fp = fullpath(request->pathname());
-  std::cerr << "GETATTR " << fp << std::endl;
+  // std::cerr << "GETATTR " << fp << std::endl;
   struct stat *statbuf = new struct stat;
 
   if (stat(fp.c_str(), statbuf) == -1)
@@ -140,8 +140,7 @@ Status NFSImpl::NFSPROC_READ(ServerContext *context, const READargs *request, Se
       res.set_syscall_errno(-errno);
       break;
     }
-    retval = read(fh, buffer, READ_CHUNK_SIZE);
-    if (retval == -1) {
+    if (retval = read(fh, buffer, READ_CHUNK_SIZE) == -1) {
       res.set_syscall_errno(-errno);
       break;
     }

@@ -47,7 +47,7 @@ int NFSClient::NFSPROC_GETATTR(const char *pathname, struct stat *statbuf) {
   nfs::GETATTRres res;
   args.set_pathname(pathname);
   Status status = stub_->NFSPROC_GETATTR(&context, args, &res);
-  std::cerr << res.ShortDebugString() << std::endl;
+  // std::cerr << res.ShortDebugString() << std::endl;
   const Stat stat = res.stat();
   copyStat2stat(stat, statbuf);
   return status.error_code() | res.syscall_errno();
@@ -118,7 +118,7 @@ int NFSClient::NFSPROC_FGETATTR(const char *pathname, struct stat *statbuf, cons
   nfs::FGETATTRres res;
   args.set_fh(fi->fh);
   Status status = stub_->NFSPROC_FGETATTR(&context, args, &res);
-  std::cerr << res.ShortDebugString() << std::endl;
+  // std::cerr << res.ShortDebugString() << std::endl;
   const Stat stat = res.stat();
   copyStat2stat(stat, statbuf);
   return status.error_code() | res.syscall_errno();
