@@ -99,7 +99,11 @@ static int nfs_read(const char *pathname, char* buffer, size_t size, off_t offse
 static int nfs_write(const char *pathname, const char* buffer, size_t size, off_t offset, struct fuse_file_info *fi)
 {
   NFS_DEBUG(pathname);
-  return 0;
+  ssize_t bytes_wrote;
+  int err = get_user_data()->client()->NFSPROC_WRITE(nullptr, buffer, size, offset, fi, &bytes_wrote);
+  if (NFSPROC_RPC_ERROR(err)) return -EINVAL;
+  if (NFSPROC_SYSCALL_ERROR(err)) return err;
+  return bytes_wrote;
 }
 
 static int nfs_fgetattr(const char *pathname, struct stat *statbuf, struct fuse_file_info *fi)

@@ -135,7 +135,10 @@ Status NFSImpl::NFSPROC_READ(ServerContext *context, const nfs::READargs *reques
     res.set_syscall_value(retval);
     res.set_data(buffer);
     res.set_chunk_idx(chunk_idx);
-    writer->Write(res);
+    if (!writer->Write(res))
+    {
+      // broken stream
+    }
   }
   delete buffer;
   return Status::OK;
@@ -144,15 +147,15 @@ Status NFSImpl::NFSPROC_READ(ServerContext *context, const nfs::READargs *reques
 Status NFSImpl::NFSPROC_WRITE(ServerContext *context, ServerReader<nfs::WRITEargs> *reader, nfs::WRITEres *response)
 {
   nfs::WRITEargs args;
-  reader->Read(&args);
-  const int fh = args.fh();
-  const size_t size = args.size();
-  const off_t offset = args.offset();
 
   ssize_t total_size_written = 0;
 
   while (reader->Read(&args))
   {
+    const int fh = args.fh();
+    const size_t size = args.size();
+    (void)size;
+    const off_t offset = args.offset();
     const char *data = args.data().c_str();
     const size_t data_size = args.data().size();
 
@@ -169,11 +172,7 @@ Status NFSImpl::NFSPROC_WRITE(ServerContext *context, ServerReader<nfs::WRITEarg
       res.set_syscall_errno(-errno);
       return Status::OK;
     }
-    total_size_written += data_size;
-  }
-  if (size != total_size_written)
-  {
-    std::cerr << "WARNING: received " << size << " but " << total_size_written << "is written." << std::endl;
+    total_size_written += retval;
   }
   nfs::WRITEres res;
   res.set_syscall_value(total_size_written);

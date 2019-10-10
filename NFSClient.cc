@@ -11,7 +11,7 @@ using grpc::ClientWriter;
 using grpc::Status;
 using grpc::StatusCode;
 
-#define CHUNK_SIZE (1<<20)
+#define WRITE_CHUNK_SIZE (1<<20)
 
 #ifdef ENABLE_DEBUG_RESPONSE
 #define DEBUG_RESPONSE(res) std::cerr << __func__ << ": " << res.ShortDebugString() << std::endl;
@@ -103,6 +103,36 @@ int NFSClient::NFSPROC_READ(const char *pathname, char *buffer, size_t size, off
   Status status = stream->Finish();
   if (status.ok() && res.syscall_errno() == 0) *ret = total_size_copied;
   if (res.syscall_errno() < 0) *ret = -1;
+  return status.error_code() | res.syscall_errno();
+}
+
+int NFSClient::NFSPROC_WRITE(const char *pathname, const char *buffer, size_t size, off_t offset, const struct fuse_file_info *fi, ssize_t *ret)
+{
+  ClientContext context;
+  nfs::WRITEres res;
+
+
+  std::shared_ptr<ClientWriter<nfs::WRITEargs>> stream(stub_->NFSPROC_WRITE(&context, &res));
+  
+  int num_chunk = ((int)size / (int)WRITE_CHUNK_SIZE) + 1;
+  for (int chunk_idx = 0; chunk_idx < num_chunk; ++chunk_idx)
+  {
+    nfs::WRITEargs args;
+    args.set_fh(fi->fh);
+    args.set_size(size);
+    args.set_offset(offset);
+    args.set_data(buffer + chunk_idx*WRITE_CHUNK_SIZE, chunk_idx == num_chunk - 1 ? size : WRITE_CHUNK_SIZE);
+    args.set_chunk_idx(chunk_idx);
+    if (!stream->Write(args))
+    {
+      // broken stream
+    }
+  }
+  stream->WritesDone();
+  Status status = stream->Finish();
+
+  DEBUG_RESPONSE(res);
+  if (status.ok() && res.syscall_errno() == 0) *ret = res.syscall_value();
   return status.error_code() | res.syscall_errno();
 }
 
