@@ -83,7 +83,6 @@ int NFSClient::NFSPROC_RELEASE(const char *pathname, const struct fuse_file_info
 
 int NFSClient::NFSPROC_READ(const char *pathname, char *buffer, size_t size, off_t offset, const struct fuse_file_info *fi, ssize_t *ret)
 {
-  std::cerr << ">> NFSPROC_READ: " << size << std::endl;
   ClientContext context;
   nfs::READargs args;
   nfs::READres res;
