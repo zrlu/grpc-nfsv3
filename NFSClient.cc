@@ -134,6 +134,7 @@ int NFSClient::NFSPROC_WRITE(const char *pathname, const char *buffer, size_t si
     if (!stream->Write(args))
     {
       // broken stream
+      return StatusCode::CANCELLED;
     }
   }
   stream->WritesDone();

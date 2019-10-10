@@ -138,6 +138,8 @@ Status NFSImpl::NFSPROC_READ(ServerContext *context, const nfs::READargs *reques
     if (!writer->Write(res))
     {
       // broken stream
+      delete buffer;
+      return Status::CANCELLED;
     }
   }
   delete buffer;
