@@ -81,7 +81,7 @@ int NFSClient::NFSPROC_RELEASE(const char *pathname, const struct fuse_file_info
   return status.error_code() | res.syscall_errno();
 }
 
-int NFSClient::NFSPROC_READ(const char *pathname, char *buffer, size_t size, off_t offset, const struct fuse_file_info *fi, int *ret)
+int NFSClient::NFSPROC_READ(const char *pathname, char *buffer, size_t size, off_t offset, const struct fuse_file_info *fi, ssize_t *ret)
 {
   ClientContext context;
   nfs::READargs args;
@@ -90,12 +90,12 @@ int NFSClient::NFSPROC_READ(const char *pathname, char *buffer, size_t size, off
   args.set_size(size);
   args.set_offset(offset);
 
-  int total_size_copied = 0;
+  ssize_t total_size_copied = 0;
   std::shared_ptr<ClientReader<nfs::READres>> stream(stub_->NFSPROC_READ(&context, args));
   while (stream->Read(&res)) {
     DEBUG_RESPONSE(res);
     if (res.syscall_errno() < 0) break;
-    const int read_chunk_size = res.syscall_value();
+    ssize_t read_chunk_size = res.syscall_value();
     size_t size_copied = res.data().copy(buffer, read_chunk_size);
     total_size_copied += size_copied;
   };

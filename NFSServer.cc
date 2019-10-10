@@ -110,10 +110,9 @@ Status NFSImpl::NFSPROC_RELEASE(ServerContext *context, const nfs::RELEASEargs *
 
 Status NFSImpl::NFSPROC_READ(ServerContext *context, const nfs::READargs *request, ServerWriter<nfs::READres> *writer)
 {
-  int fh = request->fh();
-  size_t size = request->size();
-  off_t offset = request->offset();
-  int retval;
+  const int fh = request->fh();
+  const size_t size = request->size();
+  const off_t offset = request->offset();
   char *buffer = new char[READ_CHUNK_SIZE];
   bzero(buffer, READ_CHUNK_SIZE);
   int num_chunk = ((int)size / (int)READ_CHUNK_SIZE) + 1;
@@ -126,7 +125,7 @@ Status NFSImpl::NFSPROC_READ(ServerContext *context, const nfs::READargs *reques
       writer->Write(res);
       break;
     }
-    retval = read(fh, buffer, READ_CHUNK_SIZE);
+    ssize_t retval = read(fh, buffer, READ_CHUNK_SIZE);
     if (retval == -1) {
       nfs::READres res;
       res.set_syscall_errno(-errno);
@@ -144,9 +143,41 @@ Status NFSImpl::NFSPROC_READ(ServerContext *context, const nfs::READargs *reques
 
 Status NFSImpl::NFSPROC_WRITE(ServerContext *context, ServerReader<nfs::WRITEargs> *reader, nfs::WRITEres *response)
 {
-  nfs::WRITEres res;
-  
+  nfs::WRITEargs args;
+  reader->Read(&args);
+  const int fh = args.fh();
+  const size_t size = args.size();
+  const off_t offset = args.offset();
 
+  ssize_t total_size_written = 0;
+
+  while (reader->Read(&args))
+  {
+    const char *data = args.data().c_str();
+    const size_t data_size = args.data().size();
+
+    if (lseek(fh, offset + total_size_written, SEEK_SET) == -1)
+    {
+      nfs::WRITEres res;
+      res.set_syscall_errno(-errno);
+      return Status::OK;
+    }
+    ssize_t retval = write(fh, data, data_size);
+    if (retval == -1)
+    {
+      nfs::WRITEres res;
+      res.set_syscall_errno(-errno);
+      return Status::OK;
+    }
+    total_size_written += data_size;
+  }
+  if (size != total_size_written)
+  {
+    std::cerr << "WARNING: received " << size << " but " << total_size_written << "is written." << std::endl;
+  }
+  nfs::WRITEres res;
+  res.set_syscall_value(total_size_written);
+  *response = res;
   return Status::OK;
 }
 

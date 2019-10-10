@@ -27,7 +27,8 @@ int main()
     char *buf = new char[100000000];
     bzero(buf, 100000000);
 
-    int ret, fh, size_read;
+    int ret, fh;
+    ssize_t size_read;
     struct fuse_file_info fi;
     fi.fh = 3;
     fi.flags = O_RDONLY;

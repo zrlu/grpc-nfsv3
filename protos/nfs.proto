@@ -130,7 +130,7 @@ message WRITEargs {
 }
 
 message WRITEres {
-  int32 syscall_value = 1;
+  int64 syscall_value = 1;
   int32 syscall_errno = 2;
 }
 
@@ -149,7 +149,7 @@ message READDIRargs {
 }
 
 message READDIRres {
-  int32 syscall_value = 1;
+  int64 syscall_value = 1;
   int32 syscall_errno = 2;
   repeated string filename = 3;
   repeated Stat stat = 4;
