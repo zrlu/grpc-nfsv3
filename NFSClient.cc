@@ -14,7 +14,7 @@ using grpc::StatusCode;
 #define WRITE_CHUNK_SIZE (1<<20)
 
 #ifdef ENABLE_DEBUG_RESPONSE
-#define DEBUG_RESPONSE(res) std::cerr << __func__ << ": " << res.ShortDebugString() << std::endl;
+#define DEBUG_RESPONSE(res) std::cerr << __func__ << ": " << res.ShortDebugString().substr(0, 300) << std::endl;
 #else
 #define DEBUG_RESPONSE(res)
 #endif
@@ -83,6 +83,7 @@ int NFSClient::NFSPROC_RELEASE(const char *pathname, const struct fuse_file_info
 
 int NFSClient::NFSPROC_READ(const char *pathname, char *buffer, size_t size, off_t offset, const struct fuse_file_info *fi, ssize_t *ret)
 {
+  std::cerr << ">> NFSPROC_READ: " << size << std::endl;
   ClientContext context;
   nfs::READargs args;
   nfs::READres res;
@@ -94,7 +95,10 @@ int NFSClient::NFSPROC_READ(const char *pathname, char *buffer, size_t size, off
   std::shared_ptr<ClientReader<nfs::READres>> stream(stub_->NFSPROC_READ(&context, args));
   while (stream->Read(&res)) {
     DEBUG_RESPONSE(res);
-    if (res.syscall_errno() < 0) break;
+    if (res.syscall_errno() < 0) {
+      stream->Finish();
+      break;
+    }
     ssize_t read_chunk_size = res.syscall_value();
     size_t size_copied = res.data().copy(buffer, read_chunk_size);
     total_size_copied += size_copied;
@@ -110,8 +114,7 @@ int NFSClient::NFSPROC_WRITE(const char *pathname, const char *buffer, size_t si
 {
   ClientContext context;
   nfs::WRITEres res;
-
-
+  
   std::shared_ptr<ClientWriter<nfs::WRITEargs>> stream(stub_->NFSPROC_WRITE(&context, &res));
   
   int num_chunk = ((int)size / (int)WRITE_CHUNK_SIZE) + 1;
@@ -121,7 +124,12 @@ int NFSClient::NFSPROC_WRITE(const char *pathname, const char *buffer, size_t si
     args.set_fh(fi->fh);
     args.set_size(size);
     args.set_offset(offset);
-    args.set_data(buffer + chunk_idx*WRITE_CHUNK_SIZE, chunk_idx == num_chunk - 1 ? size : WRITE_CHUNK_SIZE);
+    const int chunk_size = (
+      size < WRITE_CHUNK_SIZE ? size : (
+        chunk_idx == num_chunk - 1 ? size % WRITE_CHUNK_SIZE: WRITE_CHUNK_SIZE
+      )
+    );
+    args.set_data(buffer + chunk_idx*WRITE_CHUNK_SIZE, chunk_size);
     args.set_chunk_idx(chunk_idx);
     if (!stream->Write(args))
     {

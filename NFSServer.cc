@@ -125,7 +125,7 @@ Status NFSImpl::NFSPROC_READ(ServerContext *context, const nfs::READargs *reques
       writer->Write(res);
       break;
     }
-    ssize_t retval = read(fh, buffer, READ_CHUNK_SIZE);
+    ssize_t retval = read(fh, buffer, std::min((int)size, READ_CHUNK_SIZE));
     if (retval == -1) {
       nfs::READres res;
       res.set_syscall_errno(-errno);
