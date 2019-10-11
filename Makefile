@@ -98,7 +98,7 @@ nfs.pb.cc: nfs.proto
 .PHONY: clean
 
 clean:
-	rm -f *.o *.pb.cc *.pb.h $(EXECUTABLES)
+	rm -f *.o *.pb.cc *.pb.h *.h.gch $(EXECUTABLES)
 
 
 # The following is to test your system and ensure a smoother experience.

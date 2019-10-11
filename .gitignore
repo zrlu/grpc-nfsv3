@@ -12,3 +12,5 @@ client_cache
 stattest
 readtest
 scratch
+**/*.swo
+**/*.swp
