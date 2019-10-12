@@ -57,7 +57,11 @@ vpath %.proto $(PROTOS_PATH)
 
 EXECUTABLES = runserver nfsmount
 
-all: system-check $(EXECUTABLES)
+ifeq ($(test), 1)
+TESTS = stattest scratch readtest
+endif
+
+all: system-check $(EXECUTABLES) $(TESTS)
 
 debug: all
 	$(CXX) $(DEBUG_CXXFLAGS) $^ $(LDFLAGS) -o $@
