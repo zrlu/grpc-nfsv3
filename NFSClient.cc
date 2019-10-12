@@ -117,8 +117,10 @@ int NFSClient::NFSPROC_WRITE(const char *pathname, const char *buffer, size_t si
   
   std::shared_ptr<ClientWriter<nfs::WRITEargs>> stream(stub_->NFSPROC_WRITE(&context, &res));
   char chunk_buf[WRITE_CHUNK_SIZE];
+  bzero(chunk_buf, WRITE_CHUNK_SIZE);
 
   ChunkReader reader(buffer, offset, size, WRITE_CHUNK_SIZE);
+  puts(buffer);
   while (reader.has_next())
   {
     int chunk_idx = reader.cur_chunk_idx();

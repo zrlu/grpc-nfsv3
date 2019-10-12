@@ -6,7 +6,7 @@ SERVER_CACHE_DIR=server_cache
 mkdir -p ${CLIENT_CACHE_DIR} ${SERVER_CACHE_DIR}
 
 echo "kill processes..."
-fusermount -u ${CLIENT_CACHE_DIR} > /dev/null
+fusermount -u ${CLIENT_CACHE_DIR} > /dev/null 2>&1
 pkill nfsmount > /dev/null
 pkill runserver > /dev/null
 

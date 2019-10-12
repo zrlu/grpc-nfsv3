@@ -3,12 +3,12 @@
 #include <iostream>
 #include <stdio.h>
 
-ChunkReader::ChunkReader(const char *buffer, const off_t offset, const size_t size, const size_t chunk_size):
+ChunkReader::ChunkReader(const char *data, const off_t offset, const size_t size, const size_t chunk_size):
 m_chunk_size(chunk_size),
 m_size(size),
 m_num_chunks(((int)size / (int)chunk_size) + 1),
 m_from_file(false),
-m_buffer(buffer),
+m_data(data),
 m_offset(offset),
 m_cur_chunk_idx(0)
 {
@@ -40,10 +40,18 @@ ssize_t ChunkReader::read_next(char *buffer)
         m_cur_chunk_idx++;
         return retval;
     } else {
-        int start = m_cur_chunk_idx*m_chunk_size;
-        int end = std::min( m_offset + (m_cur_chunk_idx+1)*m_chunk_size, m_size );
-        std::string(buffer).substr(start, end).copy(buffer, end - start);
-        return end - start;
+        bool last = m_cur_chunk_idx == m_num_chunks - 1;
+        int length = last ? m_size % m_chunk_size : m_chunk_size;
+        std::cerr << "length: " << length << std::endl;
+        puts(m_data);
+        memcpy(
+            buffer,
+            m_data + m_offset + m_cur_chunk_idx*m_chunk_size,
+            length
+        ); 
+        puts(buffer);
+        m_cur_chunk_idx++;
+        return length;
     }
 }
 

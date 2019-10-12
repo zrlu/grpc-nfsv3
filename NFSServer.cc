@@ -119,9 +119,9 @@ Status NFSImpl::NFSPROC_READ(ServerContext *context, const nfs::READargs *reques
   ChunkReader reader(fh, offset, size, READ_CHUNK_SIZE);
   while (reader.has_next())
   {
-    ssize_t retval;
     int chunk_idx = reader.cur_chunk_idx();
-    if (retval = reader.read_next(chunk_buf) == -1)
+    ssize_t retval = reader.read_next(chunk_buf);
+    if (retval == -1)
     {
       nfs::READres res;
       res.set_syscall_errno(-errno);

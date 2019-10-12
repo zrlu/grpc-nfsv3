@@ -14,11 +14,11 @@ class ChunkReader
     bool m_from_file;
     int m_fd;
     const off_t m_offset;
-    const char *m_buffer;
+    const char *m_data;
     int m_cur_chunk_idx;
 
 public:
-    ChunkReader(const char *buffer, const off_t offset, const size_t size, const size_t chunk_size);
+    ChunkReader(const char *data, const off_t offset, const size_t size, const size_t chunk_size);
     ChunkReader(const int fd, const off_t offset, const size_t size, const size_t chunk_size);
 
     bool has_next();
