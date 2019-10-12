@@ -39,8 +39,8 @@ public:
   Status NFSPROC_MKNOD(ServerContext *, const nfs::MKNODargs *, nfs::MKNODres *) override;
   Status NFSPROC_OPEN(ServerContext *, const nfs::OPENargs *, nfs::OPENres *) override;
   Status NFSPROC_RELEASE(ServerContext *, const nfs::RELEASEargs *, nfs::RELEASEres *) override;
-  Status NFSPROC_READ(ServerContext *, const nfs::READargs *, ServerWriter<nfs::READres> *) override;
-  Status NFSPROC_WRITE(ServerContext *, ServerReader<nfs::WRITEargs> *, nfs::WRITEres *) override;
+  Status NFSPROC_READ(ServerContext *, const nfs::READargs *, nfs::READres *) override;
+  Status NFSPROC_WRITE(ServerContext *, const nfs::WRITEargs *, nfs::WRITEres *) override;
   Status NFSPROC_FGETATTR(ServerContext *, const nfs::FGETATTRargs *, nfs::FGETATTRres *) override;
   Status NFSPROC_READDIR(ServerContext *, const nfs::READDIRargs *, nfs::READDIRres *) override;
 };

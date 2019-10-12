@@ -16,7 +16,6 @@
 
 #include "NFSServer.h"
 #include "helpers.h"
-#include "ChunkReader.h"
 
 using grpc::Server;
 using grpc::ServerBuilder;
@@ -27,8 +26,6 @@ using grpc::ServerWriter;
 using grpc::Status;
 
 using std::chrono::system_clock;
-
-#define READ_CHUNK_SIZE (1<<20)
 
 namespace fs = std::filesystem;
 
@@ -109,75 +106,54 @@ Status NFSImpl::NFSPROC_RELEASE(ServerContext *context, const nfs::RELEASEargs *
   return Status::OK;
 }
 
-Status NFSImpl::NFSPROC_READ(ServerContext *context, const nfs::READargs *request, ServerWriter<nfs::READres> *writer)
+Status NFSImpl::NFSPROC_READ(ServerContext *context, const nfs::READargs *request, nfs::READres *response)
 {
+  nfs::READres res;
   const int fh = request->fh();
   const size_t size = request->size();
   const off_t offset = request->offset();
-  char chunk_buf[READ_CHUNK_SIZE];
 
-  ChunkReader reader(fh, offset, size, READ_CHUNK_SIZE);
-  while (reader.has_next())
+  if (lseek(fh, offset, SEEK_SET) == -1)
   {
-    int chunk_idx = reader.cur_chunk_idx();
-    ssize_t retval = reader.read_next(chunk_buf);
-    if (retval == -1)
-    {
-      nfs::READres res;
-      res.set_syscall_errno(-errno);
-      if (!writer->Write(res))
-      {
-        // broken stream
-        return Status::CANCELLED;
-      }
-      return Status::OK;
-    }
-    nfs::READres res;
-    res.set_syscall_value(retval);
-    res.set_data(chunk_buf);
-    res.set_chunk_idx(chunk_idx);
-    if (!writer->Write(res))
-    {
-      // broken stream
-      return Status::CANCELLED;
-    }
+    res.set_syscall_errno(-errno);
+    *response = res;
+    return Status::OK;
   }
-
+  char buf[size];
+  ssize_t retval = read(fh, buf, size);
+  if (retval == -1) {
+    res.set_syscall_errno(-errno);
+    *response = res;
+    return Status::OK;
+  }
+  res.set_syscall_value(retval);
+  res.set_data(buf);
+  *response = res;
   return Status::OK;
 }
 
-Status NFSImpl::NFSPROC_WRITE(ServerContext *context, ServerReader<nfs::WRITEargs> *reader, nfs::WRITEres *response)
+Status NFSImpl::NFSPROC_WRITE(ServerContext *context, const nfs::WRITEargs *request, nfs::WRITEres *response)
 {
-  nfs::WRITEargs args;
-
-  ssize_t total_size_written = 0;
-
-  while (reader->Read(&args))
-  {
-    const int fh = args.fh();
-    const size_t size = args.size();
-    (void)size;
-    const off_t offset = args.offset();
-    const char *data = args.data().c_str();
-    const size_t data_size = args.data().size();
-
-    if (lseek(fh, offset + total_size_written, SEEK_SET) == -1)
-    {
-      nfs::WRITEres res;
-      res.set_syscall_errno(-errno);
-      return Status::OK;
-    }
-    ssize_t retval = write(fh, data, data_size);
-    if (retval == -1)
-    {
-      nfs::WRITEres res;
-      res.set_syscall_errno(-errno);
-      return Status::OK;
-    }
-    total_size_written += retval;
-  }
   nfs::WRITEres res;
-  res.set_syscall_value(total_size_written);
+
+  const int fh = request->fh();
+  const size_t size = request->size();
+  const off_t offset = request->offset();
+  const char *data = request->data().c_str();
+
+  if (lseek(fh, offset, SEEK_SET) == -1)
+  {
+    res.set_syscall_errno(-errno);
+    *response = res;
+    return Status::OK;
+  }
+  ssize_t retval = write(fh, data, size);
+  if (retval == -1) {
+    res.set_syscall_errno(-errno);
+    *response = res;
+    return Status::OK;
+  }
+  res.set_syscall_value(retval);
   *response = res;
   return Status::OK;
 }

@@ -11,8 +11,6 @@ using grpc::ClientWriter;
 using grpc::Status;
 using grpc::StatusCode;
 
-#define WRITE_CHUNK_SIZE (1<<20)
-
 #ifdef ENABLE_DEBUG_RESPONSE
 #define DEBUG_RESPONSE(res) std::cerr << __func__ << ": " << res.ShortDebugString().substr(0, 300) << std::endl;
 #else
@@ -86,62 +84,44 @@ int NFSClient::NFSPROC_READ(const char *pathname, char *buffer, size_t size, off
   ClientContext context;
   nfs::READargs args;
   nfs::READres res;
+  
   args.set_fh(fi->fh);
   args.set_size(size);
   args.set_offset(offset);
 
-  ssize_t total_size_copied = 0;
-  std::shared_ptr<ClientReader<nfs::READres>> stream(stub_->NFSPROC_READ(&context, args));
-  while (stream->Read(&res)) {
-    DEBUG_RESPONSE(res);
-    if (res.syscall_errno() < 0) {
-      stream->Finish();
-      break;
-    }
-    ssize_t read_chunk_size = res.syscall_value();
-    size_t size_copied = res.data().copy(buffer, read_chunk_size);
-    total_size_copied += size_copied;
-  };
-  
-  Status status = stream->Finish();
-  if (status.ok() && res.syscall_errno() == 0) *ret = total_size_copied;
-  if (res.syscall_errno() < 0) *ret = -1;
-  return status.error_code() | res.syscall_errno();
+  Status status = stub_->NFSPROC_READ(&context, args, &res);
+  DEBUG_RESPONSE(res);
+  int err = status.error_code() | res.syscall_errno();
+  if (!err) {
+    const int bytes_wrote = res.syscall_value();
+    res.data().copy(buffer, bytes_wrote);
+    *ret = bytes_wrote;
+    return 0;
+  }
+  *ret = -1;
+  return err;
 }
 
 int NFSClient::NFSPROC_WRITE(const char *pathname, const char *buffer, size_t size, off_t offset, const struct fuse_file_info *fi, ssize_t *ret)
 {
   ClientContext context;
+  nfs::WRITEargs args;
   nfs::WRITEres res;
   
-  std::shared_ptr<ClientWriter<nfs::WRITEargs>> stream(stub_->NFSPROC_WRITE(&context, &res));
-  
-  int num_chunk = ((int)size / (int)WRITE_CHUNK_SIZE) + 1;
-  for (int chunk_idx = 0; chunk_idx < num_chunk; ++chunk_idx)
-  {
-    nfs::WRITEargs args;
-    args.set_fh(fi->fh);
-    args.set_size(size);
-    args.set_offset(offset);
-    const int chunk_size = (
-      size < WRITE_CHUNK_SIZE ? size : (
-        chunk_idx == num_chunk - 1 ? size % WRITE_CHUNK_SIZE: WRITE_CHUNK_SIZE
-      )
-    );
-    args.set_data(buffer + chunk_idx*WRITE_CHUNK_SIZE, chunk_size);
-    args.set_chunk_idx(chunk_idx);
-    if (!stream->Write(args))
-    {
-      // broken stream
-      return StatusCode::CANCELLED;
-    }
-  }
-  stream->WritesDone();
-  Status status = stream->Finish();
+  args.set_fh(fi->fh);
+  args.set_size(size);
+  args.set_offset(offset);
+  args.set_data(buffer);
 
+  Status status = stub_->NFSPROC_WRITE(&context, args, &res);
   DEBUG_RESPONSE(res);
-  if (status.ok() && res.syscall_errno() == 0) *ret = res.syscall_value();
-  return status.error_code() | res.syscall_errno();
+  int err = status.error_code() | res.syscall_errno();
+  if (!err) {
+    *ret = res.syscall_value();
+    return 0;
+  }
+  *ret = -1;
+  return err;
 }
 
 int NFSClient::NFSPROC_FGETATTR(const char *pathname, struct stat *statbuf, const struct fuse_file_info *fi)
