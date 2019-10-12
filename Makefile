@@ -55,26 +55,20 @@ PROTOS_PATH = ./protos
 
 vpath %.proto $(PROTOS_PATH)
 
-EXECUTABLES = runserver nfsmount stattest readtest scratch
+EXECUTABLES = runserver nfsmount
 
 all: system-check $(EXECUTABLES)
 
 debug: all
 	$(CXX) $(DEBUG_CXXFLAGS) $^ $(LDFLAGS) -o $@
 
-scratch: scratch.cc
-	$(CXX) $(CXXFLAGS) $^ -o $@
-
-stattest: NFSClient.o stattest.cc nfs.pb.o nfs.grpc.pb.o
-	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
-
-readtest: NFSClient.o readtest.cc nfs.pb.o nfs.grpc.pb.o
-	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
-
 UserData.o: UserData.cc UserData.h
 	$(CXX) $(CXXFLAGS) $< $(LDFLAGS) -c
 
 FileHandlerTable.o: FileHandlerTable.cc FileHandlerTable.h
+	$(CXX) $(CXXFLAGS) $< $(LDFLAGS) -c
+
+ChunkReader.o: ChunkReader.cc ChunkReader.h
 	$(CXX) $(CXXFLAGS) $< $(LDFLAGS) -c
 
 NFSClient.o: NFSClient.cc NFSClient.h helpers.h
@@ -83,10 +77,19 @@ NFSClient.o: NFSClient.cc NFSClient.h helpers.h
 NFSServer.o: NFSServer.cc NFSServer.h helpers.h
 	$(CXX) $(CXXFLAGS) $< $(LDFLAGS) -c
 
-runserver: nfs.pb.o nfs.grpc.pb.o NFSServer.o runserver.cc
+runserver: nfs.pb.o nfs.grpc.pb.o NFSServer.o ChunkReader.o runserver.cc
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
 
-nfsmount: NFSClient.o nfs.pb.o nfs.grpc.pb.o nfsmount.cc FileHandlerTable.o UserData.o
+nfsmount: NFSClient.o nfs.pb.o nfs.grpc.pb.o ChunkReader.o FileHandlerTable.o UserData.o nfsmount.cc
+	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
+
+scratch: scratch.cc
+	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
+
+stattest: NFSClient.o stattest.cc nfs.pb.o nfs.grpc.pb.o ChunkReader.o
+	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
+
+readtest: NFSClient.o readtest.cc nfs.pb.o nfs.grpc.pb.o ChunkReader.o
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
 
 nfs.grpc.pb.cc: nfs.proto
