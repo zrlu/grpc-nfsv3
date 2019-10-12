@@ -123,12 +123,16 @@ int NFSClient::NFSPROC_WRITE(const char *pathname, const char *buffer, size_t si
   {
     int chunk_idx = reader.cur_chunk_idx();
     reader.read_next(chunk_buf);
+    puts(chunk_buf);
+    puts("a");
     nfs::WRITEargs args;
     args.set_fh(fi->fh);
     args.set_size(size);
     args.set_offset(offset);
     args.set_data(chunk_buf);
+    puts("b");
     args.set_chunk_idx(chunk_idx);
+    puts("c");
     if (!stream->Write(args))
     {
       // broken stream
