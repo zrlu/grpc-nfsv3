@@ -21,6 +21,17 @@
 #define NFS_DEBUG(path)
 #endif
 
+
+#define RECONNECT_IF_RPC_FAIL(__rpc, __err_addr, ...) \
+do {\
+  *__err_addr = get_user_data()->client()->__rpc(__VA_ARGS__);\
+  if (NFSPROC_RPC_ERROR(*__err_addr))\
+  {\
+      get_user_data()->client()->WaitForConnection();\
+  }\
+} while (NFSPROC_RPC_ERROR(*__err_addr));\
+
+
 UserData *get_user_data()
 {
   struct fuse_context *context = fuse_get_context();
@@ -30,6 +41,7 @@ UserData *get_user_data()
 static void *nfs_init(struct fuse_conn_info *conn)
 {
   auto channel = grpc::CreateChannel("127.0.0.1:50055", grpc::InsecureChannelCredentials());
+  
   gpr_timespec timeout{10, 0, GPR_TIMESPAN};
   bool connected = channel->WaitForConnected<gpr_timespec>(timeout);
   if (connected) {
@@ -50,16 +62,16 @@ static void nfs_destroy(void *userdata)
 static int nfs_getattr(const char *path, struct stat *statbuf)
 {
   NFS_DEBUG(path);
-  int err = get_user_data()->client()->NFSPROC_GETATTR(path, statbuf);
-  if (NFSPROC_RPC_ERROR(err)) return -EINVAL;
+  int err;
+  RECONNECT_IF_RPC_FAIL(NFSPROC_GETATTR, &err, path, statbuf);
   return err;
 }
 
 static int nfs_mknod(const char *path, mode_t mode, dev_t dev)
 {
   NFS_DEBUG(path);
-  int err = get_user_data()->client()->NFSPROC_MKNOD(path, mode, dev);
-  if (NFSPROC_RPC_ERROR(err)) return -EINVAL;
+  int err;
+  RECONNECT_IF_RPC_FAIL(NFSPROC_MKNOD, &err, path, mode, dev);
   return err;
 }
 
@@ -99,20 +111,21 @@ static int nfs_open(const char *path, struct fuse_file_info *fi)
   int fh = get_user_data()->fhtable()->allocate();
   if (fh == -1) return -ENFILE;
   fi->fh = fh;
-  int fh_server, err = get_user_data()->client()->NFSPROC_OPEN(path, fi, &fh_server);
+  int fh_server, err;
+  RECONNECT_IF_RPC_FAIL(NFSPROC_OPEN, &err, path, fi, &fh_server);
   fi->fh = fh_server;
-  if (!NFSPROC_OK(err)) get_user_data()->fhtable()->deallocate(fh);
-  if (NFSPROC_RPC_ERROR(err)) return -EINVAL;
-  if (NFSPROC_SYSCALL_ERROR(err)) return err;
-  return 0;
+  return err;
 }
 
 static int nfs_release(const char *path, struct fuse_file_info *fi)
 {
   NFS_DEBUG(path);
-  int err = get_user_data()->client()->NFSPROC_RELEASE(nullptr, fi);
-  if (NFSPROC_OK(err)) get_user_data()->fhtable()->deallocate(fi->fh);
-  if (NFSPROC_RPC_ERROR(err)) return -EINVAL;
+  int err;
+  RECONNECT_IF_RPC_FAIL(NFSPROC_RELEASE, &err, nullptr, fi);
+  if (!NFSPROC_SYSCALL_ERROR(err)) {
+    get_user_data()->fhtable()->deallocate(fi->fh);
+    return 0;
+  }
   return err;
 }
 
@@ -127,8 +140,8 @@ static int nfs_read(const char *path, char* buffer, size_t size, off_t offset, s
 {
   NFS_DEBUG(path);
   ssize_t bytes_read;
-  int err = get_user_data()->client()->NFSPROC_READ(nullptr, buffer, size, offset, fi, &bytes_read);
-  if (NFSPROC_RPC_ERROR(err)) return -EINVAL;
+  int err;
+  RECONNECT_IF_RPC_FAIL(NFSPROC_READ, &err, nullptr, buffer, size, offset, fi, &bytes_read);
   if (NFSPROC_SYSCALL_ERROR(err)) return err;
   return bytes_read;
 }
@@ -137,8 +150,8 @@ static int nfs_write(const char *path, const char* buffer, size_t size, off_t of
 {
   NFS_DEBUG(path);
   ssize_t bytes_wrote;
-  int err = get_user_data()->client()->NFSPROC_WRITE(nullptr, buffer, size, offset, fi, &bytes_wrote);
-  if (NFSPROC_RPC_ERROR(err)) return -EINVAL;
+  int err;
+  RECONNECT_IF_RPC_FAIL(NFSPROC_WRITE, &err, nullptr, buffer, size, offset, fi, &bytes_wrote);
   if (NFSPROC_SYSCALL_ERROR(err)) return err;
   return bytes_wrote;
 }
@@ -147,8 +160,8 @@ static int nfs_fgetattr(const char *path, struct stat *statbuf, struct fuse_file
 {
   // does not need to implement but implemented anyways
   NFS_DEBUG(path);
-  int err = get_user_data()->client()->NFSPROC_FGETATTR(nullptr, statbuf, fi);
-  if (NFSPROC_RPC_ERROR(err)) return -EINVAL;
+  int err;
+  RECONNECT_IF_RPC_FAIL(NFSPROC_FGETATTR, &err, nullptr, statbuf, fi);
   return err;
 }
 
@@ -168,8 +181,8 @@ static int nfs_opendir(const char *path, struct fuse_file_info *fi)
 static int nfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi)
 {
   NFS_DEBUG(path);
-  int err = get_user_data()->client()->NFSPROC_READDIR(path, buf, filler, offset, fi);
-  if (NFSPROC_RPC_ERROR(err)) return -EINVAL;
+  int err;
+  RECONNECT_IF_RPC_FAIL(NFSPROC_READDIR, &err, path, buf, filler, offset, fi);
   if (NFSPROC_SYSCALL_ERROR(err)) return err;
   return 0;
 }

@@ -35,6 +35,9 @@ class NFSClient
 public:
   NFSClient(std::shared_ptr<Channel> channel);
 
+  bool WaitForConnection();
+  bool WaitForConnection(int64_t sec, int32_t nsec);
+
   int NFSPROC_NULL(void);
   int NFSPROC_GETATTR(const char *, struct stat *);
   int NFSPROC_MKNOD(const char *, mode_t, dev_t);
@@ -46,5 +49,6 @@ public:
   int NFSPROC_READDIR(const char *, void *, fuse_fill_dir_t, off_t, struct fuse_file_info *);
 
 private:
+  std::shared_ptr<grpc::Channel> m_channel;
   std::unique_ptr<NFS::Stub> stub_;
 };

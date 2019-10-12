@@ -18,7 +18,18 @@ using grpc::StatusCode;
 #endif
 
 
-NFSClient::NFSClient(std::shared_ptr<Channel> channel) : stub_(NFS::NewStub(channel)) {}
+NFSClient::NFSClient(std::shared_ptr<Channel> channel) : m_channel(channel), stub_(NFS::NewStub(channel)) {}
+
+bool NFSClient::WaitForConnection()
+{
+  return NFSClient::WaitForConnection(LONG_MAX, INT_MAX);
+}
+
+bool NFSClient::WaitForConnection(int64_t sec, int32_t nsec)
+{
+  gpr_timespec timeout{sec, nsec, GPR_TIMESPAN};
+  return m_channel->WaitForConnected<gpr_timespec>(timeout);
+}
 
 int NFSClient::NFSPROC_NULL(void)
 {
