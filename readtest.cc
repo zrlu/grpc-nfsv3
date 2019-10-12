@@ -32,7 +32,7 @@ int main()
     struct fuse_file_info fi;
     fi.fh = 3;
     fi.flags = O_RDONLY;
-    ret = client.NFSPROC_OPEN("./large.txt", &fi, &fh);
+    ret = client.NFSPROC_OPEN("/verylarge.txt", &fi, &fh);
     std::cerr << "OPEN: " << ret << std::endl;
     std::cerr << "fh: " << fh << std:: endl;
 

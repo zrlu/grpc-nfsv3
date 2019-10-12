@@ -16,13 +16,20 @@ m_cur_chunk_idx(0)
 
 ChunkReader::ChunkReader(int fd, const off_t offset, const size_t size, const size_t chunk_size):
 m_chunk_size(chunk_size),
-m_size(size),
-m_num_chunks(((int)size / (int)chunk_size) + 1),
+m_size(
+    [fd](){
+        struct stat statbuf;
+        fstat(fd, &statbuf);
+        return statbuf.st_size;
+    }()
+),
+m_num_chunks(((int)m_size / (int)m_chunk_size) + 1),
 m_from_file(true),
 m_fd(fd),
 m_offset(offset),
 m_cur_chunk_idx(0)
 {
+
 }
 
 bool ChunkReader::has_next()

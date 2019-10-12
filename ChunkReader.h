@@ -2,8 +2,10 @@
 #define __CHUNKREADER_H__
 
 #include <unistd.h>
+#include <sys/types.h>
 #include <errno.h>
 #include <string.h>
+#include <sys/stat.h>
 
 
 class ChunkReader
