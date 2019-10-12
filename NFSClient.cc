@@ -2,7 +2,6 @@
 
 #include "NFSClient.h"
 #include "helpers.h"
-#include "ChunkReader.h"
 
 using grpc::Channel;
 using grpc::ClientContext;
@@ -116,18 +115,20 @@ int NFSClient::NFSPROC_WRITE(const char *pathname, const char *buffer, size_t si
   nfs::WRITEres res;
   
   std::shared_ptr<ClientWriter<nfs::WRITEargs>> stream(stub_->NFSPROC_WRITE(&context, &res));
-  char chunk_buf[WRITE_CHUNK_SIZE];
-
-  ChunkReader reader(buffer, offset, size, WRITE_CHUNK_SIZE);
-  while (reader.has_next())
+  
+  int num_chunk = ((int)size / (int)WRITE_CHUNK_SIZE) + 1;
+  for (int chunk_idx = 0; chunk_idx < num_chunk; ++chunk_idx)
   {
-    int chunk_idx = reader.cur_chunk_idx();
-    reader.read_next(chunk_buf);
     nfs::WRITEargs args;
     args.set_fh(fi->fh);
     args.set_size(size);
     args.set_offset(offset);
-    args.set_data(chunk_buf);
+    const int chunk_size = (
+      size < WRITE_CHUNK_SIZE ? size : (
+        chunk_idx == num_chunk - 1 ? size % WRITE_CHUNK_SIZE: WRITE_CHUNK_SIZE
+      )
+    );
+    args.set_data(buffer + chunk_idx*WRITE_CHUNK_SIZE, chunk_size);
     args.set_chunk_idx(chunk_idx);
     if (!stream->Write(args))
     {
@@ -135,7 +136,6 @@ int NFSClient::NFSPROC_WRITE(const char *pathname, const char *buffer, size_t si
       return StatusCode::CANCELLED;
     }
   }
-
   stream->WritesDone();
   Status status = stream->Finish();
 
