@@ -35,21 +35,14 @@ ssize_t ChunkReader::read_next(char *buffer)
     if (m_from_file)
     {
         if (lseek(m_fd, m_offset + m_cur_chunk_idx*m_chunk_size, SEEK_SET) == -1) return -1;
-        int retval = read(m_fd, buffer, m_chunk_size);
+        int retval = read(m_fd, buffer, std::min(m_size, m_chunk_size));
         if (retval == -1) return -1;
         m_cur_chunk_idx++;
         return retval;
     } else {
         bool last = m_cur_chunk_idx == m_num_chunks - 1;
         int length = last ? m_size % m_chunk_size : m_chunk_size;
-        std::cerr << "length: " << length << std::endl;
-        puts(m_data);
-        memcpy(
-            buffer,
-            m_data + m_offset + m_cur_chunk_idx*m_chunk_size,
-            length
-        ); 
-        puts(buffer);
+        memcpy(buffer, m_data + m_cur_chunk_idx*m_chunk_size, length);
         m_cur_chunk_idx++;
         return length;
     }

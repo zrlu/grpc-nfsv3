@@ -125,7 +125,12 @@ Status NFSImpl::NFSPROC_READ(ServerContext *context, const nfs::READargs *reques
     {
       nfs::READres res;
       res.set_syscall_errno(-errno);
-      break;
+      if (!writer->Write(res))
+      {
+        // broken stream
+        return Status::CANCELLED;
+      }
+      return Status::OK;
     }
     nfs::READres res;
     res.set_syscall_value(retval);
