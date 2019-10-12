@@ -16,7 +16,6 @@
 
 #include "NFSServer.h"
 #include "helpers.h"
-#include "ChunkReader.h"
 
 using grpc::Server;
 using grpc::ServerBuilder;
@@ -114,30 +113,36 @@ Status NFSImpl::NFSPROC_READ(ServerContext *context, const nfs::READargs *reques
   const int fh = request->fh();
   const size_t size = request->size();
   const off_t offset = request->offset();
-  char chunk_buf[READ_CHUNK_SIZE];
-
-  ChunkReader reader(fh, offset, size, READ_CHUNK_SIZE);
-  while (reader.has_next())
+  char *buffer = new char[READ_CHUNK_SIZE];
+  bzero(buffer, READ_CHUNK_SIZE);
+  int num_chunk = ((int)size / (int)READ_CHUNK_SIZE) + 1;
+  for (int chunk_idx = 0; chunk_idx < num_chunk; ++chunk_idx)
   {
-    ssize_t retval;
-    int chunk_idx = reader.cur_chunk_idx();
-    if (retval = reader.read_next(chunk_buf) == -1)
+    if (lseek(fh, offset + chunk_idx*READ_CHUNK_SIZE, SEEK_SET) == -1)
     {
+      nfs::READres res;
+      res.set_syscall_errno(-errno);
+      writer->Write(res);
+      break;
+    }
+    ssize_t retval = read(fh, buffer, std::min((int)size, READ_CHUNK_SIZE));
+    if (retval == -1) {
       nfs::READres res;
       res.set_syscall_errno(-errno);
       break;
     }
     nfs::READres res;
     res.set_syscall_value(retval);
-    res.set_data(chunk_buf);
+    res.set_data(buffer);
     res.set_chunk_idx(chunk_idx);
     if (!writer->Write(res))
     {
       // broken stream
+      delete buffer;
       return Status::CANCELLED;
     }
   }
-
+  delete buffer;
   return Status::OK;
 }
 
