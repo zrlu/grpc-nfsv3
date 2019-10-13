@@ -2,6 +2,7 @@
 
 #include "NFSClient.h"
 #include "helpers.h"
+#include <time.h>
 
 using grpc::Channel;
 using grpc::ClientContext;
@@ -18,7 +19,21 @@ using grpc::StatusCode;
 #endif
 
 
-NFSClient::NFSClient(std::shared_ptr<Channel> channel) : m_channel(channel), stub_(NFS::NewStub(channel)) {}
+NFSClient::NFSClient(std::shared_ptr<Channel> channel) : 
+  m_channel(channel), 
+  stub_(NFS::NewStub(channel)),
+  m_rpc_count(0)
+{}
+
+unsigned long NFSClient::generate_rpc_id()
+{
+  time_t t = time(0);
+  unsigned long rpc_id = (unsigned long)t;
+  rpc_id <<= 32;
+  rpc_id |= (unsigned long)m_rpc_count;
+  ++m_rpc_count;
+  return rpc_id;
+}
 
 bool NFSClient::WaitForConnection()
 {
@@ -41,8 +56,13 @@ int NFSClient::NFSPROC_NULL(void)
   return status.error_code();
 }
 
-int NFSClient::NFSPROC_GETATTR(const char *pathname, struct stat *statbuf) {
+int NFSClient::NFSPROC_GETATTR(const char *pathname, struct stat *statbuf)
+{
   ClientContext context;
+  unsigned long rpc_id = generate_rpc_id();
+
+  std::cerr << rpc_id << std::endl;
+
   nfs::GETATTRargs args;
   nfs::GETATTRres res;
   args.set_pathname(pathname);

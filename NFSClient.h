@@ -33,6 +33,7 @@ using nfs::NFS;
 class NFSClient
 {
   unsigned int m_rpc_count;
+  unsigned long generate_rpc_id();
   
 public:
   NFSClient(std::shared_ptr<Channel> channel);
