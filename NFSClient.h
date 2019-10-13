@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <map>
 
 #include <sys/types.h>
 #include <fuse.h>
@@ -17,6 +18,8 @@
 #include "nfs.grpc.pb.h"
 #endif
 
+#include "RPCManager.h"
+
 using grpc::Channel;
 using grpc::ClientContext;
 using grpc::ClientReader;
@@ -30,10 +33,20 @@ using nfs::NFS;
 #define NFSPROC_RPC_ERROR(x) x > 0
 #define NFSPROC_SYSCALL_ERROR(x) x < 0
 
+typedef unsigned long rpcid_t;
+
 class NFSClient
-{
+{  
+  RPCManager m_rpc_mgr;
+
+  template <typename T> T* make_rpc();
+  bool del_rpc_if_ok(rpcid_t rpcid, const Status &status);
+
 public:
   NFSClient(std::shared_ptr<Channel> channel);
+
+  bool WaitForConnection();
+  bool WaitForConnection(int64_t sec, int32_t nsec);
 
   int NFSPROC_NULL(void);
   int NFSPROC_GETATTR(const char *, struct stat *);
@@ -44,7 +57,9 @@ public:
   int NFSPROC_WRITE(const char *, const char *, size_t, off_t, const struct fuse_file_info *, ssize_t *);
   int NFSPROC_FGETATTR(const char *, struct stat *, const struct fuse_file_info *);
   int NFSPROC_READDIR(const char *, void *, fuse_fill_dir_t, off_t, struct fuse_file_info *);
+  int RECOVERY();
 
 private:
+  std::shared_ptr<grpc::Channel> m_channel;
   std::unique_ptr<NFS::Stub> stub_;
 };

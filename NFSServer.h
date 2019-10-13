@@ -30,7 +30,6 @@ class NFSImpl final : public nfs::NFS::Service
   std::mutex mu_;
   const std::string m_serverStoragePath;
   fs::path fullpath(const std::string &);
-  
 protected:
 public:
   NFSImpl(const std::string &path);
@@ -43,6 +42,7 @@ public:
   Status NFSPROC_WRITE(ServerContext *, const nfs::WRITEargs *, nfs::WRITEres *) override;
   Status NFSPROC_FGETATTR(ServerContext *, const nfs::FGETATTRargs *, nfs::FGETATTRres *) override;
   Status NFSPROC_READDIR(ServerContext *, const nfs::READDIRargs *, nfs::READDIRres *) override;
+  Status RECOVERY(ServerContext*, ServerReaderWriter<nfs::RECOVERYres, nfs::RECOVERYargs>*) override;
 };
 
 
