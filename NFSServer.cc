@@ -211,3 +211,8 @@ Status NFSImpl::NFSPROC_READDIR(ServerContext *context, const nfs::READDIRargs *
   *response = res;
   return Status::OK;
 }
+
+Status NFSImpl::RECOVERY(ServerContext *context, ServerReaderWriter<nfs::RECOVERYres, nfs::RECOVERYargs> *stream)
+{
+  return Status::OK;
+}

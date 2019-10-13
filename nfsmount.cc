@@ -28,6 +28,12 @@ do {\
   if (NFSPROC_RPC_ERROR(*__err_addr))\
   {\
       get_user_data()->client()->WaitForConnection();\
+      int recovery_code = -1;\
+      while (recovery_code != 0)\
+      {\
+        recovery_code = get_user_data()->client()->RECOVERY();\
+        get_user_data()->client()->WaitForConnection();\
+      }\
   }\
 } while (NFSPROC_RPC_ERROR(*__err_addr));\
 

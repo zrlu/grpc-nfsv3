@@ -170,3 +170,8 @@ int NFSClient::NFSPROC_READDIR(const char *path, void *buf, fuse_fill_dir_t fill
   }
   return 0;
 }
+
+int NFSClient::RECOVERY()
+{
+  return 0;
+}

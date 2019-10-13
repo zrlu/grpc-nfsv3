@@ -32,6 +32,8 @@ using nfs::NFS;
 
 class NFSClient
 {
+  unsigned int m_rpc_count;
+  
 public:
   NFSClient(std::shared_ptr<Channel> channel);
 
@@ -47,6 +49,7 @@ public:
   int NFSPROC_WRITE(const char *, const char *, size_t, off_t, const struct fuse_file_info *, ssize_t *);
   int NFSPROC_FGETATTR(const char *, struct stat *, const struct fuse_file_info *);
   int NFSPROC_READDIR(const char *, void *, fuse_fill_dir_t, off_t, struct fuse_file_info *);
+  int RECOVERY();
 
 private:
   std::shared_ptr<grpc::Channel> m_channel;

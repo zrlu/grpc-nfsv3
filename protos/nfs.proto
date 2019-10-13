@@ -36,6 +36,8 @@ service NFS {
   rpc NFSPROC_FGETATTR(FGETATTRargs) returns (FGETATTRres) {}
 
   rpc NFSPROC_READDIR(READDIRargs) returns (READDIRres) {}
+
+  rpc RECOVERY(stream RECOVERYargs) returns (stream RECOVERYres) {}
 }
 
 // A Message is a message sent while at a given point.
@@ -150,4 +152,11 @@ message READDIRres {
   int32 syscall_errno = 2;
   repeated string filename = 3;
   repeated Stat stat = 4;
+}
+
+message RECOVERYargs {
+}
+
+message RECOVERYres {
+  repeated string serialized_args = 1;
 }
