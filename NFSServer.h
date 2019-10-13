@@ -30,6 +30,13 @@ class NFSImpl final : public nfs::NFS::Service
   std::mutex mu_;
   const std::string m_serverStoragePath;
   fs::path fullpath(const std::string &);
+
+  // the do_* functions are also used in recovery
+  int do_MKNOD(const nfs::MKNODargs *);
+  int do_OPEN(const nfs::OPENargs *);
+  int do_RELEASE(const nfs::RELEASEargs *);
+  long do_WRITE(const nfs::WRITEargs *);
+
 protected:
 public:
   NFSImpl(const std::string &path);
