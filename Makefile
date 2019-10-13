@@ -26,7 +26,7 @@ CXXFLAGS += -Wunused-variable
 
 ifeq ($(ver), debug)
 CXXFLAGS += -DENABLE_NFS_DEBUG
-CXXFLAGS += -DENABLE_DEBUG_RESPONSE
+CXXFLAGS += -DCLIENT_ENABLE_DEBUG_MESSAGE
 CXXFLAGS += -g
 CXXFLAGS += -Og
 else
@@ -72,16 +72,19 @@ UserData.o: UserData.cc UserData.h
 FileHandlerTable.o: FileHandlerTable.cc FileHandlerTable.h
 	$(CXX) $(CXXFLAGS) $< $(LDFLAGS) -c
 
-NFSClient.o: NFSClient.cc NFSClient.h helpers.h
+RPCManager.o: RPCManager.cc RPCManager.h
+	$(CXX) $(CXXFLAGS) $< $(LDFLAGS) -c
+
+NFSClient.o: NFSClient.cc NFSClient.h helpers.h RPCManager.o
 	$(CXX) $(CXXFLAGS) $< $(LDFLAGS) -c
 
 NFSServer.o: NFSServer.cc NFSServer.h helpers.h
 	$(CXX) $(CXXFLAGS) $< $(LDFLAGS) -c
 
-runserver: nfs.pb.o nfs.grpc.pb.o NFSServer.o runserver.cc
+runserver: nfs.pb.o nfs.grpc.pb.o NFSServer.o RPCManager.o runserver.cc
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
 
-nfsmount: NFSClient.o nfs.pb.o nfs.grpc.pb.o FileHandlerTable.o UserData.o nfsmount.cc
+nfsmount: NFSClient.o nfs.pb.o nfs.grpc.pb.o RPCManager.o FileHandlerTable.o UserData.o nfsmount.cc
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
 
 scratch: scratch.cc

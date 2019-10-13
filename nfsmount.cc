@@ -16,7 +16,7 @@
 #include "UserData.h"
 
 #ifdef ENABLE_NFS_DEBUG
-#define NFS_DEBUG(path) fprintf(stderr, "%s(%s)\n", __func__, path)
+#define NFS_DEBUG(path) fprintf(stderr, "FUSE: %s(%s)\n", __func__, path)
 #else
 #define NFS_DEBUG(path)
 #endif

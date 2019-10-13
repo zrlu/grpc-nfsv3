@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <map>
 
 #include <sys/types.h>
 #include <fuse.h>
@@ -17,6 +18,8 @@
 #include "nfs.grpc.pb.h"
 #endif
 
+#include "RPCManager.h"
+
 using grpc::Channel;
 using grpc::ClientContext;
 using grpc::ClientReader;
@@ -30,11 +33,15 @@ using nfs::NFS;
 #define NFSPROC_RPC_ERROR(x) x > 0
 #define NFSPROC_SYSCALL_ERROR(x) x < 0
 
+typedef unsigned long rpcid_t;
+
 class NFSClient
-{
-  unsigned int m_rpc_count;
-  unsigned long generate_rpc_id();
-  
+{  
+  RPCManager m_rpc_mgr;
+
+  template <typename T> T* make_rpc();
+  bool del_rpc_if_ok(rpcid_t rpcid, const Status &status);
+
 public:
   NFSClient(std::shared_ptr<Channel> channel);
 
