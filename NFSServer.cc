@@ -67,26 +67,36 @@ Status NFSImpl::NFSPROC_GETATTR(ServerContext *context, const nfs::GETATTRargs *
   return Status::OK;
 }
 
-Status NFSImpl::NFSPROC_MKNOD(ServerContext *context, const nfs::MKNODargs *request, nfs::MKNODres *response)
+int NFSImpl::do_MKNOD(const nfs::MKNODargs *request)
 {
-  nfs::MKNODres res;
   auto fp = fullpath(request->pathname());
   mode_t mode = request->mode();
   dev_t dev = request->dev();
+  return mknod(fp.c_str(), mode, dev);
+}
 
-  if (mknod(fp.c_str(), mode, dev) == -1) res.set_syscall_errno(-errno);
+Status NFSImpl::NFSPROC_MKNOD(ServerContext *context, const nfs::MKNODargs *request, nfs::MKNODres *response)
+{
+  nfs::MKNODres res;
+
+  if (do_MKNOD(request) == -1) res.set_syscall_errno(-errno);
 
   *response = res;
   return Status::OK;
 }
 
+int NFSImpl::do_OPEN(const nfs::OPENargs *request)
+{
+  auto fp = fullpath(request->pathname());
+  int oflag = request->oflag();
+  return open(fp.c_str(), oflag);
+}
+
 Status NFSImpl::NFSPROC_OPEN(ServerContext *context, const nfs::OPENargs *request, nfs::OPENres *response)
 {
   nfs::OPENres res;
-  auto fp = fullpath(request->pathname());
-  int oflag = request->oflag();
-  int retval = open(fp.c_str(), oflag);
 
+  int retval = do_OPEN(request);
   if (retval == -1) res.set_syscall_errno(-errno);
   
   res.set_syscall_value(retval);
@@ -95,12 +105,17 @@ Status NFSImpl::NFSPROC_OPEN(ServerContext *context, const nfs::OPENargs *reques
 
 }
 
+int NFSImpl::do_RELEASE(const nfs::RELEASEargs *request)
+{
+  int fh = request->fh(); 
+  return close(fh);
+}
+
 Status NFSImpl::NFSPROC_RELEASE(ServerContext *context, const nfs::RELEASEargs *request, nfs::RELEASEres *response)
 {
   nfs::RELEASEres res;
-  int fh = request->fh();
   
-  if (close(fh) == -1) res.set_syscall_errno(-errno);
+  if (do_RELEASE(request) == -1) res.set_syscall_errno(-errno);
 
   *response = res;
   return Status::OK;
@@ -132,22 +147,29 @@ Status NFSImpl::NFSPROC_READ(ServerContext *context, const nfs::READargs *reques
   return Status::OK;
 }
 
-Status NFSImpl::NFSPROC_WRITE(ServerContext *context, const nfs::WRITEargs *request, nfs::WRITEres *response)
+long NFSImpl::do_WRITE(const nfs::WRITEargs *request)
 {
-  nfs::WRITEres res;
-
   const int fh = request->fh();
   const size_t size = request->size();
   const off_t offset = request->offset();
   const char *data = request->data().c_str();
 
-  if (lseek(fh, offset, SEEK_SET) == -1)
-  {
-    res.set_syscall_errno(-errno);
-    *response = res;
-    return Status::OK;
-  }
-  ssize_t retval = write(fh, data, size);
+  long retval;
+  retval = lseek(fh, offset, SEEK_SET);
+  if (retval == -1) return -1;
+
+  retval = write(fh, data, size);
+  if (retval == -1) return -1;
+
+  return retval;
+}
+
+Status NFSImpl::NFSPROC_WRITE(ServerContext *context, const nfs::WRITEargs *request, nfs::WRITEres *response)
+{
+  nfs::WRITEres res;
+
+  long retval = do_WRITE(request);
+  
   if (retval == -1) {
     res.set_syscall_errno(-errno);
     *response = res;
