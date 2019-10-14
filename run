@@ -17,6 +17,8 @@ function killserver() {
   pkill runserver > /dev/null
 }
 
+mkdir -p ${CLIENT_CACHE_DIR} ${SERVER_CACHE_DIR}
+
 if [ $# -eq 0 ]; then
   echo "start client and server in the background..."
   killall
