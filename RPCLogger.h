@@ -3,15 +3,26 @@
 
 #include <fstream>
 #include <set>
+#include <iostream>
+#include <list>
+#include <leveldb/db.h>
 
-typedef unsigned long rpcid_t;
+#include "RPCManager.h"
 
 class RPCLogger
 {
-    std::set<rpcid_t> m_set;
+    std::fstream m_fs;
+    const char *m_log_name;
+    leveldb::DB *m_db;
 public:
 
-    RPCLogger();
+    explicit RPCLogger(const char *);
+
+    void add_log(rpcid_t rpcid);
+
+    void remove_log(rpcid_t rpcid);
+
+    std::list<rpcid_t> list_logs();
 
     ~RPCLogger();
 };

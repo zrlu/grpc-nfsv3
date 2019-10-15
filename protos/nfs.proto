@@ -71,7 +71,7 @@ message NULLres {
 
 message GETATTRargs {
   string pathname = 1;
-  uint64 rpc_id = 2;
+  string rpc_id = 2;
 }
 
 message GETATTRres {
@@ -84,7 +84,7 @@ message MKNODargs {
   string pathname = 1;
   uint32 mode = 2;
   uint64 dev = 3;
-  uint64 rpc_id = 4;
+  string rpc_id = 4;
 }
 
 message MKNODres {
@@ -95,7 +95,7 @@ message MKNODres {
 message OPENargs {
   string pathname = 1;
   int32 oflag = 2;
-  uint64 rpc_id = 3;
+  string rpc_id = 3;
 }
 
 message OPENres {
@@ -105,7 +105,7 @@ message OPENres {
 
 message RELEASEargs {
   int32 fh = 1;
-  uint64 rpc_id = 2;
+  string rpc_id = 2;
 }
 
 message RELEASEres {
@@ -117,7 +117,7 @@ message READargs {
   int32 fh = 1;
   uint64 size = 2;
   int64 offset = 3;
-  uint64 rpc_id = 4;
+  string rpc_id = 4;
 }
 
 message READres {
@@ -131,7 +131,7 @@ message WRITEargs {
   uint64 size = 2;
   int64 offset = 3;
   bytes data = 4;
-  uint64 rpc_id = 5;
+  string rpc_id = 5;
 }
 
 message WRITEres {
@@ -141,7 +141,7 @@ message WRITEres {
 
 message FGETATTRargs {
   int32 fh = 1;
-  uint64 rpc_id = 2;
+  string rpc_id = 2;
 }
 
 message FGETATTRres {
@@ -152,7 +152,7 @@ message FGETATTRres {
 
 message READDIRargs {
   string pathname = 1;
-  uint64 rpc_id = 2;
+  string rpc_id = 2;
 }
 
 message READDIRres {

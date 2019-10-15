@@ -34,6 +34,9 @@ CXXFLAGS += -O3
 endif
 
 LDFLAGS = `pkg-config fuse --libs`
+LDFLAGS += -I./third_party/leveldb/include
+LDFLAGS += -L./third_party/leveldb/build
+LDFLAGS += -lleveldb
 LDFLAGS += -Wl,-rpath,./shared
 
 ifeq ($(SYSTEM),Darwin)
@@ -72,6 +75,9 @@ UserData.o: UserData.cc UserData.h
 FileHandlerTable.o: FileHandlerTable.cc FileHandlerTable.h
 	$(CXX) $(CXXFLAGS) $< $(LDFLAGS) -c
 
+RPCLogger.o: RPCLogger.cc RPCLogger.h
+	$(CXX) $(CXXFLAGS) $< $(LDFLAGS) -c
+
 RPCManager.o: RPCManager.cc RPCManager.h
 	$(CXX) $(CXXFLAGS) $< $(LDFLAGS) -c
 
@@ -81,13 +87,13 @@ NFSClient.o: NFSClient.cc NFSClient.h helpers.h RPCManager.o
 NFSServer.o: NFSServer.cc NFSServer.h helpers.h
 	$(CXX) $(CXXFLAGS) $< $(LDFLAGS) -c
 
-runserver: nfs.pb.o nfs.grpc.pb.o NFSServer.o RPCManager.o runserver.cc
+runserver: nfs.pb.o nfs.grpc.pb.o NFSServer.o RPCManager.o RPCLogger.o runserver.cc
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
 
 nfsmount: NFSClient.o nfs.pb.o nfs.grpc.pb.o RPCManager.o FileHandlerTable.o UserData.o nfsmount.cc
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
 
-scratch: scratch.cc
+scratch: scratch.cc RPCLogger.o
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
 
 stattest: NFSClient.o stattest.cc nfs.pb.o nfs.grpc.pb.o

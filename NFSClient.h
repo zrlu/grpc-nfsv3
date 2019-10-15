@@ -33,8 +33,6 @@ using nfs::NFS;
 #define NFSPROC_RPC_ERROR(x) x > 0
 #define NFSPROC_SYSCALL_ERROR(x) x < 0
 
-typedef unsigned long rpcid_t;
-
 class NFSClient
 {  
   RPCManager m_rpc_mgr;

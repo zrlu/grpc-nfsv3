@@ -2,13 +2,14 @@
 #define __RPCMANAGER_H__
 
 #include <map>
+#include <string>
 #include <google/protobuf/message.h>
 
 using namespace google::protobuf;
 
 #define CLIENT_ID(rpc_id) (rpc_id >> 59)
 
-typedef unsigned long rpcid_t;
+typedef std::string rpcid_t;
 
 class RPCManager
 {

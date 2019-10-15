@@ -31,11 +31,14 @@ namespace fs = std::filesystem;
 
 fs::path NFSImpl::fullpath(const std::string &fuse_path)
 {
-  auto path = fs::path(m_serverStoragePath + fuse_path).make_preferred();
+  auto path = fs::path(m_server_storage_path + fuse_path).make_preferred();
   return fs::weakly_canonical(path);
 }
 
-NFSImpl::NFSImpl(const std::string &path) : m_serverStoragePath(path) {}
+NFSImpl::NFSImpl(const std::string &path): 
+m_server_storage_path(path),
+m_rpc_logger(RPCLogger("/tmp/rpclog.db"))
+{}
 
 Status NFSImpl::NFSPROC_NULL(ServerContext *context, const nfs::NULLargs *request, nfs::NULLres *response)
 {
@@ -79,7 +82,9 @@ Status NFSImpl::NFSPROC_MKNOD(ServerContext *context, const nfs::MKNODargs *requ
 {
   nfs::MKNODres res;
 
+  m_rpc_logger.add_log(request->rpc_id());
   if (do_MKNOD(request) == -1) res.set_syscall_errno(-errno);
+  m_rpc_logger.remove_log(request->rpc_id());
 
   *response = res;
   return Status::OK;
@@ -96,9 +101,13 @@ Status NFSImpl::NFSPROC_OPEN(ServerContext *context, const nfs::OPENargs *reques
 {
   nfs::OPENres res;
 
+  m_rpc_logger.add_log(request->rpc_id());
+  m_rpc_logger.list_logs();
   int retval = do_OPEN(request);
   if (retval == -1) res.set_syscall_errno(-errno);
-  
+  m_rpc_logger.remove_log(request->rpc_id());
+  m_rpc_logger.list_logs();
+
   res.set_syscall_value(retval);
   *response = res;
   return Status::OK;
@@ -115,7 +124,9 @@ Status NFSImpl::NFSPROC_RELEASE(ServerContext *context, const nfs::RELEASEargs *
 {
   nfs::RELEASEres res;
   
+  m_rpc_logger.add_log(request->rpc_id());
   if (do_RELEASE(request) == -1) res.set_syscall_errno(-errno);
+  m_rpc_logger.remove_log(request->rpc_id());
 
   *response = res;
   return Status::OK;
@@ -168,8 +179,10 @@ Status NFSImpl::NFSPROC_WRITE(ServerContext *context, const nfs::WRITEargs *requ
 {
   nfs::WRITEres res;
 
+  m_rpc_logger.add_log(request->rpc_id());
   long retval = do_WRITE(request);
-  
+  m_rpc_logger.remove_log(request->rpc_id());
+
   if (retval == -1) {
     res.set_syscall_errno(-errno);
     *response = res;

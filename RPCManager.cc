@@ -25,7 +25,7 @@ rpcid_t RPCManager::generate_rpc_id(short client_id)
     rpc_id |= (unsigned long)m_rpc_count;
 
     ++m_rpc_count;
-    return rpc_id;
+    return std::to_string(rpc_id);
 }
 
 Message *RPCManager::get_rpc(rpcid_t rpcid)

@@ -13,6 +13,8 @@
 #include "nfs.grpc.pb.h"
 #endif
 
+#include "RPCLogger.h"
+
 using grpc::Server;
 using grpc::ServerBuilder;
 using grpc::ServerContext;
@@ -28,8 +30,9 @@ namespace fs = std::filesystem;
 class NFSImpl final : public nfs::NFS::Service
 {
   std::mutex mu_;
-  const std::string m_serverStoragePath;
+  const std::string m_server_storage_path;
   fs::path fullpath(const std::string &);
+  RPCLogger m_rpc_logger;
 
   // the do_* functions are also used in recovery
   int do_MKNOD(const nfs::MKNODargs *);

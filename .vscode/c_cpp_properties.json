@@ -5,7 +5,11 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "/usr/local/include/**",
-                "/usr/include/**"
+                "/usr/include/**",
+                "./third_party/cereal/include/**",
+                "./third_party/kvsqlite/include/**",
+                "./third_party/leveldb/include/**"
+
             ],
             "defines": [
                 "_DEBUG",
@@ -20,8 +24,11 @@
             "browse": {
                 "path": [
                     "${workspaceFolder}/**",
-                    "/usr/local/include",
-                    "/usr/include"
+                    "/usr/local/include/**",
+                    "/usr/include/**",
+                    "./third_party/cereal/include/**",
+                    "./third_party/kvsqlite/include/**",
+                    "./third_party/leveldb/include/**"
                 ],
                 "limitSymbolsToIncludedHeaders": true
             }
