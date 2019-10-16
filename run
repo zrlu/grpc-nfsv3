@@ -17,6 +17,9 @@ function killserver() {
   pkill runserver > /dev/null
 }
 
+# Note: this must be called only once, otherwise mkdir call will block FUSE when server tying to restart. 
+# mkdir -p ${CLIENT_CACHE_DIR} ${SERVER_CACHE_DIR}
+
 if [ $# -eq 0 ]; then
   echo "start client and server in the background..."
   killall

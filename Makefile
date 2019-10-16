@@ -58,7 +58,7 @@ vpath %.proto $(PROTOS_PATH)
 EXECUTABLES = runserver nfsmount
 
 ifeq ($(test), 1)
-TESTS = stattest scratch readtest
+TESTS = scratch
 endif
 
 all: system-check $(EXECUTABLES) $(TESTS)

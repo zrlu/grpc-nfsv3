@@ -236,5 +236,10 @@ Status NFSImpl::NFSPROC_READDIR(ServerContext *context, const nfs::READDIRargs *
 
 Status NFSImpl::RECOVERY(ServerContext *context, ServerReaderWriter<nfs::RECOVERYres, nfs::RECOVERYargs> *stream)
 {
+  nfs::RECOVERYargs args;
+  while (stream->Read(&args))
+  {
+    std::cerr << "RECOVERY from client_id: " << args.client_id() << std::endl;
+  }
   return Status::OK;
 }

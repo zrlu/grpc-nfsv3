@@ -1,6 +1,7 @@
 #include <time.h>
 #include "RPCManager.h"
 #include <google/protobuf/message.h>
+#include <iomanip>
 
 using namespace google::protobuf;
 
@@ -10,12 +11,19 @@ m_rpc_count(0)
 
 }
 
-rpcid_t RPCManager::generate_rpc_id()
+rpcid_t RPCManager::generate_rpc_id(short client_id)
 {
+    /*
+     | client_id = 1 Byte | LSB of timestamp = 3 Byte | RPC count = 8 Byte |
+    */
+    
     time_t t = time(0);
     unsigned long rpc_id = (unsigned long)t;
+    rpc_id &= 0xffffffUL;
     rpc_id <<= 32;
+    rpc_id |= (unsigned long)client_id << 56;
     rpc_id |= (unsigned long)m_rpc_count;
+
     ++m_rpc_count;
     return rpc_id;
 }

@@ -22,6 +22,7 @@ using grpc::StatusCode;
 
 NFSClient::NFSClient(std::shared_ptr<Channel> channel) : 
   m_channel(channel), 
+  m_client_id(0),
   stub_(NFS::NewStub(channel))
   {}
 
@@ -39,7 +40,7 @@ bool NFSClient::WaitForConnection(int64_t sec, int32_t nsec)
 template <typename T> T* NFSClient::make_rpc()
 {
   T *args = new T;
-  rpcid_t id = m_rpc_mgr.generate_rpc_id();
+  rpcid_t id = m_rpc_mgr.generate_rpc_id(m_client_id);
   args->set_rpc_id(id);
   m_rpc_mgr.set_rpc(id, args);
   return args;
@@ -239,5 +240,16 @@ int NFSClient::NFSPROC_READDIR(const char *path, void *buf, fuse_fill_dir_t fill
 
 int NFSClient::RECOVERY()
 {
+  
+  ClientContext context;
+  std::shared_ptr<ClientReaderWriter<nfs::RECOVERYargs, nfs::RECOVERYres> > stream(stub_->RECOVERY(&context));
+  
+  nfs::RECOVERYargs args;
+  args.set_client_id(m_client_id);
+  DEBUG_REQUEST((&args));
+  stream->Write(args);
+  stream->WritesDone();
+
+
   return 0;
 }

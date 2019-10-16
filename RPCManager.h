@@ -6,6 +6,8 @@
 
 using namespace google::protobuf;
 
+#define CLIENT_ID(rpc_id) (rpc_id >> 59)
+
 typedef unsigned long rpcid_t;
 
 class RPCManager
@@ -15,7 +17,7 @@ class RPCManager
 public:
     RPCManager();
 
-    rpcid_t generate_rpc_id();
+    rpcid_t generate_rpc_id(short client_id);
 
     Message* get_rpc(rpcid_t rpcid);
 

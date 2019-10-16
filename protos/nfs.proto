@@ -163,6 +163,7 @@ message READDIRres {
 }
 
 message RECOVERYargs {
+  uint32 client_id = 1;
 }
 
 message RECOVERYres {

@@ -38,9 +38,13 @@ typedef unsigned long rpcid_t;
 class NFSClient
 {  
   RPCManager m_rpc_mgr;
+  std::shared_ptr<grpc::Channel> m_channel;
+  std::unique_ptr<NFS::Stub> stub_;
+  short m_client_id;
 
   template <typename T> T* make_rpc();
   bool del_rpc_if_ok(rpcid_t rpcid, const Status &status);
+  
 
 public:
   NFSClient(std::shared_ptr<Channel> channel);
@@ -59,7 +63,4 @@ public:
   int NFSPROC_READDIR(const char *, void *, fuse_fill_dir_t, off_t, struct fuse_file_info *);
   int RECOVERY();
 
-private:
-  std::shared_ptr<grpc::Channel> m_channel;
-  std::unique_ptr<NFS::Stub> stub_;
 };
