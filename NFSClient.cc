@@ -137,6 +137,23 @@ int NFSClient::NFSPROC_RMDIR(const char *pathname)
   return status.error_code() | res.syscall_errno();
 }
 
+int NFSClient::NFSPROC_RENAME(const char *oldpathname, const char * newpathname)
+{
+  ClientContext context;
+
+  nfs::RENAMEargs* args = make_rpc<nfs::RENAMEargs>();
+  nfs::RENAMEres res;
+  args->set_oldpathname(oldpathname);
+  args->set_newpathname(newpathname)
+
+  DEBUG_REQUEST(args);
+  Status status = stub_->NFSPROC_RENAME(&context, *args, &res);
+  del_rpc_if_ok(args->rpc_id(), status);
+  DEBUG_RESPONSE(res);
+
+  return status.error_code() | res.syscall_errno();
+}
+
 int NFSClient::NFSPROC_OPEN(const char *pathname, const struct fuse_file_info *fi, int *ret)
 {
   ClientContext context;

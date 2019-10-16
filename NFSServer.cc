@@ -124,6 +124,23 @@ Status NFSImpl::NFSPROC_RMDIR(ServerContext *context, const nfs::RMDIRargs *requ
   return Status::OK;
 }
 
+int NFSImpl::do_RENAME(const nfs::RENAMEargs *request)
+{
+  auto fp = fullpath(request->oldpathname());
+  auto np = fullpath(request->newpathname());
+  return rename(fp.c_str(), np.c_str());
+}
+
+Status NFSImpl::NFSPROC_RENAME(ServerContext *context, const nfs::RENAMEargs *request, nfs::RENAMEres *response)
+{
+  nfs::RENAMEres res;
+
+  if (do_RENAME(request) == -1) res.set_syscall_errno(-errno);
+
+  *response = res;
+  return Status::OK;
+}
+
 int NFSImpl::do_OPEN(const nfs::OPENargs *request)
 {
   auto fp = fullpath(request->pathname());

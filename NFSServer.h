@@ -38,6 +38,7 @@ class NFSImpl final : public nfs::NFS::Service
   int do_MKNOD(const nfs::MKNODargs *);
   int do_MKDIR(const nfs::MKDIRargs *);
   int do_RMDIR(const nfs::RMDIRargs *);
+  int do_RENAME(const nfs::RENAMEargs *);
   int do_OPEN(const nfs::OPENargs *);
   int do_RELEASE(const nfs::RELEASEargs *);
   long do_WRITE(const nfs::WRITEargs *);
@@ -50,6 +51,7 @@ public:
   Status NFSPROC_MKNOD(ServerContext *, const nfs::MKNODargs *, nfs::MKNODres *) override;
   Status NFSPROC_MKDIR(ServerContext *, const nfs::MKDIRargs *, nfs::MKDIRres *) override;
   Status NFSPROC_RMDIR(ServerContext *, const nfs::RMDIRargs *, nfs::RMDIRres *) override;
+  Status NFSPROC_RENAME(ServerContext *, const nfs::RENAMEargs *, nfs::RENAMEres *) override;
   Status NFSPROC_OPEN(ServerContext *, const nfs::OPENargs *, nfs::OPENres *) override;
   Status NFSPROC_RELEASE(ServerContext *, const nfs::RELEASEargs *, nfs::RELEASEres *) override;
   Status NFSPROC_READ(ServerContext *, const nfs::READargs *, nfs::READres *) override;
