@@ -98,7 +98,9 @@ static int nfs_unlink(const char *path)
 
 static int nfs_rmdir(const char *path)
 {
-  // need to implement
+  NFS_DEBUG(path);
+  int err;
+  RECONNECT_IF_RPC_FAIL(NFSPROC_RMDIR, &err, path);
   return 0;
 }
 

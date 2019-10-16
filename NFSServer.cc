@@ -107,6 +107,22 @@ Status NFSImpl::NFSPROC_MKDIR(ServerContext *context, const nfs::MKDIRargs *requ
   return Status::OK;
 }
 
+int NFSImpl::do_RMDIR(const nfs::RMDIRargs *request)
+{
+  auto fp = fullpath(request->pathname());
+  return rmdir(fp.c_str());
+}
+
+Status NFSImpl::NFSPROC_RMDIR(ServerContext *context, const nfs::RMDIRargs *request, nfs::RMDIRres *response)
+{
+  nfs::RMDIRres res;
+
+  if (do_RMDIR(request) == -1) res.set_syscall_errno(-errno);
+
+  *response = res;
+  return Status::OK;
+}
+
 int NFSImpl::do_OPEN(const nfs::OPENargs *request)
 {
   auto fp = fullpath(request->pathname());

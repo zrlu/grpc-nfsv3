@@ -121,6 +121,22 @@ int NFSClient::NFSPROC_MKDIR(const char *pathname, mode_t mode)
   return status.error_code() | res.syscall_errno();
 }
 
+int NFSClient::NFSPROC_RMDIR(const char *pathname)
+{
+  ClientContext context;
+
+  nfs::RMDIRargs* args = make_rpc<nfs::RMDIRargs>();
+  nfs::RMDIRres res;
+  args->set_pathname(pathname);
+
+  DEBUG_REQUEST(args);
+  Status status = stub_->NFSPROC_RMDIR(&context, *args, &res);
+  del_rpc_if_ok(args->rpc_id(), status);
+  DEBUG_RESPONSE(res);
+
+  return status.error_code() | res.syscall_errno();
+}
+
 int NFSClient::NFSPROC_OPEN(const char *pathname, const struct fuse_file_info *fi, int *ret)
 {
   ClientContext context;
