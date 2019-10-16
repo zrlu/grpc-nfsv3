@@ -106,7 +106,7 @@ static int nfs_rmdir(const char *path)
 
 static int nfs_rename(const char *oldpath, const char *newpath)
 {
-  NFS_DEBUG(path);
+  NFS_DEBUG(oldpath);
   int err;
   RECONNECT_IF_RPC_FAIL(NFSPROC_RENAME, &err, oldpath, newpath);
   return 0;

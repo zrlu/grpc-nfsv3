@@ -144,7 +144,7 @@ int NFSClient::NFSPROC_RENAME(const char *oldpathname, const char * newpathname)
   nfs::RENAMEargs* args = make_rpc<nfs::RENAMEargs>();
   nfs::RENAMEres res;
   args->set_oldpathname(oldpathname);
-  args->set_newpathname(newpathname)
+  args->set_newpathname(newpathname);
 
   DEBUG_REQUEST(args);
   Status status = stub_->NFSPROC_RENAME(&context, *args, &res);

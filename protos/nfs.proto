@@ -101,7 +101,7 @@ message MKNODres {
 message MKDIRargs {
   string pathname = 1;
   uint32 mode = 2;
-  uint64 rpc_id = 3;
+  string rpc_id = 3;
 }
 
 message MKDIRres {
@@ -111,7 +111,7 @@ message MKDIRres {
 
 message RMDIRargs {
   string pathname = 1;
-  uint64 rpc_id = 2;
+  string rpc_id = 2;
 }
 
 message RMDIRres {
@@ -122,7 +122,7 @@ message RMDIRres {
 message RENAMEargs {
   string oldpathname = 1;
   string newpathname = 2;  
-  uint64 rpc_id = 3;
+  string rpc_id = 3;
 }
 
 message RENAMEres {
