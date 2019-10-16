@@ -16,6 +16,7 @@
 
 #include "NFSServer.h"
 #include "helpers.h"
+#include <algorithm>
 
 using grpc::Server;
 using grpc::ServerBuilder;
@@ -287,5 +288,14 @@ Status NFSImpl::RECOVERY(ServerContext *context, ServerReaderWriter<nfs::RECOVER
   {
     std::cerr << "RECOVERY from client_id: " << args.client_id() << std::endl;
   }
+  std::string client_id = std::to_string(args.client_id());
+  std::list<rpcid_t> all_rpcid = m_rpc_logger.list_logs();
+  std::list<rpcid_t> filtered;
+  std::copy_if(all_rpcid.begin(), all_rpcid.end(), filtered.begin(), [client_id](const rpcid_t &id){
+    char delimiter = ':';
+    int delimiter_pos = id.find(delimiter);
+    return client_id == id.substr(0, delimiter_pos);
+  });
+  
   return Status::OK;
 }

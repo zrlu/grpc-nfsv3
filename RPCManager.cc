@@ -19,13 +19,12 @@ rpcid_t RPCManager::generate_rpc_id(short client_id)
     
     time_t t = time(0);
     unsigned long rpc_id = (unsigned long)t;
-    rpc_id &= 0xffffffUL;
+    rpc_id &= 0xffffffffUL;
     rpc_id <<= 32;
-    rpc_id |= (unsigned long)client_id << 56;
     rpc_id |= (unsigned long)m_rpc_count;
 
     ++m_rpc_count;
-    return std::to_string(rpc_id);
+    return std::to_string(client_id) + ":" + std::to_string(rpc_id);
 }
 
 Message *RPCManager::get_rpc(rpcid_t rpcid)
