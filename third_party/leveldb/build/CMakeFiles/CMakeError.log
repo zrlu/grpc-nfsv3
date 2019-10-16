@@ -1,0 +1,221 @@
+Determining if the function crc32c_value exists in the crc32c failed with the following output:
+Change Dir: /mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_f260c/fast"
+/usr/bin/make -f CMakeFiles/cmTC_f260c.dir/build.make CMakeFiles/cmTC_f260c.dir/build
+make[1]: Entering directory '/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_f260c.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=crc32c_value   -std=c11 -o CMakeFiles/cmTC_f260c.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_f260c
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f260c.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=crc32c_value    CMakeFiles/cmTC_f260c.dir/CheckFunctionExists.c.o  -o cmTC_f260c -lcrc32c 
+/usr/bin/ld: cannot find -lcrc32c
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_f260c.dir/build.make:97: recipe for target 'cmTC_f260c' failed
+make[1]: *** [cmTC_f260c] Error 1
+make[1]: Leaving directory '/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_f260c/fast' failed
+make: *** [cmTC_f260c/fast] Error 2
+
+
+Determining if the function snappy_compress exists in the snappy failed with the following output:
+Change Dir: /mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_23a04/fast"
+/usr/bin/make -f CMakeFiles/cmTC_23a04.dir/build.make CMakeFiles/cmTC_23a04.dir/build
+make[1]: Entering directory '/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_23a04.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=snappy_compress   -std=c11 -o CMakeFiles/cmTC_23a04.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_23a04
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_23a04.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=snappy_compress    CMakeFiles/cmTC_23a04.dir/CheckFunctionExists.c.o  -o cmTC_23a04 -lsnappy 
+/usr/bin/ld: cannot find -lsnappy
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_23a04.dir/build.make:97: recipe for target 'cmTC_23a04' failed
+make[1]: *** [cmTC_23a04] Error 1
+make[1]: Leaving directory '/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_23a04/fast' failed
+make: *** [cmTC_23a04/fast] Error 2
+
+
+Determining if the function malloc exists in the tcmalloc failed with the following output:
+Change Dir: /mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_da089/fast"
+/usr/bin/make -f CMakeFiles/cmTC_da089.dir/build.make CMakeFiles/cmTC_da089.dir/build
+make[1]: Entering directory '/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_da089.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=malloc   -std=c11 -o CMakeFiles/cmTC_da089.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+<command-line>:0:23: warning: conflicting types for built-in function ‘malloc’ [-Wbuiltin-declaration-mismatch]
+/usr/share/cmake-3.10/Modules/CheckFunctionExists.c:7:3: note: in expansion of macro ‘CHECK_FUNCTION_EXISTS’
+   CHECK_FUNCTION_EXISTS(void);
+   ^~~~~~~~~~~~~~~~~~~~~
+Linking C executable cmTC_da089
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_da089.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=malloc    CMakeFiles/cmTC_da089.dir/CheckFunctionExists.c.o  -o cmTC_da089 -ltcmalloc 
+/usr/bin/ld: cannot find -ltcmalloc
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_da089.dir/build.make:97: recipe for target 'cmTC_da089' failed
+make[1]: *** [cmTC_da089] Error 1
+make[1]: Leaving directory '/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_da089/fast' failed
+make: *** [cmTC_da089/fast] Error 2
+
+
+Determining if the F_FULLFSYNC exist failed with the following output:
+Change Dir: /mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_9a226/fast"
+/usr/bin/make -f CMakeFiles/cmTC_9a226.dir/build.make CMakeFiles/cmTC_9a226.dir/build
+make[1]: Entering directory '/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_9a226.dir/CheckSymbolExists.cxx.o
+/usr/bin/c++    -std=c++11 -o CMakeFiles/cmTC_9a226.dir/CheckSymbolExists.cxx.o -c /mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx: In function ‘int main(int, char**)’:
+/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:8:19: error: ‘F_FULLFSYNC’ was not declared in this scope
+   return ((int*)(&F_FULLFSYNC))[argc];
+                   ^~~~~~~~~~~
+/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:8:19: note: suggested alternative: ‘O_FSYNC’
+   return ((int*)(&F_FULLFSYNC))[argc];
+                   ^~~~~~~~~~~
+                   O_FSYNC
+CMakeFiles/cmTC_9a226.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_9a226.dir/CheckSymbolExists.cxx.o' failed
+make[1]: *** [CMakeFiles/cmTC_9a226.dir/CheckSymbolExists.cxx.o] Error 1
+make[1]: Leaving directory '/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_9a226/fast' failed
+make: *** [cmTC_9a226/fast] Error 2
+
+File /mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+/* */
+#include <fcntl.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef F_FULLFSYNC
+  return ((int*)(&F_FULLFSYNC))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Performing C++ SOURCE FILE Test HAVE_CLANG_THREAD_SAFETY failed with the following output:
+Change Dir: /mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_87a57/fast"
+/usr/bin/make -f CMakeFiles/cmTC_87a57.dir/build.make CMakeFiles/cmTC_87a57.dir/build
+make[1]: Entering directory '/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_87a57.dir/src.cxx.o
+/usr/bin/c++    -fno-exceptions -fno-rtti -DHAVE_CLANG_THREAD_SAFETY   -Wthread-safety -std=c++11 -o CMakeFiles/cmTC_87a57.dir/src.cxx.o -c /mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp/src.cxx
+c++: error: unrecognized command line option '-Wthread-safety'; did you mean '-fthread-jumps'?
+CMakeFiles/cmTC_87a57.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_87a57.dir/src.cxx.o' failed
+make[1]: *** [CMakeFiles/cmTC_87a57.dir/src.cxx.o] Error 1
+make[1]: Leaving directory '/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_87a57/fast' failed
+make: *** [cmTC_87a57/fast] Error 2
+
+Source file was:
+int main() { return 0; }
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_759b9/fast"
+/usr/bin/make -f CMakeFiles/cmTC_759b9.dir/build.make CMakeFiles/cmTC_759b9.dir/build
+make[1]: Entering directory '/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_759b9.dir/CheckSymbolExists.c.o
+/usr/bin/cc   -Wstrict-prototypes    -std=c11 -o CMakeFiles/cmTC_759b9.dir/CheckSymbolExists.c.o   -c /mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_759b9
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_759b9.dir/link.txt --verbose=1
+/usr/bin/cc  -Wstrict-prototypes     CMakeFiles/cmTC_759b9.dir/CheckSymbolExists.c.o  -o cmTC_759b9 
+CMakeFiles/cmTC_759b9.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x1b): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_759b9.dir/build.make:97: recipe for target 'cmTC_759b9' failed
+make[1]: *** [cmTC_759b9] Error 1
+make[1]: Leaving directory '/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_759b9/fast' failed
+make: *** [cmTC_759b9/fast] Error 2
+
+File /mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_2faac/fast"
+/usr/bin/make -f CMakeFiles/cmTC_2faac.dir/build.make CMakeFiles/cmTC_2faac.dir/build
+make[1]: Entering directory '/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_2faac.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -Wstrict-prototypes -DCHECK_FUNCTION_EXISTS=pthread_create   -std=c11 -o CMakeFiles/cmTC_2faac.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_2faac
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_2faac.dir/link.txt --verbose=1
+/usr/bin/cc  -Wstrict-prototypes -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTC_2faac.dir/CheckFunctionExists.c.o  -o cmTC_2faac -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_2faac.dir/build.make:97: recipe for target 'cmTC_2faac' failed
+make[1]: *** [cmTC_2faac] Error 1
+make[1]: Leaving directory '/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_2faac/fast' failed
+make: *** [cmTC_2faac/fast] Error 2
+
+
+Determining if the function sqlite3_open exists in the sqlite3 failed with the following output:
+Change Dir: /mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_108e5/fast"
+/usr/bin/make -f CMakeFiles/cmTC_108e5.dir/build.make CMakeFiles/cmTC_108e5.dir/build
+make[1]: Entering directory '/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_108e5.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -Wstrict-prototypes -DCHECK_FUNCTION_EXISTS=sqlite3_open   -std=c11 -o CMakeFiles/cmTC_108e5.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_108e5
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_108e5.dir/link.txt --verbose=1
+/usr/bin/cc  -Wstrict-prototypes -DCHECK_FUNCTION_EXISTS=sqlite3_open    CMakeFiles/cmTC_108e5.dir/CheckFunctionExists.c.o  -o cmTC_108e5 -lsqlite3 
+/usr/bin/ld: cannot find -lsqlite3
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_108e5.dir/build.make:97: recipe for target 'cmTC_108e5' failed
+make[1]: *** [cmTC_108e5] Error 1
+make[1]: Leaving directory '/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_108e5/fast' failed
+make: *** [cmTC_108e5/fast] Error 2
+
+
+Performing C++ SOURCE FILE Test HAVE_KYOTOCABINET failed with the following output:
+Change Dir: /mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_07578/fast"
+/usr/bin/make -f CMakeFiles/cmTC_07578.dir/build.make CMakeFiles/cmTC_07578.dir/build
+make[1]: Entering directory '/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_07578.dir/src.cxx.o
+/usr/bin/c++    -fno-exceptions -fno-rtti -DHAVE_KYOTOCABINET   -std=c++11 -o CMakeFiles/cmTC_07578.dir/src.cxx.o -c /mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp/src.cxx
+/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp/src.cxx:2:10: fatal error: kcpolydb.h: No such file or directory
+ #include <kcpolydb.h>
+          ^~~~~~~~~~~~
+compilation terminated.
+CMakeFiles/cmTC_07578.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_07578.dir/src.cxx.o' failed
+make[1]: *** [CMakeFiles/cmTC_07578.dir/src.cxx.o] Error 1
+make[1]: Leaving directory '/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_07578/fast' failed
+make: *** [cmTC_07578/fast] Error 2
+
+Source file was:
+
+#include <kcpolydb.h>
+
+int main() {
+  kyotocabinet::TreeDB* db = new kyotocabinet::TreeDB();
+  delete db;
+  return 0;
+}
+  

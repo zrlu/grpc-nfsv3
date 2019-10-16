@@ -1,0 +1,36 @@
+# CMake generated Testfile for 
+# Source directory: /mnt/d/Codes/cs754-nfs/third_party/leveldb
+# Build directory: /mnt/d/Codes/cs754-nfs/third_party/leveldb/build
+# 
+# This file includes the relevant testing commands required for 
+# testing this directory and lists subdirectories to be tested as well.
+add_test(c_test "/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/c_test")
+add_test(fault_injection_test "/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/fault_injection_test")
+add_test(issue178_test "/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/issue178_test")
+add_test(issue200_test "/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/issue200_test")
+add_test(issue320_test "/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/issue320_test")
+add_test(env_test "/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/env_test")
+add_test(status_test "/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/status_test")
+add_test(no_destructor_test "/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/no_destructor_test")
+add_test(autocompact_test "/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/autocompact_test")
+add_test(corruption_test "/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/corruption_test")
+add_test(db_test "/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/db_test")
+add_test(dbformat_test "/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/dbformat_test")
+add_test(filename_test "/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/filename_test")
+add_test(log_test "/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/log_test")
+add_test(recovery_test "/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/recovery_test")
+add_test(skiplist_test "/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/skiplist_test")
+add_test(version_edit_test "/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/version_edit_test")
+add_test(version_set_test "/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/version_set_test")
+add_test(write_batch_test "/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/write_batch_test")
+add_test(memenv_test "/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/memenv_test")
+add_test(filter_block_test "/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/filter_block_test")
+add_test(table_test "/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/table_test")
+add_test(arena_test "/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/arena_test")
+add_test(bloom_test "/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/bloom_test")
+add_test(cache_test "/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/cache_test")
+add_test(coding_test "/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/coding_test")
+add_test(crc32c_test "/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/crc32c_test")
+add_test(hash_test "/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/hash_test")
+add_test(logging_test "/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/logging_test")
+add_test(env_posix_test "/mnt/d/Codes/cs754-nfs/third_party/leveldb/build/env_posix_test")
