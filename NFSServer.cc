@@ -90,6 +90,23 @@ Status NFSImpl::NFSPROC_MKNOD(ServerContext *context, const nfs::MKNODargs *requ
   return Status::OK;
 }
 
+int NFSImpl::do_MKDIR(const nfs::MKDIRargs *request)
+{
+  auto fp = fullpath(request->pathname());
+  mode_t mode = request->mode();
+  return mkdir(fp.c_str(), mode);
+}
+
+Status NFSImpl::NFSPROC_MKDIR(ServerContext *context, const nfs::MKDIRargs *request, nfs::MKDIRres *response)
+{
+  nfs::MKDIRres res;
+
+  if (do_MKDIR(request) == -1) res.set_syscall_errno(-errno);
+
+  *response = res;
+  return Status::OK;
+}
+
 int NFSImpl::do_OPEN(const nfs::OPENargs *request)
 {
   auto fp = fullpath(request->pathname());

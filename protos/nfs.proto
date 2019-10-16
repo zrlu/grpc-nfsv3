@@ -25,6 +25,8 @@ service NFS {
 
   rpc NFSPROC_MKNOD(MKNODargs) returns (MKNODres) {}
 
+  rpc NFSPROC_MKDIR(MKDIRargs) returns (MKDIRres) {}
+
   rpc NFSPROC_OPEN(OPENargs) returns (OPENres) {}
 
   rpc NFSPROC_RELEASE(RELEASEargs) returns (RELEASEres) {}
@@ -88,6 +90,17 @@ message MKNODargs {
 }
 
 message MKNODres {
+  int32 syscall_value = 1;
+  int32 syscall_errno = 2;
+}
+
+message MKDIRargs {
+  string pathname = 1;
+  uint32 mode = 2;
+  uint64 rpc_id = 3;
+}
+
+message MKDIRres {
   int32 syscall_value = 1;
   int32 syscall_errno = 2;
 }

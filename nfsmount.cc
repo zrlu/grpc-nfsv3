@@ -84,7 +84,9 @@ static int nfs_mknod(const char *path, mode_t mode, dev_t dev)
 
 static int nfs_mkdir(const char *path, mode_t mode)
 {
-  // need to implement
+  NFS_DEBUG(path);
+  int err;
+  RECONNECT_IF_RPC_FAIL(NFSPROC_MKDIR, &err, path, mode);
   return 0;
 }
 
