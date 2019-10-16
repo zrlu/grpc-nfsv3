@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <dirent.h>
 #include <errno.h>
+#include <signal.h>
 
 #include "NFSServer.h"
 #include "helpers.h"
@@ -153,11 +154,10 @@ Status NFSImpl::NFSPROC_OPEN(ServerContext *context, const nfs::OPENargs *reques
   nfs::OPENres res;
 
   m_rpc_logger.add_log(request->rpc_id());
-  m_rpc_logger.list_logs();
+  raise(SIGSEGV); // die here
   int retval = do_OPEN(request);
   if (retval == -1) res.set_syscall_errno(-errno);
   m_rpc_logger.remove_log(request->rpc_id());
-  m_rpc_logger.list_logs();
 
   res.set_syscall_value(retval);
   *response = res;
@@ -284,7 +284,6 @@ Status NFSImpl::NFSPROC_READDIR(ServerContext *context, const nfs::READDIRargs *
   }
 
   while ((de = readdir(dp)) != NULL) {
-      res.add_stat();
       nfs::Stat *st = res.add_stat();
       st->set_st_ino(de->d_ino);
       st->set_st_mode(DTTOIF(de->d_type));
@@ -306,13 +305,26 @@ Status NFSImpl::RECOVERY(ServerContext *context, ServerReaderWriter<nfs::RECOVER
     std::cerr << "RECOVERY from client_id: " << args.client_id() << std::endl;
   }
   std::string client_id = std::to_string(args.client_id());
+
   std::list<rpcid_t> all_rpcid = m_rpc_logger.list_logs();
   std::list<rpcid_t> filtered;
-  std::copy_if(all_rpcid.begin(), all_rpcid.end(), filtered.begin(), [client_id](const rpcid_t &id){
+  std::copy_if(all_rpcid.begin(), all_rpcid.end(), std::back_inserter(filtered), [client_id](const rpcid_t &id){
     char delimiter = ':';
     int delimiter_pos = id.find(delimiter);
-    return client_id == id.substr(0, delimiter_pos);
+    std::string prefix = id.substr(0, delimiter_pos);
+    return client_id.compare(prefix) == 0;
   });
+
+  nfs::RECOVERYres res;
+  for (auto it = filtered.begin(); it != filtered.end(); ++it)
+  {
+    std::string *rpcid = res.add_rpcid();
+    rpcid->assign(*it);
+  }
+  stream->Write(res);
+
+  
+
   
   return Status::OK;
 }

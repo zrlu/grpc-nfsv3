@@ -202,8 +202,10 @@ message READDIRres {
 
 message RECOVERYargs {
   uint32 client_id = 1;
+  repeated string serialized_args = 2;
 }
 
 message RECOVERYres {
-  repeated string serialized_args = 1;
+  repeated string rpcid = 1;
+  int32 ack = 2;
 }

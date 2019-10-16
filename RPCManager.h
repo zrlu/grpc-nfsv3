@@ -21,6 +21,8 @@ public:
     rpcid_t generate_rpc_id(short client_id);
 
     Message* get_rpc(rpcid_t rpcid);
+    
+    bool has_rpc(rpcid_t);
 
     void set_rpc(rpcid_t rpcid, Message *msg);
 

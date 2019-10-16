@@ -27,6 +27,11 @@ rpcid_t RPCManager::generate_rpc_id(short client_id)
     return std::to_string(client_id) + ":" + std::to_string(rpc_id);
 }
 
+bool RPCManager::has_rpc(rpcid_t rpcid)
+{
+    return m_rpc_store.find(rpcid) != m_rpc_store.end();
+}
+
 Message *RPCManager::get_rpc(rpcid_t rpcid)
 {
     return m_rpc_store[rpcid];
