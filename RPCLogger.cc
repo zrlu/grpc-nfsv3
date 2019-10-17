@@ -15,10 +15,15 @@ m_log_name(fn)
     }
 }
 
-void RPCLogger::add_log(rpcid_t rpcid)
+void RPCLogger::set_log(rpcid_t rpcid, const std::string &value)
 {
-    std::string value = "1";
     leveldb::Status s = m_db->Put(leveldb::WriteOptions(), rpcid, value);
+}
+
+bool RPCLogger::get_log(rpcid_t rpcid, std::string *value)
+{
+    leveldb::Status s = m_db->Get(leveldb::ReadOptions(), rpcid, value);
+    return s.ok();
 }
 
 void RPCLogger::remove_log(rpcid_t rpcid)

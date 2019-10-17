@@ -18,9 +18,11 @@ public:
 
     explicit RPCLogger(const char *);
 
-    void add_log(rpcid_t rpcid);
+    void set_log(rpcid_t rpcid, const std::string &value);
 
     void remove_log(rpcid_t rpcid);
+
+    bool get_log(rpcid_t rpcid, std::string *value);
 
     std::list<rpcid_t> list_logs();
 

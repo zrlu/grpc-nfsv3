@@ -84,9 +84,9 @@ Status NFSImpl::NFSPROC_MKNOD(ServerContext *context, const nfs::MKNODargs *requ
 {
   nfs::MKNODres res;
 
-  m_rpc_logger.add_log(request->rpc_id());
+  m_rpc_logger.set_log(request->rpc_id(), "0");
   if (do_MKNOD(request) == -1) res.set_syscall_errno(-errno);
-  m_rpc_logger.remove_log(request->rpc_id());
+  m_rpc_logger.set_log(request->rpc_id(), "1");
 
   *response = res;
   return Status::OK;
@@ -153,11 +153,10 @@ Status NFSImpl::NFSPROC_OPEN(ServerContext *context, const nfs::OPENargs *reques
 {
   nfs::OPENres res;
 
-  m_rpc_logger.add_log(request->rpc_id());
-  raise(SIGSEGV); // die here
+  m_rpc_logger.set_log(request->rpc_id(), "0");
   int retval = do_OPEN(request);
   if (retval == -1) res.set_syscall_errno(-errno);
-  m_rpc_logger.remove_log(request->rpc_id());
+  m_rpc_logger.set_log(request->rpc_id(), "1");
 
   res.set_syscall_value(retval);
   *response = res;
@@ -175,9 +174,9 @@ Status NFSImpl::NFSPROC_RELEASE(ServerContext *context, const nfs::RELEASEargs *
 {
   nfs::RELEASEres res;
   
-  m_rpc_logger.add_log(request->rpc_id());
+  m_rpc_logger.set_log(request->rpc_id(), "0");
   if (do_RELEASE(request) == -1) res.set_syscall_errno(-errno);
-  m_rpc_logger.remove_log(request->rpc_id());
+  m_rpc_logger.set_log(request->rpc_id(), "1");
 
   *response = res;
   return Status::OK;
@@ -230,9 +229,9 @@ Status NFSImpl::NFSPROC_WRITE(ServerContext *context, const nfs::WRITEargs *requ
 {
   nfs::WRITEres res;
 
-  m_rpc_logger.add_log(request->rpc_id());
+  m_rpc_logger.set_log(request->rpc_id(), "0");
   long retval = do_WRITE(request);
-  m_rpc_logger.remove_log(request->rpc_id());
+  m_rpc_logger.set_log(request->rpc_id(), "1");
 
   if (retval == -1) {
     res.set_syscall_errno(-errno);
@@ -298,33 +297,6 @@ Status NFSImpl::NFSPROC_READDIR(ServerContext *context, const nfs::READDIRargs *
 }
 
 Status NFSImpl::RECOVERY(ServerContext *context, ServerReaderWriter<nfs::RECOVERYres, nfs::RECOVERYargs> *stream)
-{
-  nfs::RECOVERYargs args;
-  while (stream->Read(&args))
-  {
-    std::cerr << "RECOVERY from client_id: " << args.client_id() << std::endl;
-  }
-  std::string client_id = std::to_string(args.client_id());
-
-  std::list<rpcid_t> all_rpcid = m_rpc_logger.list_logs();
-  std::list<rpcid_t> filtered;
-  std::copy_if(all_rpcid.begin(), all_rpcid.end(), std::back_inserter(filtered), [client_id](const rpcid_t &id){
-    char delimiter = ':';
-    int delimiter_pos = id.find(delimiter);
-    std::string prefix = id.substr(0, delimiter_pos);
-    return client_id.compare(prefix) == 0;
-  });
-
-  nfs::RECOVERYres res;
-  for (auto it = filtered.begin(); it != filtered.end(); ++it)
-  {
-    std::string *rpcid = res.add_rpcid();
-    rpcid->assign(*it);
-  }
-  stream->Write(res);
-
-  
-
-  
+{ 
   return Status::OK;
 }

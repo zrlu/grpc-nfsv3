@@ -22,6 +22,7 @@ using grpc::StatusCode;
 #endif
 
 extern rpcid_t current_rpcid;
+extern bool recovery_mode;
 
 NFSClient::NFSClient(std::shared_ptr<Channel> channel) : 
   m_channel(channel), 
@@ -43,7 +44,7 @@ bool NFSClient::WaitForConnection(int64_t sec, int32_t nsec)
 template <typename T> T* NFSClient::make_rpc()
 {
   T *args = new T;
-  rpcid_t id = m_rpc_mgr.generate_rpc_id(m_client_id);
+  rpcid_t id = recovery_mode ? current_rpcid : m_rpc_mgr.generate_rpc_id(m_client_id);
   current_rpcid = id;
   args->set_rpc_id(id);
   m_rpc_mgr.set_rpc(id, args);
@@ -289,60 +290,5 @@ int NFSClient::NFSPROC_READDIR(const char *path, void *buf, fuse_fill_dir_t fill
     copyStat2stat(stat_obj, &st);
     if (filler(buf, filename.c_str(), &st, 0)) break;
   }
-  return 0;
-}
-
-int NFSClient::RECOVERY(std::set<rpcid_t> *recovered)
-{
-  
-  ClientContext context;
-  std::shared_ptr<ClientReaderWriter<nfs::RECOVERYargs, nfs::RECOVERYres> > stream(stub_->RECOVERY(&context));
-  
-  nfs::RECOVERYargs args;
-  args.set_client_id(m_client_id);
-  DEBUG_REQUEST((&args));
-  stream->Write(args);
-  stream->WritesDone();
-
-  nfs::RECOVERYres res;
-  while (stream->Read(&res))
-  {}
-  DEBUG_RESPONSE(res);
-
-  int size_rpcid = res.rpcid_size();
-
-  for (int i = 0; i < size_rpcid; ++i)
-  {
-    args.Clear();
-    const rpcid_t id = res.rpcid(i);
-    std::cerr << "before insert" << std::endl;
-    recovered->insert(id);
-    std::cerr << "after insert" << std::endl;
-
-    if (!m_rpc_mgr.has_rpc(id))
-    {
-      continue;
-    }
-
-    Message* message = m_rpc_mgr.get_rpc(id);
-
-
-    std::string *serialized_args = args.add_serialized_args();
-
-    std::cerr << message->GetTypeName() << std::endl;
-
-    message->SerializeToString(serialized_args);
-
-    std::cerr << args.ShortDebugString() << std::endl;
-
-    nfs::OPENargs openArgs;
-    openArgs.ParseFromString(*serialized_args);
-
-    std::cerr << "openArgs:" << openArgs.ShortDebugString() << std::endl;
-  
-  }
-
-
-
   return 0;
 }

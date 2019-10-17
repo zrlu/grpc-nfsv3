@@ -24,29 +24,20 @@
 #endif
 
 rpcid_t current_rpcid;
+bool recovery_mode = false;
 
 #define RECONNECT_IF_RPC_FAIL(__rpc, __err_addr, ...) \
-int recovery_code = 1; \
 do {\
   *__err_addr = get_user_data()->client()->__rpc(__VA_ARGS__);\
   if (NFSPROC_RPC_ERROR(*__err_addr))\
   {\
       get_user_data()->client()->WaitForConnection();\
-      recovery_code = 1; \
-      std::set<rpcid_t> recovered;\
-      while (recovery_code != 0) \
-      {\
-        puts("FUSE: entering recovery...");\
-        puts("[[ Current RPC ID ]]");\
-        puts(current_rpcid.c_str());\
-        recovery_code = get_user_data()->client()->RECOVERY(&recovered);\
-        get_user_data()->client()->WaitForConnection();\
-      }\
+      std::cerr << "FUSE: [[ Entering recovery mode for RPC ID: " << current_rpcid << " ]]" << std::endl; \
+      recovery_mode = true;\
+      *__err_addr = get_user_data()->client()->__rpc(__VA_ARGS__);\
+      recovery_mode = false;\
       puts("FUSE: recovery success!");\
-      if (recovered.find(current_rpcid) != recovered.end())\
-      {\
-        break;\
-      }\
+      break;\
   }\
 } while (NFSPROC_RPC_ERROR(*__err_addr));\
 

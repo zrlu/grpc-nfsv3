@@ -56,13 +56,12 @@ public:
   int NFSPROC_MKNOD(const char *, mode_t, dev_t);
   int NFSPROC_MKDIR(const char *, mode_t);
   int NFSPROC_RMDIR(const char *);
-  int NFSPROC_RENAME(const char * oldpathname, const char * newpathname);
+  int NFSPROC_RENAME(const char *, const char *);
   int NFSPROC_OPEN(const char *, const struct fuse_file_info *, int *);
   int NFSPROC_RELEASE(const char *, const struct fuse_file_info *);
   int NFSPROC_READ(const char *, char *, size_t, off_t, const struct fuse_file_info *, ssize_t *);
   int NFSPROC_WRITE(const char *, const char *, size_t, off_t, const struct fuse_file_info *, ssize_t *);
   int NFSPROC_FGETATTR(const char *, struct stat *, const struct fuse_file_info *);
   int NFSPROC_READDIR(const char *, void *, fuse_fill_dir_t, off_t, struct fuse_file_info *);
-  int RECOVERY(std::set<rpcid_t> *recovered);
 
 };
