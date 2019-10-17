@@ -90,13 +90,15 @@ static int nfs_mkdir(const char *path, mode_t mode)
   NFS_DEBUG(path);
   int err;
   RECONNECT_IF_RPC_FAIL(NFSPROC_MKDIR, &err, path, mode);
-  return 0;
+  return err;
 }
 
 static int nfs_unlink(const char *path)
 {
-  // need to implement
-  return 0;
+  NFS_DEBUG(path);
+  int err;
+  RECONNECT_IF_RPC_FAIL(NFSPROC_UNLINK, &err, path);  return 0;
+  return err;
 }
 
 static int nfs_rmdir(const char *path)
@@ -104,7 +106,7 @@ static int nfs_rmdir(const char *path)
   NFS_DEBUG(path);
   int err;
   RECONNECT_IF_RPC_FAIL(NFSPROC_RMDIR, &err, path);
-  return 0;
+  return err;
 }
 
 static int nfs_rename(const char *oldpath, const char *newpath)
@@ -112,13 +114,15 @@ static int nfs_rename(const char *oldpath, const char *newpath)
   NFS_DEBUG(oldpath);
   int err;
   RECONNECT_IF_RPC_FAIL(NFSPROC_RENAME, &err, oldpath, newpath);
-  return 0;
+  return err;
 }
 
 static int nfs_truncate(const char *path, off_t offset)
 {
-  // need to implement
-  return 0;
+  NFS_DEBUG(path);
+  int err;
+  RECONNECT_IF_RPC_FAIL(NFSPROC_TRUNCATE, &err, path, offset);
+  return err;
 }
   
 static int nfs_open(const char *path, struct fuse_file_info *fi)
