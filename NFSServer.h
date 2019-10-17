@@ -14,6 +14,7 @@
 #endif
 
 #include "RPCLogger.h"
+#include <google/protobuf/message.h>
 
 using grpc::Server;
 using grpc::ServerBuilder;
@@ -42,6 +43,9 @@ class NFSImpl final : public nfs::NFS::Service
   int do_OPEN(const nfs::OPENargs *);
   int do_RELEASE(const nfs::RELEASEargs *);
   long do_WRITE(const nfs::WRITEargs *);
+
+  std::string serialize(const Message &msg);
+  template <typename T> T deserialize(const string &str);
 
 protected:
 public:

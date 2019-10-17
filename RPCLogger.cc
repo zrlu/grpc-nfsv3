@@ -35,8 +35,9 @@ list<rpcid_t> RPCLogger::list_logs()
 {
     list<rpcid_t> lst;
     leveldb::Iterator* it = m_db->NewIterator(leveldb::ReadOptions());
+    // int i = 0;
     for (it->SeekToFirst(); it->Valid(); it->Next()) {
-        std::cerr << it->key().ToString() << ": " << it->value().ToString() << std::endl;
+        // std::cerr << "[" << i++ << "] " << it->key().ToString() << ": " << it->value().ToString() << std::endl;
         lst.push_back(it->key().ToString());
     }
     delete it;

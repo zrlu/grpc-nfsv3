@@ -42,6 +42,18 @@ m_server_storage_path(path),
 m_rpc_logger(RPCLogger("/tmp/rpclog.db"))
 {}
 
+std::string NFSImpl::serialize(const Message &msg)
+{
+  return msg.SerializeAsString();
+}
+
+template <typename T> T NFSImpl::deserialize(const string &str)
+{
+  T obj;
+  obj.ParseFromString(str);
+  return obj;
+}
+
 Status NFSImpl::NFSPROC_NULL(ServerContext *context, const nfs::NULLargs *request, nfs::NULLres *response)
 {
   nfs::NULLres res;
@@ -84,9 +96,17 @@ Status NFSImpl::NFSPROC_MKNOD(ServerContext *context, const nfs::MKNODargs *requ
 {
   nfs::MKNODres res;
 
-  m_rpc_logger.set_log(request->rpc_id(), "0");
+  // recovery
+  string old_res;
+  if (m_rpc_logger.get_log(request->rpc_id(), &old_res))
+  {
+    res = deserialize<nfs::MKNODres>(old_res);
+    *response = res;
+    return Status::OK;
+  }
+
   if (do_MKNOD(request) == -1) res.set_syscall_errno(-errno);
-  m_rpc_logger.set_log(request->rpc_id(), "1");
+  m_rpc_logger.set_log(request->rpc_id(), serialize(res));
 
   *response = res;
   return Status::OK;
@@ -103,6 +123,15 @@ Status NFSImpl::NFSPROC_MKDIR(ServerContext *context, const nfs::MKDIRargs *requ
 {
   nfs::MKDIRres res;
 
+  // recovery
+  string old_res;
+  if (m_rpc_logger.get_log(request->rpc_id(), &old_res))
+  {
+    res = deserialize<nfs::MKDIRres>(old_res);
+    *response = res;
+    return Status::OK;
+  }
+
   if (do_MKDIR(request) == -1) res.set_syscall_errno(-errno);
 
   *response = res;
@@ -118,6 +147,16 @@ int NFSImpl::do_RMDIR(const nfs::RMDIRargs *request)
 Status NFSImpl::NFSPROC_RMDIR(ServerContext *context, const nfs::RMDIRargs *request, nfs::RMDIRres *response)
 {
   nfs::RMDIRres res;
+
+  // recovery
+  string old_res;
+  if (m_rpc_logger.get_log(request->rpc_id(), &old_res))
+  {
+    res = deserialize<nfs::RMDIRres>(old_res);
+    *response = res;
+    return Status::OK;
+  }
+
 
   if (do_RMDIR(request) == -1) res.set_syscall_errno(-errno);
 
@@ -136,6 +175,15 @@ Status NFSImpl::NFSPROC_RENAME(ServerContext *context, const nfs::RENAMEargs *re
 {
   nfs::RENAMEres res;
 
+  // recovery
+  string old_res;
+  if (m_rpc_logger.get_log(request->rpc_id(), &old_res))
+  {
+    res = deserialize<nfs::RENAMEres>(old_res);
+    *response = res;
+    return Status::OK;
+  }
+
   if (do_RENAME(request) == -1) res.set_syscall_errno(-errno);
 
   *response = res;
@@ -153,7 +201,15 @@ Status NFSImpl::NFSPROC_OPEN(ServerContext *context, const nfs::OPENargs *reques
 {
   nfs::OPENres res;
 
-  m_rpc_logger.set_log(request->rpc_id(), "0");
+  // recovery
+  string old_res;
+  if (m_rpc_logger.get_log(request->rpc_id(), &old_res))
+  {
+    res = deserialize<nfs::OPENres>(old_res);
+    *response = res;
+    return Status::OK;
+  }
+
   int retval = do_OPEN(request);
   if (retval == -1) res.set_syscall_errno(-errno);
   m_rpc_logger.set_log(request->rpc_id(), "1");
@@ -174,7 +230,15 @@ Status NFSImpl::NFSPROC_RELEASE(ServerContext *context, const nfs::RELEASEargs *
 {
   nfs::RELEASEres res;
   
-  m_rpc_logger.set_log(request->rpc_id(), "0");
+  // recovery  
+  string old_res;
+  if (m_rpc_logger.get_log(request->rpc_id(), &old_res))
+  {
+    res = deserialize<nfs::RELEASEres>(old_res);
+    *response = res;
+    return Status::OK;
+  }
+
   if (do_RELEASE(request) == -1) res.set_syscall_errno(-errno);
   m_rpc_logger.set_log(request->rpc_id(), "1");
 
@@ -229,7 +293,6 @@ Status NFSImpl::NFSPROC_WRITE(ServerContext *context, const nfs::WRITEargs *requ
 {
   nfs::WRITEres res;
 
-  m_rpc_logger.set_log(request->rpc_id(), "0");
   long retval = do_WRITE(request);
   m_rpc_logger.set_log(request->rpc_id(), "1");
 

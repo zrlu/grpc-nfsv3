@@ -33,7 +33,7 @@ do {\
   {\
       get_user_data()->client()->WaitForConnection();\
       std::cerr << "FUSE: [[ Entering recovery mode for RPC ID: " << current_rpcid << " ]]" << std::endl; \
-      recovery_mode = true;\
+      recovery_mode = true; /* send the same rpcid */ \
       *__err_addr = get_user_data()->client()->__rpc(__VA_ARGS__);\
       recovery_mode = false;\
       puts("FUSE: recovery success!");\
