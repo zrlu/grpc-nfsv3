@@ -27,9 +27,13 @@ service NFS {
 
   rpc NFSPROC_MKDIR(MKDIRargs) returns (MKDIRres) {}
 
+  rpc NFSPROC_UNLINK(UNLINKargs) returns (UNLINKres) {}
+
   rpc NFSPROC_RMDIR(RMDIRargs) returns (RMDIRres) {}
 
   rpc NFSPROC_RENAME(RENAMEargs) returns (RENAMEres) {}  
+
+  rpc NFSPROC_TRUNCATE(TRUNCATEargs) returns (TRUNCATEres) {}  
 
   rpc NFSPROC_OPEN(OPENargs) returns (OPENres) {}
 
@@ -109,6 +113,15 @@ message MKDIRres {
   int32 syscall_errno = 2;
 }
 
+message UNLINKargs {
+  string pathname = 1;
+  string rpc_id = 2;
+}
+
+message UNLINKres {
+  int32 syscall_value = 1;
+  int32 syscall_errno = 2;
+}
 message RMDIRargs {
   string pathname = 1;
   string rpc_id = 2;
@@ -126,6 +139,17 @@ message RENAMEargs {
 }
 
 message RENAMEres {
+  int32 syscall_value = 1;
+  int32 syscall_errno = 2;
+}
+
+message TRUNCATEargs {
+  string pathname = 1;
+  int64 length = 2;
+  string rpc_id = 3;
+}
+
+message TRUNCATEres {
   int32 syscall_value = 1;
   int32 syscall_errno = 2;
 }

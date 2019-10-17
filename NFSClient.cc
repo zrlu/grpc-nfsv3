@@ -126,6 +126,22 @@ int NFSClient::NFSPROC_MKDIR(const char *pathname, mode_t mode)
   return status.error_code() | res.syscall_errno();
 }
 
+int NFSClient::NFSPROC_UNLINK(const char *pathname)
+{
+  ClientContext context;
+
+  nfs::UNLINKargs* args = make_rpc<nfs::UNLINKargs>();
+  nfs::UNLINKres res;
+  args->set_pathname(pathname);
+
+  DEBUG_REQUEST(args);
+  Status status = stub_->NFSPROC_UNLINK(&context, *args, &res);
+  del_rpc_if_ok(args->rpc_id(), status);
+  DEBUG_RESPONSE(res);
+
+  return status.error_code() | res.syscall_errno();
+}
+
 int NFSClient::NFSPROC_RMDIR(const char *pathname)
 {
   ClientContext context;
@@ -153,6 +169,23 @@ int NFSClient::NFSPROC_RENAME(const char *oldpathname, const char * newpathname)
 
   DEBUG_REQUEST(args);
   Status status = stub_->NFSPROC_RENAME(&context, *args, &res);
+  del_rpc_if_ok(args->rpc_id(), status);
+  DEBUG_RESPONSE(res);
+
+  return status.error_code() | res.syscall_errno();
+}
+
+int NFSClient::NFSPROC_TRUNCATE(const char *path, off_t length)
+{
+  ClientContext context;
+
+  nfs::TRUNCATEargs* args = make_rpc<nfs::TRUNCATEargs>();
+  nfs::TRUNCATEres res;
+  args->set_pathname(path);
+  args->set_length(length);
+
+  DEBUG_REQUEST(args);
+  Status status = stub_->NFSPROC_TRUNCATE(&context, *args, &res);
   del_rpc_if_ok(args->rpc_id(), status);
   DEBUG_RESPONSE(res);
 

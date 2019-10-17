@@ -138,6 +138,31 @@ Status NFSImpl::NFSPROC_MKDIR(ServerContext *context, const nfs::MKDIRargs *requ
   return Status::OK;
 }
 
+int NFSImpl::do_UNLINK(const nfs::UNLINKargs *request)
+{
+  auto fp = fullpath(request->pathname());
+  return unlink(fp.c_str());
+}
+
+Status NFSImpl::NFSPROC_UNLINK(ServerContext *context, const nfs::UNLINKargs *request, nfs::UNLINKres *response)
+{
+  nfs::UNLINKres res;
+
+  // recovery
+  string old_res;
+  if (m_rpc_logger.get_log(request->rpc_id(), &old_res))
+  {
+    res = deserialize<nfs::UNLINKres>(old_res);
+    *response = res;
+    return Status::OK;
+  }
+
+  if (do_UNLINK(request) == -1) res.set_syscall_errno(-errno);
+
+  *response = res;
+  return Status::OK;
+}
+
 int NFSImpl::do_RMDIR(const nfs::RMDIRargs *request)
 {
   auto fp = fullpath(request->pathname());
@@ -185,6 +210,32 @@ Status NFSImpl::NFSPROC_RENAME(ServerContext *context, const nfs::RENAMEargs *re
   }
 
   if (do_RENAME(request) == -1) res.set_syscall_errno(-errno);
+
+  *response = res;
+  return Status::OK;
+}
+
+int NFSImpl::do_TRUNCATE(const nfs::TRUNCATEargs *request)
+{
+  auto fp = fullpath(request->pathname());
+  const off_t length = request->length();
+  return truncate(fp.c_str(), length);
+}
+
+Status NFSImpl::NFSPROC_TRUNCATE(ServerContext *context, const nfs::TRUNCATEargs *request, nfs::TRUNCATEres *response)
+{
+  nfs::TRUNCATEres res;
+
+  // recovery
+  string old_res;
+  if (m_rpc_logger.get_log(request->rpc_id(), &old_res))
+  {
+    res = deserialize<nfs::TRUNCATEres>(old_res);
+    *response = res;
+    return Status::OK;
+  }
+
+  if (do_TRUNCATE(request) == -1) res.set_syscall_errno(-errno);
 
   *response = res;
   return Status::OK;
