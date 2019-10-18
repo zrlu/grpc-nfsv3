@@ -205,6 +205,7 @@ int NFSClient::NFSPROC_OPEN(const char *pathname, const struct fuse_file_info *f
   Status status = stub_->NFSPROC_OPEN(&context, *args, &res);
   del_rpc_if_ok(args->rpc_id(), status);
   DEBUG_RESPONSE(res);
+  m_to_commit[res.syscall_value()] = std::set<rpcid_t>();
 
   *ret = res.syscall_value();
   return status.error_code() | res.syscall_errno();
@@ -212,6 +213,43 @@ int NFSClient::NFSPROC_OPEN(const char *pathname, const struct fuse_file_info *f
 
 int NFSClient::NFSPROC_RELEASE(const char *pathname, const struct fuse_file_info *fi)
 {
+
+  // Send COMMIT here
+  {
+    ClientContext context;
+    nfs::COMMITargs* args = make_rpc<nfs::COMMITargs>();
+    nfs::COMMITres res;
+
+    std::shared_ptr<ClientReaderWriter<nfs::COMMITargs, nfs::COMMITres> > stream(stub_->NFSPROC_COMMIT(&context));
+
+    for (auto it = m_to_commit[fi->fh].begin(); it != m_to_commit[fi->fh].end(); ++it)
+    {
+      string *to_commit = args->add_to_commit_id();
+      to_commit->assign(*it);
+    }
+
+    std::cerr << "====== COMMIT ====== " << "fd: " << fi->fh << std::endl;
+    DEBUG_REQUEST(args);
+
+    stream->Write(*args);
+    stream->WritesDone();
+
+    while (stream->Read(&res)) {}
+    DEBUG_RESPONSE(res);
+
+
+    int size = res.commit_id_size();
+    for (int i = 0; i < size; ++i)
+    {
+      m_to_commit[fi->fh].erase(res.commit_id(i));
+      m_rpc_mgr.delete_rpc(res.commit_id(i));
+    }
+
+    Status status = stream->Finish();
+    del_rpc_if_ok(args->rpc_id(), status);
+    std::cerr << "==================" <<std::endl;
+  }
+  
   ClientContext context;
   nfs::RELEASEargs* args = make_rpc<nfs::RELEASEargs>();
   nfs::RELEASEres res;
@@ -223,7 +261,10 @@ int NFSClient::NFSPROC_RELEASE(const char *pathname, const struct fuse_file_info
   del_rpc_if_ok(args->rpc_id(), status);
   DEBUG_RESPONSE(res);
 
+  m_to_commit.erase(fi->fh);
+
   return status.error_code() | res.syscall_errno();
+
 }
 
 int NFSClient::NFSPROC_READ(const char *pathname, char *buffer, size_t size, off_t offset, const struct fuse_file_info *fi, ssize_t *ret)
@@ -266,17 +307,15 @@ int NFSClient::NFSPROC_WRITE(const char *pathname, const char *buffer, size_t si
 
   DEBUG_REQUEST(args);
   Status status = stub_->NFSPROC_WRITE(&context, *args, &res);
-  del_rpc_if_ok(args->rpc_id(), status);
   DEBUG_RESPONSE(res);
 
-  int err = status.error_code() | res.syscall_errno();
-  if (!err) {
-    *ret = res.syscall_value();
-    return 0;
+  if (status.ok())
+  {
+    m_to_commit[fi->fh].insert(args->rpc_id());
+    *ret = size;
   }
-  *ret = -1;
 
-  return err;
+  return status.error_code(); 
 }
 
 int NFSClient::NFSPROC_FGETATTR(const char *pathname, struct stat *statbuf, const struct fuse_file_info *fi)

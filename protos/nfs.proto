@@ -47,7 +47,7 @@ service NFS {
 
   rpc NFSPROC_READDIR(READDIRargs) returns (READDIRres) {}
 
-  rpc RECOVERY(stream RECOVERYargs) returns (stream RECOVERYres) {}
+  rpc NFSPROC_COMMIT(stream COMMITargs) returns (stream COMMITres) {}
 }
 
 // A Message is a message sent while at a given point.
@@ -197,8 +197,7 @@ message WRITEargs {
 }
 
 message WRITEres {
-  int64 syscall_value = 1;
-  int32 syscall_errno = 2;
+  bool queued = 1;
 }
 
 message FGETATTRargs {
@@ -224,14 +223,12 @@ message READDIRres {
   repeated Stat stat = 4;
 }
 
-message RECOVERYargs {
-  string rpcid = 1;
-  string serialized_args = 2;
-  string typename = 3;
+message COMMITargs {
+  string rpc_id = 1;
+  repeated string to_commit_id = 2;
+  repeated bytes retrans = 3;
 }
 
-message RECOVERYres {
-  string serialized_res = 1;
-  string typename = 2;
-  bool recovery_not_needed = 3;
+message COMMITres {
+  repeated string commit_id = 1;
 }

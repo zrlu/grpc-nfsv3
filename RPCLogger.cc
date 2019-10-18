@@ -45,6 +45,12 @@ list<rpcid_t> RPCLogger::list_logs()
     return lst;
 }
 
+bool RPCLogger::destroy_logs()
+{
+    int retval = rmdir(m_log_name);
+    return retval == 0;
+}
+
 RPCLogger::~RPCLogger()
 {
     delete m_db;

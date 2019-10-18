@@ -15,6 +15,7 @@
 
 #include "RPCLogger.h"
 #include <google/protobuf/message.h>
+#include <queue>
 
 using grpc::Server;
 using grpc::ServerBuilder;
@@ -34,6 +35,8 @@ class NFSImpl final : public nfs::NFS::Service
   const std::string m_server_storage_path;
   fs::path fullpath(const std::string &);
   RPCLogger m_rpc_logger;
+
+  std::map<rpcid_t, nfs::WRITEargs> m_write_buffer;
 
   // the do_* functions are also used in recovery
   int do_MKNOD(const nfs::MKNODargs *);
@@ -66,7 +69,7 @@ public:
   Status NFSPROC_WRITE(ServerContext *, const nfs::WRITEargs *, nfs::WRITEres *) override;
   Status NFSPROC_FGETATTR(ServerContext *, const nfs::FGETATTRargs *, nfs::FGETATTRres *) override;
   Status NFSPROC_READDIR(ServerContext *, const nfs::READDIRargs *, nfs::READDIRres *) override;
-  Status RECOVERY(ServerContext*, ServerReaderWriter<nfs::RECOVERYres, nfs::RECOVERYargs>*) override;
+  Status NFSPROC_COMMIT(ServerContext*, ServerReaderWriter<nfs::COMMITres, nfs::COMMITargs>*) override;
 };
 
 

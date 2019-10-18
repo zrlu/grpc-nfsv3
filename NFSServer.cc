@@ -262,7 +262,9 @@ Status NFSImpl::NFSPROC_OPEN(ServerContext *context, const nfs::OPENargs *reques
   }
 
   int retval = do_OPEN(request);
-  if (retval == -1) res.set_syscall_errno(-errno);
+  if (retval == -1) {
+    res.set_syscall_errno(-errno);
+  }
   m_rpc_logger.set_log(request->rpc_id(), "1");
 
   res.set_syscall_value(retval);
@@ -290,7 +292,9 @@ Status NFSImpl::NFSPROC_RELEASE(ServerContext *context, const nfs::RELEASEargs *
     return Status::OK;
   }
 
-  if (do_RELEASE(request) == -1) res.set_syscall_errno(-errno);
+  if (do_RELEASE(request) == -1) {
+    res.set_syscall_errno(-errno);
+  }
   m_rpc_logger.set_log(request->rpc_id(), "1");
 
   *response = res;
@@ -345,16 +349,12 @@ Status NFSImpl::NFSPROC_WRITE(ServerContext *context, const nfs::WRITEargs *requ
 {
   nfs::WRITEres res;
 
-  long retval = do_WRITE(request);
-  m_rpc_logger.set_log(request->rpc_id(), "1");
+  m_rpc_logger.set_log(request->rpc_id(), "0");
 
-  if (retval == -1) {
-    res.set_syscall_errno(-errno);
-    *response = res;
-    return Status::OK;
-  }
-  res.set_syscall_value(retval);
-  *response = res;
+  m_write_buffer[request->rpc_id()] = *request;
+
+  res.set_queued(true);
+
   return Status::OK;
 }
 
@@ -411,7 +411,20 @@ Status NFSImpl::NFSPROC_READDIR(ServerContext *context, const nfs::READDIRargs *
   return Status::OK;
 }
 
-Status NFSImpl::RECOVERY(ServerContext *context, ServerReaderWriter<nfs::RECOVERYres, nfs::RECOVERYargs> *stream)
+Status NFSImpl::NFSPROC_COMMIT(ServerContext *context, ServerReaderWriter<nfs::COMMITres, nfs::COMMITargs> *stream)
 { 
+  nfs::COMMITres res;
+  nfs::COMMITargs args;
+  while (stream->Read(&args)) {}
+  int size = args.to_commit_id_size();
+  for (int i = 0; i < size; ++i)
+  {
+    const std::string to_commit_id = args.to_commit_id(i);
+    nfs::WRITEargs w_args = m_write_buffer[to_commit_id];
+    do_WRITE(&w_args);
+    res.add_commit_id(to_commit_id.c_str());
+  }
+  stream->Write(res);
+
   return Status::OK;
 }

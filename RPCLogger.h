@@ -26,6 +26,8 @@ public:
 
     std::list<rpcid_t> list_logs();
 
+    bool destroy_logs();
+
     ~RPCLogger();
 };
 
