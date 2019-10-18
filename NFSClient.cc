@@ -262,7 +262,7 @@ int NFSClient::NFSPROC_WRITE(const char *pathname, const char *buffer, size_t si
   args->set_fh(fi->fh);
   args->set_size(size);
   args->set_offset(offset);
-  args->set_data(buffer);
+  args->set_data(buffer, size);
 
   DEBUG_REQUEST(args);
   Status status = stub_->NFSPROC_WRITE(&context, *args, &res);

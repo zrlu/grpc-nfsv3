@@ -69,6 +69,11 @@ static void nfs_destroy(void *userdata)
   delete (UserData *)userdata;
 }
 
+static void nfs_access(const char *path, int)
+{
+  
+}
+
 static int nfs_getattr(const char *path, struct stat *statbuf)
 {
   NFS_DEBUG(path);

@@ -310,7 +310,7 @@ Status NFSImpl::NFSPROC_READ(ServerContext *context, const nfs::READargs *reques
     *response = res;
     return Status::OK;
   }
-  char buf[size+1];
+  char buf[size];
   bzero(buf, 0);
   ssize_t retval = read(fh, buf, size);
   if (retval == -1) {
@@ -319,7 +319,7 @@ Status NFSImpl::NFSPROC_READ(ServerContext *context, const nfs::READargs *reques
     return Status::OK;
   }
   res.set_syscall_value(retval);
-  res.set_data(buf);
+  res.set_data(buf, retval);
   *response = res;
   return Status::OK;
 }
