@@ -412,6 +412,8 @@ Status NFSImpl::NFSPROC_COMMIT(ServerContext *context, ServerReaderWriter<nfs::C
   nfs::COMMITres res;
   nfs::COMMITargs args;
 
+  mu_.lock();
+
   while (stream->Read(&args)) {}
   int size = args.to_commit_id_size();
   for (int i = 0; i < size; ++i)
@@ -424,6 +426,8 @@ Status NFSImpl::NFSPROC_COMMIT(ServerContext *context, ServerReaderWriter<nfs::C
   }
   stream->Write(res);
   fsync(args.fh());
+
+  mu_.unlock();
 
   return Status::OK;
 }
