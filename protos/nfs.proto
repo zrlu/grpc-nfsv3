@@ -48,6 +48,10 @@ service NFS {
   rpc NFSPROC_READDIR(READDIRargs) returns (READDIRres) {}
 
   rpc NFSPROC_COMMIT(stream COMMITargs) returns (stream COMMITres) {}
+
+  rpc CHECK_MISSING(COMMITargs) returns (ResendList) {}
+
+  rpc WRITE_BUFFER_SYNC(stream WRITEargs) returns (SyncResponse) {}
 }
 
 // A Message is a message sent while at a given point.
@@ -226,9 +230,16 @@ message READDIRres {
 message COMMITargs {
   string rpc_id = 1;
   repeated string to_commit_id = 2;
-  repeated bytes retrans = 3;
 }
 
 message COMMITres {
   repeated string commit_id = 1;
+}
+
+message ResendList {
+  repeated string rpc_id = 1;
+}
+
+message SyncResponse {
+  bool ok = 1;
 }

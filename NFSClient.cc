@@ -205,7 +205,10 @@ int NFSClient::NFSPROC_OPEN(const char *pathname, const struct fuse_file_info *f
   Status status = stub_->NFSPROC_OPEN(&context, *args, &res);
   del_rpc_if_ok(args->rpc_id(), status);
   DEBUG_RESPONSE(res);
-  m_to_commit[res.syscall_value()] = std::set<rpcid_t>();
+  if (fi->flags & O_WRONLY)
+  {
+    m_to_commit[res.syscall_value()] = std::set<rpcid_t>();
+  }
 
   *ret = res.syscall_value();
   return status.error_code() | res.syscall_errno();
@@ -213,43 +216,43 @@ int NFSClient::NFSPROC_OPEN(const char *pathname, const struct fuse_file_info *f
 
 int NFSClient::NFSPROC_RELEASE(const char *pathname, const struct fuse_file_info *fi)
 {
-
   // Send COMMIT here
+  if (fi->flags & O_WRONLY)
   {
+    std::cerr << "====== COMMIT ====== " << "fd: " << fi->fh << std::endl;
     ClientContext context;
     nfs::COMMITargs* args = make_rpc<nfs::COMMITargs>();
     nfs::COMMITres res;
-
-    std::shared_ptr<ClientReaderWriter<nfs::COMMITargs, nfs::COMMITres> > stream(stub_->NFSPROC_COMMIT(&context));
-
     for (auto it = m_to_commit[fi->fh].begin(); it != m_to_commit[fi->fh].end(); ++it)
     {
       string *to_commit = args->add_to_commit_id();
       to_commit->assign(*it);
     }
-
-    std::cerr << "====== COMMIT ====== " << "fd: " << fi->fh << std::endl;
     DEBUG_REQUEST(args);
+    std::set<rpcid_t> &set_pending = m_to_commit[fi->fh];
+    std::set<rpcid_t> set_missing;
+    std::set<rpcid_t> set_ok;
+    // Check for missing
+    if (CHECK_MISSING(*args, &set_missing) > 0) WRITE_BUFFER_SYNC(&set_missing);
+    // actually commit
+    std::shared_ptr<ClientReaderWriter<nfs::COMMITargs, nfs::COMMITres> > stream(stub_->NFSPROC_COMMIT(&context));
 
     stream->Write(*args);
     stream->WritesDone();
-
     while (stream->Read(&res)) {}
     DEBUG_RESPONSE(res);
 
-
-    int size = res.commit_id_size();
-    for (int i = 0; i < size; ++i)
-    {
-      m_to_commit[fi->fh].erase(res.commit_id(i));
-      m_rpc_mgr.delete_rpc(res.commit_id(i));
-    }
-
     Status status = stream->Finish();
     del_rpc_if_ok(args->rpc_id(), status);
+    for (int i = 0; i < res.commit_id_size(); ++i) set_ok.insert(res.commit_id(i));
+    for (auto it = set_ok.begin(); it != set_ok.end(); ++it)
+    {
+      set_pending.erase(*it);
+      m_rpc_mgr.delete_rpc(*it);
+    }
     std::cerr << "==================" <<std::endl;
   }
-  
+
   ClientContext context;
   nfs::RELEASEargs* args = make_rpc<nfs::RELEASEargs>();
   nfs::RELEASEres res;
@@ -363,4 +366,40 @@ int NFSClient::NFSPROC_READDIR(const char *path, void *buf, fuse_fill_dir_t fill
     if (filler(buf, filename.c_str(), &st, 0)) break;
   }
   return 0;
+}
+
+int NFSClient::CHECK_MISSING(const nfs::COMMITargs &list, std::set<rpcid_t> *missing)
+{
+  ClientContext context;
+  nfs::ResendList res;  
+
+  Status status = stub_->CHECK_MISSING(&context, list, &res);
+  missing->clear();
+  int size = res.rpc_id_size();
+  for (int i = 0; i < size; ++i)
+  {
+    missing->insert(res.rpc_id(i));
+  }
+
+  return missing->size();
+}
+
+int NFSClient::WRITE_BUFFER_SYNC(const std::set<rpcid_t> *missing)
+{
+    ClientContext context;
+    nfs::SyncResponse res;
+    std::shared_ptr<ClientWriter<nfs::WRITEargs> > stream(stub_->WRITE_BUFFER_SYNC(&context, &res));
+
+    for (auto it = missing->begin(); it != missing->end(); ++it)
+    {
+      const rpcid_t id = *it;
+      Message * ptr = m_rpc_mgr.get_rpc(id);
+      nfs::WRITEargs &args = *dynamic_cast<nfs::WRITEargs*>(ptr);
+      stream->Write(args);
+    }
+    stream->WritesDone();
+
+    Status status = stream->Finish();
+
+    return status.error_code();
 }

@@ -70,6 +70,8 @@ public:
   Status NFSPROC_FGETATTR(ServerContext *, const nfs::FGETATTRargs *, nfs::FGETATTRres *) override;
   Status NFSPROC_READDIR(ServerContext *, const nfs::READDIRargs *, nfs::READDIRres *) override;
   Status NFSPROC_COMMIT(ServerContext*, ServerReaderWriter<nfs::COMMITres, nfs::COMMITargs>*) override;
+  Status CHECK_MISSING(ServerContext *, const nfs::COMMITargs *, nfs::ResendList *) override;
+  Status WRITE_BUFFER_SYNC(ServerContext *, ServerReader<nfs::WRITEargs> *, nfs::SyncResponse *) override;
 };
 
 

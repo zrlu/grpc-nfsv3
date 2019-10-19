@@ -415,6 +415,7 @@ Status NFSImpl::NFSPROC_COMMIT(ServerContext *context, ServerReaderWriter<nfs::C
 { 
   nfs::COMMITres res;
   nfs::COMMITargs args;
+
   while (stream->Read(&args)) {}
   int size = args.to_commit_id_size();
   for (int i = 0; i < size; ++i)
@@ -422,9 +423,44 @@ Status NFSImpl::NFSPROC_COMMIT(ServerContext *context, ServerReaderWriter<nfs::C
     const std::string to_commit_id = args.to_commit_id(i);
     nfs::WRITEargs w_args = m_write_buffer[to_commit_id];
     do_WRITE(&w_args);
+    m_rpc_logger.set_log(w_args.rpc_id(), "1");
     res.add_commit_id(to_commit_id.c_str());
   }
   stream->Write(res);
 
+  return Status::OK;
+}
+
+Status NFSImpl::CHECK_MISSING(ServerContext *context, const nfs::COMMITargs *request, nfs::ResendList *response)
+{
+  nfs::ResendList res;
+
+  for (int i = 0; i < request->to_commit_id_size(); ++i)
+  {
+    rpcid_t to_check = request->to_commit_id(i);
+    if (m_write_buffer.find(to_check) == m_write_buffer.end())
+    {
+      res.add_rpc_id(to_check);
+    }
+  }
+
+  *response = res;
+  return Status::OK;
+}
+
+
+Status NFSImpl::WRITE_BUFFER_SYNC(ServerContext *context, ServerReader<nfs::WRITEargs> *request, nfs::SyncResponse *response)
+{
+
+  nfs::WRITEargs args;
+  nfs::SyncResponse res;
+  res.set_ok(true);
+
+  while (request->Read(&args))
+  {
+    m_write_buffer[args.rpc_id()] = args;
+  }
+
+  *response = res;
   return Status::OK;
 }
