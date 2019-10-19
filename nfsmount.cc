@@ -18,7 +18,7 @@
 #include "UserData.h"
 
 #ifdef ENABLE_NFS_DEBUG
-#define NFS_DEBUG(path) fprintf(stderr, "FUSE: %s(%s)\n", __func__, path)
+#define NFS_DEBUG(path) fprintf(stderr, "FUSE ===> : %s(%s)\n", __func__, path)
 #else
 #define NFS_DEBUG(path)
 #endif
@@ -71,7 +71,7 @@ static void nfs_destroy(void *userdata)
 
 static void nfs_access(const char *path, int)
 {
-  
+
 }
 
 static int nfs_getattr(const char *path, struct stat *statbuf)
@@ -167,6 +167,7 @@ static int nfs_read(const char *path, char* buffer, size_t size, off_t offset, s
   ssize_t bytes_read;
   int err;
   RECONNECT_IF_RPC_FAIL(NFSPROC_READ, &err, nullptr, buffer, size, offset, fi, &bytes_read);
+  std::cerr << "READ err: " << err << std::endl;
   if (NFSPROC_SYSCALL_ERROR(err)) return err;
   return bytes_read;
 }

@@ -15,10 +15,12 @@ using grpc::StatusCode;
 #ifdef CLIENT_ENABLE_DEBUG_MESSAGE
 #define DEBUG_RESPONSE(_res) std::cerr << "CLIENT <==  " << __func__ << ": " << _res.ShortDebugString().substr(0, 300) << std::endl;
 #define DEBUG_REQUEST(_args) std::cerr << "CLIENT  ==> " << __func__ << ": " << _args->ShortDebugString().substr(0, 300) << std::endl;
+#define DEBUG_REQUEST_(_args) std::cerr << "CLIENT  ==> " << __func__ << ": " << _args.ShortDebugString().substr(0, 300) << std::endl;
 
 #else
 #define DEBUG_RESPONSE(res)
 #define DEBUG_REQUEST(res)
+#define DEBUG_REQUEST_(res)
 #endif
 
 extern rpcid_t current_rpcid;
@@ -75,13 +77,12 @@ int NFSClient::NFSPROC_GETATTR(const char *pathname, struct stat *statbuf)
 {
   ClientContext context;
 
-  nfs::GETATTRargs* args = make_rpc<nfs::GETATTRargs>();
+  nfs::GETATTRargs args;
   nfs::GETATTRres res;
-  args->set_pathname(pathname);
+  args.set_pathname(pathname);
 
-  DEBUG_REQUEST(args);
-  Status status = stub_->NFSPROC_GETATTR(&context, *args, &res);
-  del_rpc_if_ok(args->rpc_id(), status);
+  DEBUG_REQUEST_(args);
+  Status status = stub_->NFSPROC_GETATTR(&context, args, &res);
   DEBUG_RESPONSE(res);
   
   const nfs::Stat stat = res.stat();
@@ -205,7 +206,7 @@ int NFSClient::NFSPROC_OPEN(const char *pathname, const struct fuse_file_info *f
   Status status = stub_->NFSPROC_OPEN(&context, *args, &res);
   del_rpc_if_ok(args->rpc_id(), status);
   DEBUG_RESPONSE(res);
-  if (fi->flags & O_WRONLY)
+  if (res.syscall_errno() == 0 && fi->flags & O_WRONLY)
   {
     m_to_commit[res.syscall_value()] = std::set<rpcid_t>();
   }
@@ -273,23 +274,25 @@ int NFSClient::NFSPROC_RELEASE(const char *pathname, const struct fuse_file_info
 int NFSClient::NFSPROC_READ(const char *pathname, char *buffer, size_t size, off_t offset, const struct fuse_file_info *fi, ssize_t *ret)
 {
   ClientContext context;
-  nfs::READargs* args = make_rpc<nfs::READargs>();
+  nfs::READargs args;
   nfs::READres res;
-  
-  args->set_fh(fi->fh);
-  args->set_size(size);
-  args->set_offset(offset);
 
-  DEBUG_REQUEST(args);
-  Status status = stub_->NFSPROC_READ(&context, *args, &res);
-  del_rpc_if_ok(args->rpc_id(), status);
+  args.set_fh(fi->fh);
+  args.set_size(size);
+  args.set_offset(offset);
+
+  DEBUG_REQUEST_(args);
+  
+
+  Status status = stub_->NFSPROC_READ(&context, args, &res);
+
   DEBUG_RESPONSE(res);
 
   int err = status.error_code() | res.syscall_errno();
   if (!err) {
-    const int bytes_wrote = res.syscall_value();
-    res.data().copy(buffer, bytes_wrote);
-    *ret = bytes_wrote;
+    const int bytes_read = res.syscall_value();
+    res.data().copy(buffer, bytes_read);
+    *ret = bytes_read;
     return 0;
   }
   *ret = -1;
@@ -324,14 +327,13 @@ int NFSClient::NFSPROC_WRITE(const char *pathname, const char *buffer, size_t si
 int NFSClient::NFSPROC_FGETATTR(const char *pathname, struct stat *statbuf, const struct fuse_file_info *fi)
 {
   ClientContext context;
-  nfs::FGETATTRargs *args = make_rpc<nfs::FGETATTRargs>();
+  nfs::FGETATTRargs args;
   nfs::FGETATTRres res;
 
-  args->set_fh(fi->fh);
+  args.set_fh(fi->fh);
   
-  DEBUG_REQUEST(args);
-  Status status = stub_->NFSPROC_FGETATTR(&context, *args, &res);
-  del_rpc_if_ok(args->rpc_id(), status);
+  DEBUG_REQUEST_(args);
+  Status status = stub_->NFSPROC_FGETATTR(&context, args, &res);
   DEBUG_RESPONSE(res);
 
   const nfs::Stat stat = res.stat();
@@ -343,14 +345,13 @@ int NFSClient::NFSPROC_FGETATTR(const char *pathname, struct stat *statbuf, cons
 int NFSClient::NFSPROC_READDIR(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi)
 {
   ClientContext context;
-  nfs::READDIRargs *args = make_rpc<nfs::READDIRargs>();
+  nfs::READDIRargs args;
   nfs::READDIRres res;
 
-  args->set_pathname(path);
+  args.set_pathname(path);
   
-  DEBUG_REQUEST(args);
-  Status status = stub_->NFSPROC_READDIR(&context, *args, &res);
-  del_rpc_if_ok(args->rpc_id(), status);
+  DEBUG_REQUEST_(args);
+  Status status = stub_->NFSPROC_READDIR(&context, args, &res);
   DEBUG_RESPONSE(res);
 
   int code = status.error_code() | res.syscall_errno();

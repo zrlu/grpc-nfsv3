@@ -308,22 +308,31 @@ Status NFSImpl::NFSPROC_READ(ServerContext *context, const nfs::READargs *reques
   const size_t size = request->size();
   const off_t offset = request->offset();
 
-  if (lseek(fh, offset, SEEK_SET) == -1)
+  mu_.lock();
+  int retval_ = lseek(fh, offset, SEEK_SET);
+  if (retval_ == -1)
   {
     res.set_syscall_errno(-errno);
     *response = res;
+    mu_.unlock();
     return Status::OK;
   }
+
   char buf[size];
-  bzero(buf, 0);
   ssize_t retval = read(fh, buf, size);
   if (retval == -1) {
     res.set_syscall_errno(-errno);
     *response = res;
+    mu_.unlock();
     return Status::OK;
   }
+  mu_.unlock();
   res.set_syscall_value(retval);
   res.set_data(buf, retval);
+
+  std::cerr << fh << std::endl;
+
+  res.set_fh(fh); // debug purpose
   *response = res;
   return Status::OK;
 }
@@ -341,6 +350,8 @@ long NFSImpl::do_WRITE(const nfs::WRITEargs *request)
 
   retval = write(fh, data, size);
   if (retval == -1) return -1;
+
+  fsync(fh);
 
   return retval;
 }
