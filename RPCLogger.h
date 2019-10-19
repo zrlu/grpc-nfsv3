@@ -11,7 +11,6 @@
 
 class RPCLogger
 {
-    std::fstream m_fs;
     const char *m_log_name;
     leveldb::DB *m_db;
 public:

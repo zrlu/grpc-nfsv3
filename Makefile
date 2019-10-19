@@ -78,6 +78,9 @@ FileHandlerTable.o: FileHandlerTable.cc FileHandlerTable.h
 RPCLogger.o: RPCLogger.cc RPCLogger.h
 	$(CXX) $(CXXFLAGS) $< $(LDFLAGS) -c
 
+Logger.o: Logger.cc Logger.h
+	$(CXX) $(CXXFLAGS) $< $(LDFLAGS) -c
+
 RPCManager.o: RPCManager.cc RPCManager.h
 	$(CXX) $(CXXFLAGS) $< $(LDFLAGS) -c
 
@@ -87,7 +90,7 @@ NFSClient.o: NFSClient.cc NFSClient.h helpers.h RPCManager.o
 NFSServer.o: NFSServer.cc NFSServer.h helpers.h
 	$(CXX) $(CXXFLAGS) $< $(LDFLAGS) -c
 
-runserver: nfs.pb.o nfs.grpc.pb.o NFSServer.o RPCManager.o RPCLogger.o runserver.cc
+runserver: nfs.pb.o nfs.grpc.pb.o NFSServer.o RPCManager.o RPCLogger.o Logger.o runserver.cc
 	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
 
 nfsmount: NFSClient.o nfs.pb.o nfs.grpc.pb.o RPCManager.o FileHandlerTable.o UserData.o nfsmount.cc

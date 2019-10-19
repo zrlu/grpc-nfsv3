@@ -14,6 +14,7 @@
 #endif
 
 #include "RPCLogger.h"
+#include "Logger.h"
 #include <google/protobuf/message.h>
 #include <queue>
 
@@ -35,6 +36,7 @@ class NFSImpl final : public nfs::NFS::Service
   const std::string m_server_storage_path;
   fs::path fullpath(const std::string &);
   RPCLogger m_rpc_logger;
+  Logger m_open_fh;
 
   std::map<rpcid_t, nfs::WRITEargs> m_write_buffer;
 

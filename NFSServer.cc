@@ -39,7 +39,8 @@ fs::path NFSImpl::fullpath(const std::string &fuse_path)
 
 NFSImpl::NFSImpl(const std::string &path): 
 m_server_storage_path(path),
-m_rpc_logger(RPCLogger("/tmp/rpclog.db"))
+m_rpc_logger(RPCLogger("/tmp/rpclog.db")),
+m_open_fh(Logger("/tmp/fh.db"))
 {}
 
 std::string NFSImpl::serialize(const Message &msg)
