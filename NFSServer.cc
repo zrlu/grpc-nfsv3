@@ -423,6 +423,7 @@ Status NFSImpl::NFSPROC_COMMIT(ServerContext *context, ServerReaderWriter<nfs::C
     res.add_commit_id(to_commit_id.c_str());
   }
   stream->Write(res);
+  fsync(args.fh());
 
   return Status::OK;
 }

@@ -224,6 +224,7 @@ int NFSClient::NFSPROC_RELEASE(const char *pathname, const struct fuse_file_info
     ClientContext context;
     nfs::COMMITargs* args = make_rpc<nfs::COMMITargs>();
     nfs::COMMITres res;
+    args->set_fh(fi->fh);
     for (auto it = m_to_commit[fi->fh].begin(); it != m_to_commit[fi->fh].end(); ++it)
     {
       string *to_commit = args->add_to_commit_id();

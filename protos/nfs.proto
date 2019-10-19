@@ -231,6 +231,7 @@ message READDIRres {
 message COMMITargs {
   string rpc_id = 1;
   repeated string to_commit_id = 2;
+  int32 fh = 3;
 }
 
 message COMMITres {
