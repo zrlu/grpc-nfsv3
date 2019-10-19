@@ -220,7 +220,7 @@ int NFSClient::NFSPROC_RELEASE(const char *pathname, const struct fuse_file_info
   // Send COMMIT here
   if (fi->flags & O_WRONLY)
   {
-    std::cerr << "====== COMMIT ====== " << "fd: " << fi->fh << std::endl;
+    // std::cerr << "====== COMMIT ====== " << "fd: " << fi->fh << std::endl;
     ClientContext context;
     nfs::COMMITargs* args = make_rpc<nfs::COMMITargs>();
     nfs::COMMITres res;
@@ -252,7 +252,7 @@ int NFSClient::NFSPROC_RELEASE(const char *pathname, const struct fuse_file_info
       set_pending.erase(*it);
       m_rpc_mgr.delete_rpc(*it);
     }
-    std::cerr << "==================" <<std::endl;
+    // std::cerr << "==================" <<std::endl;
   }
 
   ClientContext context;

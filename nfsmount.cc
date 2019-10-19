@@ -167,7 +167,6 @@ static int nfs_read(const char *path, char* buffer, size_t size, off_t offset, s
   ssize_t bytes_read;
   int err;
   RECONNECT_IF_RPC_FAIL(NFSPROC_READ, &err, nullptr, buffer, size, offset, fi, &bytes_read);
-  std::cerr << "READ err: " << err << std::endl;
   if (NFSPROC_SYSCALL_ERROR(err)) return err;
   return bytes_read;
 }
