@@ -40,8 +40,10 @@ fs::path NFSImpl::fullpath(const std::string &fuse_path)
 NFSImpl::NFSImpl(const std::string &path): 
 m_server_storage_path(path),
 m_rpc_logger(RPCLogger("/tmp/rpclog.db")),
-m_open_fh(Logger("/tmp/fh.db"))
-{}
+m_open_fh(Logger("/tmp/fh.db")),
+m_write_buffer(std::map<rpcid_t, nfs::WRITEargs>())
+{
+}
 
 std::string NFSImpl::serialize(const Message &msg)
 {
@@ -253,15 +255,6 @@ Status NFSImpl::NFSPROC_OPEN(ServerContext *context, const nfs::OPENargs *reques
 {
   nfs::OPENres res;
 
-  // recovery
-  string old_res;
-  if (m_rpc_logger.get_log(request->rpc_id(), &old_res))
-  {
-    res = deserialize<nfs::OPENres>(old_res);
-    *response = res;
-    return Status::OK;
-  }
-
   int retval = do_OPEN(request);
   if (retval == -1) {
     res.set_syscall_errno(-errno);
@@ -270,6 +263,8 @@ Status NFSImpl::NFSPROC_OPEN(ServerContext *context, const nfs::OPENargs *reques
 
   res.set_syscall_value(retval);
   *response = res;
+
+  // std::cerr << res.ShortDebugString() << std::endl;
   return Status::OK;
 
 }
@@ -424,6 +419,7 @@ Status NFSImpl::NFSPROC_COMMIT(ServerContext *context, ServerReaderWriter<nfs::C
     do_WRITE(&w_args);
     m_rpc_logger.set_log(w_args.rpc_id(), "1");
     res.add_commit_id(to_commit_id.c_str());
+    m_write_buffer.erase(to_commit_id);
   }
   stream->Write(res);
   fsync(args.fh());
@@ -437,10 +433,16 @@ Status NFSImpl::CHECK_MISSING(ServerContext *context, const nfs::COMMITargs *req
 {
   nfs::ResendList res;
 
+  // std::cerr << "CHECK_MISSING" << std::endl;
+  // std::cerr << m_write_buffer.size() << std::endl;
+  // std::cerr << request->to_commit_id_size() << std::endl;
   for (int i = 0; i < request->to_commit_id_size(); ++i)
   {
     rpcid_t to_check = request->to_commit_id(i);
-    if (m_write_buffer.find(to_check) == m_write_buffer.end())
+    // std::cerr << m_write_buffer.count(to_check) << " ";
+    // std::cerr << to_check << std::endl;
+    auto it = m_write_buffer.find(to_check);
+    if (it == m_write_buffer.end())
     {
       res.add_rpc_id(to_check);
     }

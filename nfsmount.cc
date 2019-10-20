@@ -12,11 +12,13 @@
 #include <iostream>
 #include <string>
 #include <set>
+#include <mutex>
 
 #include "NFSClient.h"
 #include "FileHandlerTable.h"
 #include "UserData.h"
 
+// #undef ENABLE_NFS_DEBUG
 #ifdef ENABLE_NFS_DEBUG
 #define NFS_DEBUG(path) fprintf(stderr, "FUSE ===> : %s(%s)\n", __func__, path)
 #else
@@ -25,17 +27,21 @@
 
 rpcid_t current_rpcid;
 bool recovery_mode = false;
+std::mutex mu_;
 
 #define RECONNECT_IF_RPC_FAIL(__rpc, __err_addr, ...) \
 do {\
   *__err_addr = get_user_data()->client()->__rpc(__VA_ARGS__);\
   if (NFSPROC_RPC_ERROR(*__err_addr))\
   {\
+      std::cerr << "Something's wrong, trying to reconnect..." << std::endl;\
       get_user_data()->client()->WaitForConnection();\
       std::cerr << "FUSE: [[ Entering recovery mode for RPC ID: " << current_rpcid << " ]]" << std::endl; \
+      mu_.lock();\
       recovery_mode = true; /* send the same rpcid */ \
       *__err_addr = get_user_data()->client()->__rpc(__VA_ARGS__);\
       recovery_mode = false;\
+      mu_.unlock();\
       puts("FUSE: recovery success!");\
       break;\
   }\
@@ -146,7 +152,7 @@ static int nfs_release(const char *path, struct fuse_file_info *fi)
 {
   NFS_DEBUG(path);
   int err;
-  RECONNECT_IF_RPC_FAIL(NFSPROC_RELEASE, &err, nullptr, fi);
+  RECONNECT_IF_RPC_FAIL(NFSPROC_RELEASE, &err, path, fi);
   if (!NFSPROC_SYSCALL_ERROR(err)) {
     get_user_data()->fhtable()->deallocate(fi->fh);
     return 0;
@@ -166,7 +172,7 @@ static int nfs_read(const char *path, char* buffer, size_t size, off_t offset, s
   NFS_DEBUG(path);
   ssize_t bytes_read;
   int err;
-  RECONNECT_IF_RPC_FAIL(NFSPROC_READ, &err, nullptr, buffer, size, offset, fi, &bytes_read);
+  RECONNECT_IF_RPC_FAIL(NFSPROC_READ, &err, path, buffer, size, offset, fi, &bytes_read);
   if (NFSPROC_SYSCALL_ERROR(err)) return err;
   return bytes_read;
 }
@@ -176,7 +182,7 @@ static int nfs_write(const char *path, const char* buffer, size_t size, off_t of
   NFS_DEBUG(path);
   ssize_t bytes_wrote;
   int err;
-  RECONNECT_IF_RPC_FAIL(NFSPROC_WRITE, &err, nullptr, buffer, size, offset, fi, &bytes_wrote);
+  RECONNECT_IF_RPC_FAIL(NFSPROC_WRITE, &err, path, buffer, size, offset, fi, &bytes_wrote);
   if (NFSPROC_SYSCALL_ERROR(err)) return err;
   return bytes_wrote;
 }

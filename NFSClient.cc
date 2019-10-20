@@ -12,6 +12,7 @@ using grpc::ClientWriter;
 using grpc::Status;
 using grpc::StatusCode;
 
+// #undef CLIENT_ENABLE_DEBUG_MESSAGE
 #ifdef CLIENT_ENABLE_DEBUG_MESSAGE
 #define DEBUG_RESPONSE(_res) std::cerr << "CLIENT <==  " << __func__ << ": " << _res.ShortDebugString().substr(0, 300) << std::endl;
 #define DEBUG_REQUEST(_args) std::cerr << "CLIENT  ==> " << __func__ << ": " << _args->ShortDebugString().substr(0, 300) << std::endl;
@@ -61,6 +62,27 @@ bool NFSClient::del_rpc_if_ok(rpcid_t rpcid, const Status &status)
       return true;
     }
     return false;
+}
+
+bool NFSClient::remap_fh()
+{
+  // std::cerr << "====== remap_fh ======" << std::endl;
+  for (auto it = m_opened.begin(); it != m_opened.end(); ++it)
+  {
+    std::string pathname = it->first;
+    struct fuse_file_info &fi = it->second;
+    // std::cerr << pathname << ": " << fi.fh << " => ";
+    int new_fh;
+    int err = NFSPROC_OPEN(pathname.c_str(), &fi, &new_fh);
+    // std::cerr << new_fh << " | err: " << err << std::endl;
+    if (err) {
+      return false;
+    }
+    fi.fh = new_fh;
+  }
+  // std::cerr << "====== remap_fh ======" << std::endl;
+  m_opened.clear();
+  return true;
 }
 
 int NFSClient::NFSPROC_NULL(void)
@@ -193,7 +215,7 @@ int NFSClient::NFSPROC_TRUNCATE(const char *path, off_t length)
   return status.error_code() | res.syscall_errno();
 }
 
-int NFSClient::NFSPROC_OPEN(const char *pathname, const struct fuse_file_info *fi, int *ret)
+int NFSClient::NFSPROC_OPEN(const char *pathname, struct fuse_file_info *fi, int *ret)
 {
   ClientContext context;
   nfs::OPENargs* args = make_rpc<nfs::OPENargs>();
@@ -206,16 +228,25 @@ int NFSClient::NFSPROC_OPEN(const char *pathname, const struct fuse_file_info *f
   Status status = stub_->NFSPROC_OPEN(&context, *args, &res);
   del_rpc_if_ok(args->rpc_id(), status);
   DEBUG_RESPONSE(res);
+
   if (res.syscall_errno() == 0 && fi->flags & O_WRONLY)
   {
-    m_to_commit[res.syscall_value()] = std::set<rpcid_t>();
+    if (m_to_commit.find(std::string(pathname)) == m_to_commit.end())
+    {
+      m_to_commit[std::string(pathname)] = std::set<rpcid_t>();
+    }
+  }
+  int err = status.error_code() | res.syscall_errno();
+  if (!err)
+  {
+    m_opened[std::string(pathname)] = *fi;
   }
 
   *ret = res.syscall_value();
-  return status.error_code() | res.syscall_errno();
+  return err;
 }
 
-int NFSClient::NFSPROC_RELEASE(const char *pathname, const struct fuse_file_info *fi)
+int NFSClient::NFSPROC_RELEASE(const char *pathname, struct fuse_file_info *fi)
 {
   // Send COMMIT here
   if (fi->flags & O_WRONLY)
@@ -225,13 +256,13 @@ int NFSClient::NFSPROC_RELEASE(const char *pathname, const struct fuse_file_info
     nfs::COMMITargs* args = make_rpc<nfs::COMMITargs>();
     nfs::COMMITres res;
     args->set_fh(fi->fh);
-    for (auto it = m_to_commit[fi->fh].begin(); it != m_to_commit[fi->fh].end(); ++it)
+    std::set<rpcid_t> &set_pending = m_to_commit[std::string(pathname)];
+    for (auto it = set_pending.begin(); it != set_pending.end(); ++it)
     {
       string *to_commit = args->add_to_commit_id();
       to_commit->assign(*it);
     }
     DEBUG_REQUEST(args);
-    std::set<rpcid_t> &set_pending = m_to_commit[fi->fh];
     std::set<rpcid_t> set_missing;
     std::set<rpcid_t> set_ok;
     // Check for missing
@@ -266,14 +297,28 @@ int NFSClient::NFSPROC_RELEASE(const char *pathname, const struct fuse_file_info
   del_rpc_if_ok(args->rpc_id(), status);
   DEBUG_RESPONSE(res);
 
-  m_to_commit.erase(fi->fh);
+  m_to_commit.erase(std::string(pathname));
 
-  return status.error_code() | res.syscall_errno();
+  int err = status.error_code() | res.syscall_errno();
+  if (!err)
+  {
+    m_opened.erase(std::string(pathname));
+  }
+
+  return err;
 
 }
 
-int NFSClient::NFSPROC_READ(const char *pathname, char *buffer, size_t size, off_t offset, const struct fuse_file_info *fi, ssize_t *ret)
+int NFSClient::NFSPROC_READ(const char *pathname, char *buffer, size_t size, off_t offset, struct fuse_file_info *fi, ssize_t *ret)
 {
+  // recovery
+  {
+    if (recovery_mode)
+    {
+      remap_fh();
+    }
+  }
+
   ClientContext context;
   nfs::READargs args;
   nfs::READres res;
@@ -284,7 +329,6 @@ int NFSClient::NFSPROC_READ(const char *pathname, char *buffer, size_t size, off
 
   DEBUG_REQUEST_(args);
   
-
   Status status = stub_->NFSPROC_READ(&context, args, &res);
 
   DEBUG_RESPONSE(res);
@@ -301,8 +345,16 @@ int NFSClient::NFSPROC_READ(const char *pathname, char *buffer, size_t size, off
   return err;
 }
 
-int NFSClient::NFSPROC_WRITE(const char *pathname, const char *buffer, size_t size, off_t offset, const struct fuse_file_info *fi, ssize_t *ret)
+int NFSClient::NFSPROC_WRITE(const char *pathname, const char *buffer, size_t size, off_t offset, struct fuse_file_info *fi, ssize_t *ret)
 {
+  // recovery
+  {
+    if (recovery_mode)
+    {
+      remap_fh();
+    }
+  }
+
   ClientContext context;
   nfs::WRITEargs *args = make_rpc<nfs::WRITEargs>();
   nfs::WRITEres res;
@@ -318,7 +370,7 @@ int NFSClient::NFSPROC_WRITE(const char *pathname, const char *buffer, size_t si
 
   if (status.ok())
   {
-    m_to_commit[fi->fh].insert(args->rpc_id());
+    m_to_commit[std::string(pathname)].insert(args->rpc_id());
     *ret = size;
   }
 
@@ -372,12 +424,15 @@ int NFSClient::NFSPROC_READDIR(const char *path, void *buf, fuse_fill_dir_t fill
 
 int NFSClient::CHECK_MISSING(const nfs::COMMITargs &list, std::set<rpcid_t> *missing)
 {
+  // std::cerr << "CHECK_MISSING" << std::endl;
   ClientContext context;
   nfs::ResendList res;  
 
   Status status = stub_->CHECK_MISSING(&context, list, &res);
   missing->clear();
+  // std::cerr << res.ShortDebugString() << std::endl;
   int size = res.rpc_id_size();
+  // std::cerr << size << std::endl;
   for (int i = 0; i < size; ++i)
   {
     missing->insert(res.rpc_id(i));

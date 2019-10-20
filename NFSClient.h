@@ -40,11 +40,12 @@ class NFSClient
   std::shared_ptr<grpc::Channel> m_channel;
   std::unique_ptr<NFS::Stub> stub_;
   short m_client_id;
-  std::map<int, std::set<rpcid_t>> m_to_commit;
+  std::map<std::string, std::set<rpcid_t>> m_to_commit;
+  std::map<std::string, struct fuse_file_info> m_opened;
 
   template <typename T> T* make_rpc();
   bool del_rpc_if_ok(rpcid_t rpcid, const Status &status);
-  
+  bool remap_fh();
 
 public:
   NFSClient(std::shared_ptr<Channel> channel);
@@ -60,10 +61,10 @@ public:
   int NFSPROC_RMDIR(const char *);
   int NFSPROC_RENAME(const char *, const char *);
   int NFSPROC_TRUNCATE(const char *, off_t);
-  int NFSPROC_OPEN(const char *, const struct fuse_file_info *, int *);
-  int NFSPROC_RELEASE(const char *, const struct fuse_file_info *);
-  int NFSPROC_READ(const char *, char *, size_t, off_t, const struct fuse_file_info *, ssize_t *);
-  int NFSPROC_WRITE(const char *, const char *, size_t, off_t, const struct fuse_file_info *, ssize_t *);
+  int NFSPROC_OPEN(const char *, struct fuse_file_info *, int *);
+  int NFSPROC_RELEASE(const char *, struct fuse_file_info *);
+  int NFSPROC_READ(const char *, char *, size_t, off_t, struct fuse_file_info *, ssize_t *);
+  int NFSPROC_WRITE(const char *, const char *, size_t, off_t, struct fuse_file_info *, ssize_t *);
   int NFSPROC_FGETATTR(const char *, struct stat *, const struct fuse_file_info *);
   int NFSPROC_READDIR(const char *, void *, fuse_fill_dir_t, off_t, struct fuse_file_info *);
   int CHECK_MISSING(const nfs::COMMITargs &list, std::set<rpcid_t> *missing);
