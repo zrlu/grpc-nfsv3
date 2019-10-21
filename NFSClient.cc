@@ -66,7 +66,6 @@ bool NFSClient::del_rpc_if_ok(rpcid_t rpcid, const Status &status)
 
 bool NFSClient::remap_fh()
 {
-  m_mu_opened.lock();
   // std::cerr << "====== remap_fh ======" << std::endl;
   for (auto it = m_opened.begin(); it != m_opened.end(); ++it)
   {
@@ -83,7 +82,6 @@ bool NFSClient::remap_fh()
   }
   // std::cerr << "====== remap_fh ======" << std::endl;
   m_opened.clear();
-  m_mu_opened.unlock();
   return true;
 }
 
