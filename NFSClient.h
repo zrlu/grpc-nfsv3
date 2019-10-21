@@ -51,7 +51,7 @@ class NFSClient
   bool remap_fh();
 
 public:
-  NFSClient(std::shared_ptr<Channel> channel);
+  NFSClient(std::shared_ptr<Channel> channel, int client_id);
 
   bool WaitForConnection();
   bool WaitForConnection(int64_t sec, int32_t nsec);

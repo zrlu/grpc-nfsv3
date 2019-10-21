@@ -27,9 +27,9 @@ using grpc::StatusCode;
 extern rpcid_t current_rpcid;
 extern bool recovery_mode;
 
-NFSClient::NFSClient(std::shared_ptr<Channel> channel) : 
+NFSClient::NFSClient(std::shared_ptr<Channel> channel, int client_id) : 
   m_channel(channel), 
-  m_client_id(0),
+  m_client_id(client_id),
   stub_(NFS::NewStub(channel))
   {}
 

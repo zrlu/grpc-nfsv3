@@ -25,9 +25,33 @@
 #define NFS_DEBUG(path)
 #endif
 
+#define NFS_OPT(t, p, v) { t, offsetof(struct nfs_config, p), v }
+
+#define DEFAULT_SERVER "127.0.0.1:50055"
+#define DEFAULT_CLIENT_ID 0
+
+enum {
+  SERVER,
+  CLIENT_ID
+};
+
+struct nfs_config
+{
+  char *server;
+  int client_id;
+};
+
 rpcid_t current_rpcid;
 bool recovery_mode = false;
 std::mutex mu_;
+
+struct nfs_config conf;
+
+static struct fuse_opt nfs_opts[] = {
+     NFS_OPT("--server=%s",         server   , 0 ),
+     NFS_OPT("--client_id=%i",      client_id, 0 ),
+     FUSE_OPT_END
+};
 
 #define RECONNECT_IF_RPC_FAIL(__rpc, __err_addr, ...) \
 do {\
@@ -56,7 +80,7 @@ UserData *get_user_data()
 
 static void *nfs_init(struct fuse_conn_info *conn)
 {
-  auto channel = grpc::CreateChannel("127.0.0.1:50055", grpc::InsecureChannelCredentials());
+  auto channel = grpc::CreateChannel(conf.server, grpc::InsecureChannelCredentials());
   
   gpr_timespec timeout{10, 0, GPR_TIMESPAN};
   bool connected = channel->WaitForConnected<gpr_timespec>(timeout);
@@ -66,7 +90,7 @@ static void *nfs_init(struct fuse_conn_info *conn)
     std::cerr << "timeout" << std::endl;
     exit(-1);
   }
-  UserData *ud = new UserData(new NFSClient(channel));
+  UserData *ud = new UserData(new NFSClient(channel, conf.client_id));
   return (void *)ud;
 }
 
@@ -225,6 +249,11 @@ static int nfs_releasedir(const char *path, struct fuse_file_info *fi)
   return 0;
 }
 
+static int nfs_opt_proc(void *data, const char *arg, int key, struct fuse_args *outargs) {
+  // std::cerr << arg << ":" << key << std::endl;
+  return 0;
+}
+
 static struct fuse_operations nfs_oper = {
   .getattr = nfs_getattr,
   .mknod = nfs_mknod,
@@ -249,5 +278,18 @@ static struct fuse_operations nfs_oper = {
 
 int main(int argc, char **argv)
 {
-  fuse_main(argc, argv, &nfs_oper, NULL);
+
+  conf.client_id = DEFAULT_CLIENT_ID;
+  conf.server = new char[sizeof(DEFAULT_SERVER)];
+  strcpy(conf.server, DEFAULT_SERVER);
+  struct fuse_args args = FUSE_ARGS_INIT(argc, argv);
+  fuse_opt_parse(&args, &conf, nfs_opts, nfs_opt_proc);
+
+  printf("server -> %s\n", conf.server);
+  printf("client_id -> %d\n", conf.client_id);
+
+  fuse_opt_add_arg(&args, argv[2]);
+  fuse_opt_add_arg(&args, argv[1]); 
+
+  fuse_main(args.argc, args.argv, &nfs_oper, NULL);
 }
