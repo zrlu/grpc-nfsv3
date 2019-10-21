@@ -66,6 +66,7 @@ bool NFSClient::del_rpc_if_ok(rpcid_t rpcid, const Status &status)
 
 bool NFSClient::remap_fh()
 {
+  m_mu_opened.lock();
   // std::cerr << "====== remap_fh ======" << std::endl;
   for (auto it = m_opened.begin(); it != m_opened.end(); ++it)
   {
@@ -82,6 +83,7 @@ bool NFSClient::remap_fh()
   }
   // std::cerr << "====== remap_fh ======" << std::endl;
   m_opened.clear();
+  m_mu_opened.unlock();
   return true;
 }
 
@@ -231,15 +233,19 @@ int NFSClient::NFSPROC_OPEN(const char *pathname, struct fuse_file_info *fi, int
 
   if (res.syscall_errno() == 0 && fi->flags & O_WRONLY)
   {
+    m_mu_to_commit.lock();
     if (m_to_commit.find(std::string(pathname)) == m_to_commit.end())
     {
       m_to_commit[std::string(pathname)] = std::set<rpcid_t>();
     }
+    m_mu_to_commit.unlock();
   }
   int err = status.error_code() | res.syscall_errno();
   if (!err)
   {
+    m_mu_opened.lock();
     m_opened[std::string(pathname)] = *fi;
+    m_mu_opened.unlock();
   }
 
   *ret = res.syscall_value();
@@ -256,12 +262,15 @@ int NFSClient::NFSPROC_RELEASE(const char *pathname, struct fuse_file_info *fi)
     nfs::COMMITargs* args = make_rpc<nfs::COMMITargs>();
     nfs::COMMITres res;
     args->set_fh(fi->fh);
+    m_mu_to_commit.lock();
     std::set<rpcid_t> &set_pending = m_to_commit[std::string(pathname)];
+
     for (auto it = set_pending.begin(); it != set_pending.end(); ++it)
     {
       string *to_commit = args->add_to_commit_id();
       to_commit->assign(*it);
     }
+
     DEBUG_REQUEST(args);
     std::set<rpcid_t> set_missing;
     std::set<rpcid_t> set_ok;
@@ -283,6 +292,7 @@ int NFSClient::NFSPROC_RELEASE(const char *pathname, struct fuse_file_info *fi)
       set_pending.erase(*it);
       m_rpc_mgr.delete_rpc(*it);
     }
+    m_mu_to_commit.unlock();
     // std::cerr << "==================" <<std::endl;
   }
 
@@ -297,12 +307,17 @@ int NFSClient::NFSPROC_RELEASE(const char *pathname, struct fuse_file_info *fi)
   del_rpc_if_ok(args->rpc_id(), status);
   DEBUG_RESPONSE(res);
 
-  m_to_commit.erase(std::string(pathname));
 
+  m_mu_to_commit.lock();
+  m_to_commit.erase(std::string(pathname));
+  m_mu_to_commit.unlock();
+  
   int err = status.error_code() | res.syscall_errno();
   if (!err)
   {
+    m_mu_opened.lock();
     m_opened.erase(std::string(pathname));
+    m_mu_opened.unlock();
   }
 
   return err;
@@ -370,7 +385,9 @@ int NFSClient::NFSPROC_WRITE(const char *pathname, const char *buffer, size_t si
 
   if (status.ok())
   {
+    m_mu_to_commit.lock();
     m_to_commit[std::string(pathname)].insert(args->rpc_id());
+    m_mu_to_commit.unlock();
     *ret = size;
   }
 
@@ -451,7 +468,12 @@ int NFSClient::WRITE_BUFFER_SYNC(const std::set<rpcid_t> *missing)
     {
       const rpcid_t id = *it;
       Message * ptr = m_rpc_mgr.get_rpc(id);
-      nfs::WRITEargs &args = *dynamic_cast<nfs::WRITEargs*>(ptr);
+      nfs::WRITEargs *_args = dynamic_cast<nfs::WRITEargs*>(ptr);
+      if (!_args)
+      {
+        continue;
+      }
+      nfs::WRITEargs &args = *_args;
       stream->Write(args);
     }
     stream->WritesDone();

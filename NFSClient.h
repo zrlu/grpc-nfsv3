@@ -18,6 +18,7 @@
 #else
 #include "nfs.grpc.pb.h"
 #endif
+#include <mutex>
 
 #include "RPCManager.h"
 
@@ -42,6 +43,8 @@ class NFSClient
   short m_client_id;
   std::map<std::string, std::set<rpcid_t>> m_to_commit;
   std::map<std::string, struct fuse_file_info> m_opened;
+  std::mutex m_mu_to_commit;
+  std::mutex m_mu_opened;
 
   template <typename T> T* make_rpc();
   bool del_rpc_if_ok(rpcid_t rpcid, const Status &status);
