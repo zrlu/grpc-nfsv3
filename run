@@ -22,10 +22,12 @@ function killserver() {
 
 if [ "$1" = "server" ]; then
   killserver
+  mkdir ${SERVER_CACHE_DIR}
   ./runserver ${SERVER_CACHE_DIR}
 
 elif [ "$1" = "client" ]; then
   shift
   killclient
+  mkdir ${CLIENT_CACHE_DIR}
   ./nfsmount ${CLIENT_CACHE_DIR} -f $@
 fi
