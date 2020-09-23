@@ -81,7 +81,7 @@ bool NFSClient::remap_fh()
     fi.fh = new_fh;
   }
   // std::cerr << "====== remap_fh ======" << std::endl;
-  m_opened.clear();
+  // m_opened.clear();
   return true;
 }
 
