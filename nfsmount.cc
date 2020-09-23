@@ -60,7 +60,8 @@ do {\
   {\
       std::cerr << "Something's wrong, trying to reconnect..." << std::endl;\
       get_user_data()->client()->WaitForConnection();\
-      std::cerr << "FUSE: [[ Entering recovery mode for RPC ID: " << current_rpcid << " ]]" << std::endl; \
+      /*\
+      std::cerr << "FUSE: [[ Entering recovery mode for RPC ID: " << current_rpcid << " ]]" << std::endl; */ \
       mu_.lock();\
       recovery_mode = true; /* send the same rpcid */ \
       *__err_addr = get_user_data()->client()->__rpc(__VA_ARGS__);\
